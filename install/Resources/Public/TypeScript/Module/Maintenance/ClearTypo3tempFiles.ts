@@ -11,26 +11,25 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {AbstractInteractableModule} from './AbstractInteractableModule';
+import {AbstractInteractableModule} from '../AbstractInteractableModule';
 import * as $ from 'jquery';
-import Router = require('../Router');
+import Router = require('../../Router');
 import Modal = require('TYPO3/CMS/Backend/Modal');
 import Notification = require('TYPO3/CMS/Backend/Notification');
 
 /**
- * Module: TYPO3/CMS/Install/Module/ClearTables
+ * Module: TYPO3/CMS/Install/Module/ClearTypo3tempFiles
  */
-class ClearTables extends AbstractInteractableModule {
-  private selectorClearTrigger: string = '.t3js-clearTables-clear';
-  private selectorStatsTrigger: string = '.t3js-clearTables-stats';
-  private selectorOutputContainer: string = '.t3js-clearTables-output';
-  private selectorStatContainer: string = '.t3js-clearTables-stat-container';
-  private selectorStatTemplate: string = '.t3js-clearTables-stat-template';
-  private selectorStatDescription: string = '.t3js-clearTables-stat-description';
-  private selectorStatRows: string = '.t3js-clearTables-stat-rows';
-  private selectorStatName: string = '.t3js-clearTables-stat-name';
+class ClearTypo3tempFiles extends AbstractInteractableModule {
+  private selectorDeleteTrigger: string = '.t3js-clearTypo3temp-delete';
+  private selectorOutputContainer: string = '.t3js-clearTypo3temp-output';
+  private selectorStatContainer: string = '.t3js-clearTypo3temp-stat-container';
+  private selectorStatsTrigger: string = '.t3js-clearTypo3temp-stats';
+  private selectorStatTemplate: string = '.t3js-clearTypo3temp-stat-template';
+  private selectorStatNumberOfFiles: string = '.t3js-clearTypo3temp-stat-numberOfFiles';
+  private selectorStatDirectory: string = '.t3js-clearTypo3temp-stat-directory';
 
-  public initialize(currentModal: any): void {
+  public initialize(currentModal: JQuery): void {
     this.currentModal = currentModal;
     this.getStats();
 
@@ -39,18 +38,18 @@ class ClearTables extends AbstractInteractableModule {
       $(this.selectorOutputContainer).empty();
       this.getStats();
     });
-
-    currentModal.on('click', this.selectorClearTrigger, (e: JQueryEventObject): void => {
-      const table = $(e.target).closest(this.selectorClearTrigger).data('table');
+    currentModal.on('click', this.selectorDeleteTrigger, (e: JQueryEventObject): void => {
+      const folder = $(e.currentTarget).data('folder');
+      const storageUid = $(e.currentTarget).data('storage-uid');
       e.preventDefault();
-      this.clear(table);
+      this.delete(folder, storageUid);
     });
   }
 
   private getStats(): void {
-    const modalContent: JQuery = this.getModalBody();
+    const modalContent = this.getModalBody();
     $.ajax({
-      url: Router.getUrl('clearTablesStats'),
+      url: Router.getUrl('clearTypo3tempFilesStats'),
       cache: false,
       success: (data: any): void => {
         if (data.success === true) {
@@ -58,12 +57,12 @@ class ClearTables extends AbstractInteractableModule {
           Modal.setButtons(data.buttons);
           if (Array.isArray(data.stats) && data.stats.length > 0) {
             data.stats.forEach((element: any): void => {
-              if (element.rowCount > 0) {
+              if (element.numberOfFiles > 0) {
                 const aStat = modalContent.find(this.selectorStatTemplate).clone();
-                aStat.find(this.selectorStatDescription).text(element.description);
-                aStat.find(this.selectorStatName).text(element.name);
-                aStat.find(this.selectorStatRows).text(element.rowCount);
-                aStat.find(this.selectorClearTrigger).attr('data-table', element.name);
+                aStat.find(this.selectorStatNumberOfFiles).text(element.numberOfFiles);
+                aStat.find(this.selectorStatDirectory).text(element.directory);
+                aStat.find(this.selectorDeleteTrigger).attr('data-folder', element.directory);
+                aStat.find(this.selectorDeleteTrigger).attr('data-storage-uid', element.storageUid);
                 modalContent.find(this.selectorStatContainer).append(aStat.html());
               }
             });
@@ -78,18 +77,19 @@ class ClearTables extends AbstractInteractableModule {
     });
   }
 
-  private clear(table: string): void {
+  private delete(folder: string, storageUid: number): void {
     const modalContent = this.getModalBody();
-    const executeToken = this.getModuleContent().data('clear-tables-clear-token');
+    const executeToken = this.getModuleContent().data('clear-typo3temp-delete-token');
     $.ajax({
-      url: Router.getUrl(),
       method: 'POST',
+      url: Router.getUrl(),
       context: this,
       data: {
         'install': {
-          'action': 'clearTablesClear',
+          'action': 'clearTypo3tempFiles',
           'token': executeToken,
-          'table': table,
+          'folder': folder,
+          'storageUid': storageUid,
         },
       },
       cache: false,
@@ -98,10 +98,10 @@ class ClearTables extends AbstractInteractableModule {
           data.status.forEach((element: any): void => {
             Notification.success(element.message);
           });
+          this.getStats();
         } else {
           Notification.error('Something went wrong');
         }
-        this.getStats();
       },
       error: (xhr: XMLHttpRequest): void => {
         Router.handleAjaxError(xhr, modalContent);
@@ -110,4 +110,4 @@ class ClearTables extends AbstractInteractableModule {
   }
 }
 
-export = new ClearTables();
+export = new ClearTypo3tempFiles();

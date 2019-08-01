@@ -11,11 +11,11 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {AbstractInteractableModule} from './AbstractInteractableModule';
+import {AbstractInteractableModule} from '../AbstractInteractableModule';
 import * as $ from 'jquery';
 import 'bootstrap';
-import AjaxQueue = require('../Ajax/AjaxQueue');
-import Router = require('../Router');
+import AjaxQueue = require('../../Ajax/AjaxQueue');
+import Router = require('../../Router');
 import Modal = require('TYPO3/CMS/Backend/Modal');
 import Notification = require('TYPO3/CMS/Backend/Notification');
 

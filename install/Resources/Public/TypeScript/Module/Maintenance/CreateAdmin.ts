@@ -11,10 +11,10 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {AbstractInteractableModule} from './AbstractInteractableModule';
+import {AbstractInteractableModule} from '../AbstractInteractableModule';
 import * as $ from 'jquery';
-import Router = require('../Router');
-import PasswordStrength = require('./PasswordStrength');
+import Router = require('../../Router');
+import PasswordStrength = require('../PasswordStrength');
 import Modal = require('TYPO3/CMS/Backend/Modal');
 import Notification = require('TYPO3/CMS/Backend/Notification');
 

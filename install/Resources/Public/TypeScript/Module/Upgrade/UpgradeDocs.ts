@@ -11,10 +11,10 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {AbstractInteractableModule} from './AbstractInteractableModule';
+import {AbstractInteractableModule} from '../AbstractInteractableModule';
 import * as $ from 'jquery';
 import 'bootstrap';
-import Router = require('../Router');
+import Router = require('../../Router');
 import Notification = require('TYPO3/CMS/Backend/Notification');
 
 /**

@@ -11,39 +11,35 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {AbstractInteractableModule} from './AbstractInteractableModule';
+import {AbstractInteractableModule} from '../AbstractInteractableModule';
 import * as $ from 'jquery';
-import Router = require('../Router');
-import PasswordStrength = require('./PasswordStrength');
+import Router = require('../../Router');
 import Modal = require('TYPO3/CMS/Backend/Modal');
 import Notification = require('TYPO3/CMS/Backend/Notification');
 
 /**
- * Module: TYPO3/CMS/Install/Module/ChangeInstallToolPassword
+ * Module: TYPO3/CMS/Install/Module/Features
  */
-class ChangeInstallToolPassword extends AbstractInteractableModule {
-  private selectorChangeButton: string = '.t3js-changeInstallToolPassword-change';
+class Features extends AbstractInteractableModule {
+  private selectorSaveTrigger: string = '.t3js-features-save';
 
-  public initialize(currentModal: JQuery): void {
+  public initialize(currentModal: any): void {
     this.currentModal = currentModal;
-    this.getData();
+    this.getContent();
 
-    currentModal.on('click', this.selectorChangeButton, (e: JQueryEventObject): void => {
+    currentModal.on('click', this.selectorSaveTrigger, (e: JQueryEventObject): void => {
       e.preventDefault();
-      this.change();
-    });
-    currentModal.on('click', '.t3-install-form-password-strength', (e: JQueryEventObject): void => {
-      PasswordStrength.initialize('.t3-install-form-password-strength');
+      this.save();
     });
   }
 
-  private getData(): void {
+  private getContent(): void {
     const modalContent = this.getModalBody();
     $.ajax({
-      url: Router.getUrl('changeInstallToolPasswordGetData'),
+      url: Router.getUrl('featuresGetContent'),
       cache: false,
       success: (data: any): void => {
-        if (data.success === true) {
+        if (data.success === true && data.html !== 'undefined' && data.html.length > 0) {
           modalContent.empty().append(data.html);
           Modal.setButtons(data.buttons);
         } else {
@@ -56,25 +52,24 @@ class ChangeInstallToolPassword extends AbstractInteractableModule {
     });
   }
 
-  private change(): void {
+  private save(): void {
     const modalContent = this.getModalBody();
-    const executeToken = this.getModuleContent().data('install-tool-token');
+    const executeToken = this.getModuleContent().data('features-save-token');
+    const postData: any = {};
+    $(this.findInModal('form').serializeArray()).each((index: number, element: any): void => {
+      postData[element.name] = element.value;
+    });
+    postData['install[action]'] = 'featuresSave';
+    postData['install[token]'] = executeToken;
     $.ajax({
       url: Router.getUrl(),
       method: 'POST',
-      data: {
-        'install': {
-          'action': 'changeInstallToolPassword',
-          'token': executeToken,
-          'password': this.findInModal('.t3js-changeInstallToolPassword-password').val(),
-          'passwordCheck': this.findInModal('.t3js-changeInstallToolPassword-password-check').val(),
-        },
-      },
+      data: postData,
       cache: false,
       success: (data: any): void => {
         if (data.success === true && Array.isArray(data.status)) {
           data.status.forEach((element: any): void => {
-            Notification.showMessage('', element.message, element.severity);
+            Notification.showMessage(element.title, element.message, element.severity);
           });
         } else {
           Notification.error('Something went wrong');
@@ -83,11 +78,8 @@ class ChangeInstallToolPassword extends AbstractInteractableModule {
       error: (xhr: XMLHttpRequest): void => {
         Router.handleAjaxError(xhr, modalContent);
       },
-      complete: (): void => {
-        this.findInModal('.t3js-changeInstallToolPassword-password,.t3js-changeInstallToolPassword-password-check').val('');
-      },
     });
   }
 }
 
-export = new ChangeInstallToolPassword();
+export = new Features();

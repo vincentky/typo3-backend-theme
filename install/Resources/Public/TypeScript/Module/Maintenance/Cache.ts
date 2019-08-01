@@ -11,18 +11,18 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {InlineModuleInterface} from './InlineModuleInterface';
+import {InlineModuleInterface} from './../InlineModuleInterface';
 import * as $ from 'jquery';
-import Router = require('../Router');
+import Router = require('../../Router');
 import Notification = require('TYPO3/CMS/Backend/Notification');
 
 /**
- * Module: TYPO3/CMS/Install/Module/ResetBackendUserUc
+ * Module: TYPO3/CMS/Install/Module/Cache
  */
-class ResetBackendUserUc implements InlineModuleInterface {
+class Cache implements InlineModuleInterface {
   public initialize($trigger: JQuery): void {
     $.ajax({
-      url: Router.getUrl('resetBackendUserUc'),
+      url: Router.getUrl('cacheClearAll', 'maintenance'),
       cache: false,
       beforeSend: (): void => {
         $trigger.addClass('disabled').prop('disabled', true);
@@ -30,18 +30,20 @@ class ResetBackendUserUc implements InlineModuleInterface {
       success: (data: any): void => {
         if (data.success === true && Array.isArray(data.status)) {
           if (data.status.length > 0) {
-            data.status.forEach((element: any): void => {
-              Notification.success(element.message);
-            });
+            data.status.forEach(((element: any): void => {
+              Notification.success(element.title, element.message);
+            }));
           }
         } else {
-          Notification.error('Something went wrong ...');
+          Notification.error('Something went wrong clearing caches');
         }
       },
-      error: (xhr: XMLHttpRequest): void => {
-        // If reset fails on server side (typically a 500), do not crash entire install tool
-        // but render an error notification instead.
-        Notification.error('Resetting backend user uc failed. Please check the system for missing database fields and try again.');
+      error: (): void => {
+        // In case the clear cache action fails (typically 500 from server), do not kill the entire
+        // install tool, instead show a notification that something went wrong.
+        Notification.error(
+          'Clearing caches went wrong on the server side. Check the system for broken extensions or missing database tables and try again',
+        );
       },
       complete: (): void => {
         $trigger.removeClass('disabled').prop('disabled', false);
@@ -50,4 +52,4 @@ class ResetBackendUserUc implements InlineModuleInterface {
   }
 }
 
-export = new ResetBackendUserUc();
+export = new Cache();

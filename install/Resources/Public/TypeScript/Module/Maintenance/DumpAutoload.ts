@@ -11,9 +11,9 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {InlineModuleInterface} from './InlineModuleInterface';
+import {InlineModuleInterface} from './../InlineModuleInterface';
 import * as $ from 'jquery';
-import Router = require('../Router');
+import Router = require('../../Router');
 import Notification = require('TYPO3/CMS/Backend/Notification');
 
 /**

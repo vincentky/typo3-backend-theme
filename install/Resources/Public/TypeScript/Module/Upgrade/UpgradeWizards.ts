@@ -11,14 +11,14 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {AbstractInteractableModule} from './AbstractInteractableModule';
+import {AbstractInteractableModule} from '../AbstractInteractableModule';
 import * as $ from 'jquery';
 import 'bootstrap';
-import Router = require('../Router');
-import Severity = require('../Renderable/Severity');
-import ProgressBar = require('../Renderable/ProgressBar');
-import InfoBox = require('../Renderable/InfoBox');
-import FlashMessage = require('../Renderable/FlashMessage');
+import Router = require('../../Router');
+import Severity = require('../../Renderable/Severity');
+import ProgressBar = require('../../Renderable/ProgressBar');
+import InfoBox = require('../../Renderable/InfoBox');
+import FlashMessage = require('../../Renderable/FlashMessage');
 import Notification = require('TYPO3/CMS/Backend/Notification');
 import SecurityUtility = require('TYPO3/CMS/Core/SecurityUtility');
 
