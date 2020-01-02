@@ -1,0 +1,5 @@
+.build
+.idea
+/.editorconfig
+/.php_cs
+/.php_cs.cache

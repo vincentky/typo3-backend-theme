@@ -1,0 +1,112 @@
+{
+	"name": "starfishprime/typo3-templates",
+	"type": "typo3-cms-extension",
+	"description": "Modal gesture for TYPO3.",
+	"license": [
+		"GPL-2.0-or-later"
+	],
+	"homepage": "https://needtocreateawebsiteforthis.org",
+	"keywords": [
+		"TYPO3",
+		"templates",
+		"backend",
+		"frontend"
+	],
+	"authors": [
+		{
+			"name": "Vincent Kolly",
+			"role": "Developer",
+			"email": "vincent@vincentk.ch",
+			"homepage": "http://www.vincentk.ch"
+		}
+	],
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://composer.typo3.org/"
+		}
+	],
+	"config": {
+		"sort-packages": true,
+		"bin-dir": "{$bin-dir}",
+		"discard-changes": true,
+		"optimize-autoloader": true,
+		"vendor-dir": ".build/vendor"
+	},
+	"require": {
+		"php": ">=7.3.0",
+		"typo3/cms-backend": "10.*@dev",
+		"typo3/cms-core": "10.*@dev",
+		"typo3/cms-extbase": "10.*@dev",
+		"typo3/cms-extensionmanager": "10.*@dev",
+		"typo3/cms-fluid": "10.*@dev",
+		"typo3/cms-frontend": "10.*@dev",
+		"typo3/cms-install": "10.*@dev",
+		"typo3/cms-rte-ckeditor": "10.*@dev",
+		"typo3/cms-seo": "10.*@dev",
+		"typo3/cms-felogin": "10.*@dev",
+		"typo3/cms-form": "10.*@dev",
+		"typo3/cms-info": "10.*@dev",
+		"typo3/cms-tstemplate": "10.*@dev"
+	},
+	"require-dev": {
+		"helhum/typo3-console": "^5.8.2",
+		"typo3-console/composer-typo3-auto-install": "^0.3.1",
+		"typo3/testing-framework": "^6.1.0",
+		"overtrue/phplint": "^1.2.1",
+		"friendsofphp/php-cs-fixer": "^2.3.1"
+	},
+	"autoload": {
+		"psr-4": {
+			"Starfishprime\\Templates\\": "Classes/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Starfishprime\\Templates\\Tests\\": "Tests"
+		}
+	},
+	"scripts": {
+		"test:php:lint": [
+			"{$bin-dir}/phplint"
+		],
+		"test:php:unit": [
+			"{$bin-dir}/phpunit -c Build/phpunit.xml"
+		],
+		"cgl": [
+			"php-cs-fixer --diff -v fix"
+		],
+		"package-states": [
+			"{$bin-dir}/typo3cms install:generatepackagestates"
+		],
+		"folder-structure": [
+			"mkdir -p .build/public/typo3conf/ext/",
+			"[ -L .build/public/typo3conf/ext/templates ] || ln -snvf ../../../../. .build/public/typo3conf/ext/templates",
+			"{$bin-dir}/typo3cms install:fixfolderstructure"
+		],
+		"prepare-extension-test-structure": [
+			"TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
+		],
+		"setup-linter": [
+			"php .ddev/scripts/coding-standard-setup.php project",
+			"php .ddev/scripts/coding-standard-setup.php extension"
+		],
+		"post-autoload-dump": [
+			"@setup-linter",
+			"@cgl",
+			"@package-states",
+			"@folder-structure",
+			"@prepare-extension-test-structure"
+		]
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"extra": {
+		"typo3/cms": {
+			"web-dir": ".build/public",
+			"app-dir": ".build",
+			"extension-key": "templates",
+			"cms-package-dir": "{$vendor-dir}/typo3/cms"
+		}
+	}
+}
