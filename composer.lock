@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2b3a05a6b787b9281fb254f06fa6cfd",
+    "content-hash": "829397ba58702f7527aa2078d7468ce9",
     "packages": [
         {
             "name": "cogpowered/finediff",
@@ -549,6 +549,84 @@
                 "validator"
             ],
             "time": "2019-12-30T08:14:25+00:00"
+        },
+        {
+            "name": "friendsoftypo3/dashboard",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TYPO3-Initiatives/dashboard.git",
+                "reference": "611064d79ca47a7f039240f3d959eb185f80d2d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TYPO3-Initiatives/dashboard/zipball/611064d79ca47a7f039240f3d959eb185f80d2d5",
+                "reference": "611064d79ca47a7f039240f3d959eb185f80d2d5",
+                "shasum": ""
+            },
+            "require": {
+                "typo3/cms-core": "^9.5 || 10.*@dev"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.15",
+                "typo3/testing-framework": "^4.9 || ^5.0"
+            },
+            "type": "typo3-cms-extension",
+            "autoload": {
+                "psr-4": {
+                    "FriendsOfTYPO3\\Dashboard\\": "Classes/"
+                }
+            },
+            "scripts": {
+                "test:php:unit": [
+                    "phpunit -c build/phpunit.xml"
+                ],
+                "test": [
+                    "@test:php:unit"
+                ],
+                "cgl": [
+                    "php-cs-fixer fix -v --dry-run --using-cache false"
+                ],
+                "cgl-fix": [
+                    "php-cs-fixer fix -v --using-cache false"
+                ]
+            },
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Richard Haeser",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Simon Schmidt",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Richard Vollebregt",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Sanjay Chauhan",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Irene Sacchi",
+                    "role": "UX"
+                },
+                {
+                    "name": "Koen Wouters",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Dashboard for TYPO3",
+            "homepage": "https://typo3.org",
+            "support": {
+                "source": "https://github.com/TYPO3-Initiatives/dashboard/tree/v1.0.0",
+                "issues": "https://github.com/TYPO3-Initiatives/dashboard/issues"
+            },
+            "time": "2019-10-17T08:52:35+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4037,6 +4115,70 @@
             "time": "2019-12-17T11:36:14+00:00"
         },
         {
+            "name": "typo3/cms-styleguide",
+            "version": "10.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TYPO3/styleguide.git",
+                "reference": "d78e580d6831f8c11ea55605e2327fdff4f47181"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TYPO3/styleguide/zipball/d78e580d6831f8c11ea55605e2327fdff4f47181",
+                "reference": "d78e580d6831f8c11ea55605e2327fdff4f47181",
+                "shasum": ""
+            },
+            "replace": {
+                "styleguide": "*"
+            },
+            "require-dev": {
+                "codeception/codeception": "^2.4",
+                "typo3/cms-about": "10.*.*@dev",
+                "typo3/cms-core": "10.*.*@dev",
+                "typo3/cms-frontend": "10.*.*@dev",
+                "typo3/cms-install": "10.*.*@dev",
+                "typo3/testing-framework": "^5.0.0"
+            },
+            "type": "typo3-cms-extension",
+            "extra": {
+                "typo3/cms": {
+                    "app-dir": ".Build",
+                    "web-dir": ".Build/Web",
+                    "extension-key": "styleguide"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "TYPO3\\CMS\\Styleguide\\": "Classes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "TYPO3 CMS Core Team",
+                    "homepage": "https://forge.typo3.org/projects/typo3cms-core",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Felix Kopp",
+                    "email": "felix-source@phorax.com",
+                    "homepage": "http://phorax.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "TYPO3 CMS Extension to test everything in the TYPO3 Backend",
+            "homepage": "https://github.com/TYPO3/styleguide",
+            "keywords": [
+                "style guide",
+                "typo3",
+                "typo3 backend"
+            ],
+            "time": "2019-09-04T14:04:43+00:00"
+        },
+        {
             "name": "typo3/cms-tstemplate",
             "version": "v10.2.2",
             "source": {
@@ -6034,7 +6176,7 @@
         },
         {
             "name": "typo3/coding-standards",
-            "version": "v0.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TYPO3/coding-standards.git",
@@ -6137,15 +6279,16 @@
         "typo3/cms-core": 20,
         "typo3/cms-extbase": 20,
         "typo3/cms-extensionmanager": 20,
+        "typo3/cms-felogin": 20,
         "typo3/cms-fluid": 20,
+        "typo3/cms-form": 20,
         "typo3/cms-frontend": 20,
+        "typo3/cms-info": 20,
         "typo3/cms-install": 20,
         "typo3/cms-rte-ckeditor": 20,
         "typo3/cms-seo": 20,
-        "typo3/cms-felogin": 20,
-        "typo3/cms-form": 20,
-        "typo3/cms-info": 20,
-        "typo3/cms-tstemplate": 20
+        "typo3/cms-tstemplate": 20,
+        "typo3/coding-standards": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

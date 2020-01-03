@@ -15,8 +15,8 @@ provider: default
 hooks:
   post-start:
   - exec: composer install
-  - exec: .build/bin/typo3 install:setup --no-interaction --skip-integrity-check
-  - exec: .build/bin/typo3 database:updateschema
+  #- exec: .build/bin/typo3 install:setup --no-interaction --skip-integrity-check
+  #- exec: .build/bin/typo3 database:updateschema
 use_dns_when_possible: true
 timezone: Europe/Berlin
 
