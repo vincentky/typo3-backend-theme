@@ -1,0 +1,23 @@
+{
+  "name": "typo3-templates",
+  "keywords": [
+    "TYPO3",
+    "templates",
+    "backend",
+    "frontend"
+  ],
+  "description": "Wip of new template gesture for typo3. Backend and frontend.",
+  "author": "Vincent Kolly <vincentk0125@gmail.com>",
+  "license": "ISC",
+  "version": "0.0.1",
+  "dependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/polyfill": "^7.7.0",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/register": "^7.7.7"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  }
+}
