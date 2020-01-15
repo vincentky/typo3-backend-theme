@@ -16,6 +16,7 @@ services:
       - TYPO3_INSTALL_SITE_NAME=$DDEV_SITENAME
       - TYPO3_INSTALL_SITE_SETUP_TYPE=no
       - TYPO3_HOST=${DDEV_SITENAME}.ddev.local
+      - TYPO3_CONTEXT=Development
   db:
     environment:
       - TZ=Europe/Berlin

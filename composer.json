@@ -1,7 +1,7 @@
 {
 	"name": "starfishprime/typo3-templates",
 	"type": "typo3-cms-extension",
-	"description": "Modal gesture for TYPO3.",
+	"description": "Wip of new template gesture for typo3. Backend and frontend.",
 	"license": [
 		"GPL-2.0-or-later"
 	],
@@ -40,12 +40,10 @@
 			"url": "https://github.com/benjaminkott/easy_content.git"
 		}
 
-
 	],
 	"require": {
-		"php": ">=7.3.0",
-		"bk2k/easy-content": "dev-master",
-		"fixpunkt/backendtools": "^1.5.0",
+		"php": ">=7.4",
+		"fluidtypo3/vhs": "^6.0",
 		"friendsoftypo3/dashboard": "^1.0",
 		"typo3/cms-backend": "10.2.*@dev",
 		"typo3/cms-core": "10.2.*@dev",
@@ -55,12 +53,34 @@
 		"typo3/cms-fluid": "10.2.*@dev",
 		"typo3/cms-form": "10.2.*@dev",
 		"typo3/cms-frontend": "10.2.*@dev",
+		"typo3/cms-impexp": "^10.2",
 		"typo3/cms-info": "10.2.*@dev",
 		"typo3/cms-install": "10.2.*@dev",
 		"typo3/cms-rte-ckeditor": "10.2.*@dev",
 		"typo3/cms-seo": "10.2.*@dev",
 		"typo3/cms-styleguide": "^10.0",
-		"typo3/cms-tstemplate": "10.2.*@dev"
+		"typo3/cms-about": "10.2.*@dev",
+		"typo3/cms-adminpanel": "10.2.*@dev",
+		"typo3/cms-belog": "10.2.*@dev",
+		"typo3/cms-beuser": "10.2.*@dev",
+		"typo3/cms-filelist": "10.2.*@dev",
+		"typo3/cms-filemetadata": "10.2.*@dev",
+		"typo3/cms-fluid-styled-content": "10.2.*@dev",
+		"typo3/cms-indexed-search": "10.2.*@dev",
+		"typo3/cms-linkvalidator": "10.2.*@dev",
+		"typo3/cms-lowlevel": "10.2.*@dev",
+		"typo3/cms-opendocs": "10.2.*@dev",
+		"typo3/cms-recordlist": "10.2.*@dev",
+		"typo3/cms-recycler": "10.2.*@dev",
+		"typo3/cms-redirects": "10.2.*@dev",
+		"typo3/cms-reports": "10.2.*@dev",
+		"typo3/cms-scheduler": "10.2.*@dev",
+		"typo3/cms-setup": "10.2.*@dev",
+		"typo3/cms-sys-note": "10.2.*@dev",
+		"typo3/cms-t3editor": "10.2.*@dev",
+		"typo3/cms-tstemplate": "10.2.*@dev",
+		"typo3/cms-viewpage": "10.2.*@dev",
+		"typo3/cms-workspaces": "10.2.*@dev"
 	},
 	"require-dev": {
 		"typo3/coding-standards": "dev-master",
@@ -70,7 +90,10 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Starfishprime\\Templates\\": "Classes/"
+			"Starfishprime\\Templates\\": "Classes/",
+			"EBT\\ExtensionBuilder\\": ".build/public/typo3conf/ext/extension_builder/Classes",
+			"CodeFareith\\CfBeskin\\": ".build/public/typo3conf/ext/cf_beskin/Classes",
+			"CMSPACA\\RtPagesTreeIcons\\": ".build/public/typo3conf/ext/rt_pages_tree_icons/Classes"
 		}
 	},
 	"autoload-dev": {
@@ -80,20 +103,20 @@
 	},
 	"scripts": {
 		"test:php:lint": [
-			".build/bin/phplint"
+			".build/vendor/bin/phplint"
 		],
 		"test:php:unit": [
-			".build/bin/phpunit -c .phpunit.xml"
+			".build/vendor/bin/phpunit -c .phpunit.xml"
 		],
 		"test:php": [
 			"@test:php:lint",
 			"@test:php:unit"
 		],
 		"cgl": [
-			".build/bin/php-cs-fixer --diff -v fix"
+			".build/vendor/bin/php-cs-fixer --diff -v fix"
 		],
 		"package-states": [
-			".build/bin/typo3 install:generatepackagestates"
+			".build/vendor/bin/typo3 install:generatepackagestates"
 		],
 		"folder-structure": [
 			"mkdir -p .build/public/typo3conf/ext/",

@@ -1,0 +1,38 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+<f:layout name="Default" />
+
+<f:section name="Main">
+    <f:be.pageRenderer includeRequireJsModules="{0: 'TYPO3/CMS/Templates/IconsManager'}" />
+    <div class="row">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <label>Filter: </label><br/>
+                    <div class="btn-group t3js-filter-buttons">
+                        <button class="btn btn-default" data-filter="type:bitmap">Bitmap</button>
+                        <button class="btn btn-default" data-filter="type:font">Font</button>
+                        <button class="btn btn-default" data-filter="type:vector">Vector</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                    <input type="text" class="form-control input-lg" id="search-field" placeholder="Icon identifier">
+                </div>
+            </div>
+    </div>
+    <div class="row" id="t3js-filter-container">
+        <f:for each="{allIcons}" as="icon">
+            <div class="col-md-2 icon-container" data-icon-identifier="{icon}">
+                <span class="icon-container-icon"><core:icon identifier="{icon}" size="large" /></span>
+                <span class="icon-container-label">{icon}</span>
+                <input type="file" name="icon" data-icon="{icon}" class="icon-upload" value=""/>
+
+            </div>
+        </f:for>
+    </div>
+
+</f:section>
+</html>

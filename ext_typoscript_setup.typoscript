@@ -1,0 +1,12 @@
+module.tx_templates {
+  settings {
+    yaml {
+      10 = EXT:templates/Configuration/Yaml/InitialSetup.yaml
+    }
+  }
+  view {
+    templateRootPaths.10 = EXT:templates/Resources/Private/Backend/Templates/
+    partialRootPaths.10 = EXT:templates/Resources/Private/Backend/Partials/
+    layoutRootPaths.10 = EXT:templates/Resources/Private/Backend/Layouts/
+  }
+}

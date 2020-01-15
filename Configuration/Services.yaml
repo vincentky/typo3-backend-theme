@@ -1,0 +1,12 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Starfishprime\Templates\:
+    resource: '../Classes/*'
+
+  Starfishprime\Templates\Controller\BackendController:
+    bind:
+      TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface: '@Starfishprime\Templates\Configuration\ConfigurationManager'

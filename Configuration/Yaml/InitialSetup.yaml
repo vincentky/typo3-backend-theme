@@ -1,0 +1,2 @@
+imports:
+  - { resource: "EXT:templates/Configuration/Yaml/BeSkin/Icons.yaml" }

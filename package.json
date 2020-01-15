@@ -1,23 +1,63 @@
 {
-  "name": "typo3-templates",
-  "keywords": [
-    "TYPO3",
-    "templates",
-    "backend",
-    "frontend"
-  ],
-  "description": "Wip of new template gesture for typo3. Backend and frontend.",
-  "author": "Vincent Kolly <vincentk0125@gmail.com>",
-  "license": "ISC",
-  "version": "0.0.1",
-  "dependencies": {
-    "@babel/cli": "^7.7.7",
-    "@babel/core": "^7.7.7",
-    "@babel/polyfill": "^7.7.0",
-    "@babel/preset-env": "^7.7.7",
-    "@babel/register": "^7.7.7"
-  },
-  "devDependencies": {
-    "gulp": "^4.0.2"
-  }
+	"name": "typo3-templates",
+	"keywords": [
+		"TYPO3",
+		"templates",
+		"backend",
+		"frontend"
+	],
+	"description": "Wip of new template gesture for typo3. Backend and frontend.",
+	"author": "Vincent Kolly <vincentk0125@gmail.com>",
+	"license": "ISC",
+	"version": "0.0.1",
+	"preferGlobal": true,
+	"bin": {
+		"vk": "./gulpfile.babel.js/index.js"
+	},
+	"scripts": {
+		"vk": "./gulpfile.babel.js/index.js"
+	},
+	"dependencies": {
+		"@babel/preset-typescript": "^7.8.3",
+		"babel": "^6.23.0",
+		"bootstrap-sass": "^3.4.1",
+		"core-js": "3",
+		"eonasdan-bootstrap-datetimepicker": "^4.17.47",
+		"font-awesome": "4.7.0"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.7.7",
+		"@babel/core": "^7.7.7",
+		"@babel/plugin-proposal-class-properties": "^7.8.3",
+		"@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+		"@babel/preset-env": "^7.7.7",
+		"@babel/register": "^7.7.7",
+		"@types/imagesloaded": "^4.1.2",
+		"@types/jquery": "^3.3.31",
+		"babel-eslint": "^10.0.3",
+		"eslint": "^6.8.0",
+		"eslint-config-prettier": "^6.9.0",
+		"eslint-config-standard": "^14.1.0",
+		"eslint-plugin-import": "^2.19.1",
+		"eslint-plugin-node": "^11.0.0",
+		"eslint-plugin-prettier": "^3.1.2",
+		"eslint-plugin-promise": "^4.2.1",
+		"fibers": "^4.0.2",
+		"gulp": "^4.0.2",
+		"gulp-autoprefixer": "^7.0.1",
+		"gulp-babel": "^8.0.0",
+		"gulp-csso": "^4.0.1",
+		"gulp-eslint": "^6.0.0",
+		"gulp-image": "^6.0.0",
+		"gulp-jsdoc3": "^2.0.0",
+		"gulp-plumber-notifier": "^0.1.0",
+		"gulp-sass": "^4.0.2",
+		"gulp-sourcemaps": "^2.6.5",
+		"gulp-stylelint": "^11.0.0",
+		"gulp-typescript": "^6.0.0-alpha.1",
+		"prettier": "^1.19.1",
+		"stylelint": "^12.0.1",
+		"typescript": "^3.7.4",
+		"yargs": "^15.1.0"
+	}
 }

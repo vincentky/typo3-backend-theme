@@ -1,0 +1,13 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers" data-namespace-typo3-fluid="true">
+<div class="sidebar list-group">
+	<f:for each="{actions}" as="action">
+		<f:link.action class="list-group-item {f:if(condition:'{currentAction} == {action}', then: 'active')}" action="{action}">
+			<f:if condition="{action} == 'index'">
+				<i class="fa fa-home"></i>
+			</f:if>
+            {action}
+			<f:translate key="{action}"/>
+		</f:link.action>
+	</f:for>
+</div>
+</html>

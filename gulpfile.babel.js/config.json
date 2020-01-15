@@ -1,0 +1,30 @@
+{
+	"version": " 0.0.1",
+	"stylelint": {
+		"failAfterError": true,
+		"reportOutputDir": ".reports",
+		"reporters": [
+			{ "formatter": "verbose", "console": true },
+			{ "formatter": "json", "save": "stylelint.json" }
+		],
+		"debug": true
+	},
+	"paths": {
+		"css": {
+			"src": ["./Resources/Private/Assets/Tmpl1/Scss"],
+			"dest": "./Resources/Public/Css"
+		},
+		"icons": {
+			"src": ["./Resources/Private/Assets/Icons"],
+			"dest": "./Resources/Public/Icons"
+		},
+		"images": {
+			"src": ["./Resources/Private/Assets/Images"],
+			"dest": "./Resources/Public/Images"
+		},
+		"js": {
+			"src": ["./Resources/Private/Assets/TypeScript/templates"],
+			"dest": "./Resources/Public/JavaScript"
+		}
+	}
+}
