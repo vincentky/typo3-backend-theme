@@ -73,8 +73,14 @@ export const compileTypescript = () =>
 
 // Watch Task
 export const watch = () => {
-  gwatch(config.paths.js.src.map(path => `${path}/**/*.ts`), compileTypescript);
-  gwatch(config.paths.css.src.map(path => `${path}/**/*.scss`), compileScss);
+    gwatch(
+        config.paths.js.src.map(path => `${path}/**/*.ts`),
+        compileTypescript,
+    );
+    gwatch(
+        config.paths.css.src.map(path => `${path}/**/*.scss`),
+        compileScss,
+    );
 };
 
 // Development Task

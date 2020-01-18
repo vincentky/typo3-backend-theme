@@ -11,5 +11,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface as ExtbaseConf
  */
 interface ConfigurationManagerInterface extends ExtbaseConfigurationManagerInterface
 {
-    const CONFIGURATION_TYPE_YAML_SETTINGS = 'Yaml';
+    const CONFIGURATION_TYPE_FILE_SETTINGS = 'File';
+
+    public function writeConfiguration(string $namespace, array $data, string $extensionName = ''): void;
 }

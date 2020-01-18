@@ -1,4 +1,7 @@
 Icons:
-  upload_foder: 1:/be-icons/
+  path: 1:/_temp_/
   list:
+    module-web_dashboard: 'EXT:templates/Resources/Public/Icons/dashboard.svg'
+    module-web_layout: 'EXT:templates/Resources/Public/Icons/page.svg'
+    module-web_ViewpageView: 'EXT:templates/Resources/Public/Icons/view.svg'
 

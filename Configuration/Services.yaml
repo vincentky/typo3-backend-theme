@@ -7,6 +7,15 @@ services:
   Starfishprime\Templates\:
     resource: '../Classes/*'
 
+  Starfishprime\Templates\EventListener\IconRegistry:
+    tags:
+      - name: event.listener
+        identifier: 'myListener'
+        event: TYPO3\CMS\Core\Imaging\IconRegistry
+        before: 'getCachedBackendIcons'
+
   Starfishprime\Templates\Controller\BackendController:
     bind:
       TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface: '@Starfishprime\Templates\Configuration\ConfigurationManager'
+
+  #TYPO3\CMS\Backend\Domain\Repository\Module\BackendModuleRepository : '@Starfishprime\Templates\Domain\Repository\BackendModuleRepository'

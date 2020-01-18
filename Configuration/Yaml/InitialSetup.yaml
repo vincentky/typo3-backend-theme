@@ -1,2 +1,5 @@
 imports:
   - { resource: "EXT:templates/Configuration/Yaml/BeSkin/Icons.yaml" }
+
+persistence:
+  path: 1:/_temp_/

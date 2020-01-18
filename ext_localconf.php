@@ -2,12 +2,9 @@
 defined('TYPO3_MODE') || die();
 
 (function () {
-    /*  $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-          \TYPO3\CMS\Core\Imaging\IconRegistry::class
-      );
-      $iconRegistry->registerIcon(
-          $identifier, // Icon-Identifier, e.g. tx-myext-action-preview
-          \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-          ['source' => 'EXT:myext/Resources/Public/Icons/action-preview.svg']
-      );*/
+    // \Starfishprime\Templates\Utility\ExtensionManagementUtility::loadIconsFromPeristentConfiguration();
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['features']['Templates_overrideIcons'] = true;
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Backend\Domain\Repository\Module\BackendModuleRepository::class] = [
+        'className' => \Starfishprime\Templates\Domain\Repository\BackendModuleRepository::class
+    ];
 })();

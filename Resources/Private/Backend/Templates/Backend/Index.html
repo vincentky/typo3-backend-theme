@@ -4,6 +4,15 @@
 <f:section name="Main">
 
     <div class="card-container">
+        <div class="card card-size-fixed-small">
+            <f:render partial="Card/Header" arguments="{ title: 'Feature Toggles', subtitle: 'Global Configuration', icon: 'Icons/modules/install-manage-features.svg'}" />
+            <div class="card-content">
+                <p class="card-text">Enable and disable core features.</p>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn btn-default" data-modal-size="medium" data-require="TYPO3/CMS/Install/Module/Settings/Features">Configure Features</a>
+            </div>
+        </div>
         <f:for each="{actions}" as="action">
             <f:if condition="{action} != 'index'">
                 <div class="card card-size-fixed-small">

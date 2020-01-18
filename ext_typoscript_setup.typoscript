@@ -1,6 +1,6 @@
 module.tx_templates {
   settings {
-    yaml {
+    import {
       10 = EXT:templates/Configuration/Yaml/InitialSetup.yaml
     }
   }

@@ -21,10 +21,12 @@ $module-docheader-padding: $module-docheader-padding-vertical $module-docheader-
 $module-docheader-bar-height: 26px !default;
 $module-docheader-bar-margin-vertical: 4px !default;
 $module-docheader-bar-margin-horizontal: 0 !default;
+$module-docheader-box-shadow: 0px 2px 10px rgba(0, 0, 0, .2) !default;
 $module-docheader-bar-margin: $module-docheader-bar-margin-vertical $module-docheader-bar-margin-horizontal !default;
 $module-body-padding-vertical: 24px !default;
 $module-body-padding-horizontal: 24px !default;
 $module-body-padding: $module-body-padding-vertical $module-body-padding-horizontal !default;
+$module-docheader-border:$topbar-border-bottom !default;
 
 //
 // Template
@@ -71,6 +73,7 @@ $module-body-padding: $module-body-padding-vertical $module-body-padding-horizon
     background-color: $module-docheader-bg;
     border-bottom: 1px solid $module-docheader-border;
     padding: $module-docheader-padding;
+    box-shadow: $module-docheader-box-shadow;
 
     @include transition(margin-top 0.3s ease-in-out);
 

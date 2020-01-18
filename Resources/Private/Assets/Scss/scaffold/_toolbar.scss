@@ -1,27 +1,28 @@
 //
 // Toolbar
 //
-$toolbar-item-padding-vertical: 9px;
-$toolbar-item-padding-horizontal: 10px;
-$toolbar-color: #ddd;
-$toolbar-height: 45px;
-$toolbar-zindex: $zindex-navbar;
-$toolbar-bg: $navbar-inverse-bg;
-$toolbar-navigation-color: $toolbar-color;
-$toolbar-navigation-bg: #2f2f2f;
-$toolbar-navigation-border-color: #111;
-$toolbar-dropdown-padding: 16px;
-$toolbar-dropdown-color: $toolbar-navigation-color;
-$toolbar-dropdown-bg: $toolbar-navigation-bg;
-$toolbar-dropdown-link-bg: $toolbar-navigation-bg;
-$toolbar-dropdown-link-color: #ddd;
-$toolbar-dropdown-link-hover-bg: #333;
-$toolbar-dropdown-link-hover-color: #fff;
-$toolbar-dropdown-link-active-bg: lighten($toolbar-dropdown-bg, 15);
-$toolbar-dropdown-link-active-color: #fff;
-$toolbar-navigation-search-bg: $toolbar-navigation-bg;
-$toolbar-navigation-search-hover-bg: $toolbar-dropdown-link-hover-bg;
-$toolbar-navigation-search-focus-bg: $toolbar-dropdown-link-active-bg;
+$toolbar-item-padding-vertical: 9px !default;
+$toolbar-item-padding-horizontal: 10px !default;
+$toolbar-color: #ddd !default;
+$toolbar-height: 45px !default;
+$toolbar-zindex: $zindex-navbar !default;
+$toolbar-bg: $navbar-inverse-bg !default;
+$toolbar-navigation-color: $toolbar-color !default;
+$toolbar-navigation-bg: #2f2f2f !default;
+$toolbar-navigation-border-color: #111 !default;
+$toolbar-dropdown-padding: 16px !default;
+$toolbar-dropdown-color: $toolbar-navigation-color !default;
+$toolbar-dropdown-bg: $toolbar-navigation-bg !default;
+$toolbar-dropdown-link-bg: $toolbar-navigation-bg !default;
+$toolbar-dropdown-link-color: #ddd !default;
+$toolbar-dropdown-link-hover-bg: #333 !default;
+$toolbar-dropdown-link-hover-color: #fff !default;
+$toolbar-dropdown-link-active-bg: lighten($toolbar-dropdown-bg, 15) !default;
+$toolbar-dropdown-link-active-color: #fff !default;
+$toolbar-navigation-search-bg: $toolbar-navigation-bg !default;
+$toolbar-navigation-search-hover-bg: $toolbar-dropdown-link-hover-bg !default;
+$toolbar-navigation-search-focus-bg: $toolbar-dropdown-link-active-bg !default;
+
 
 .toolbar {
     padding: 8px;
@@ -29,6 +30,7 @@ $toolbar-navigation-search-focus-bg: $toolbar-dropdown-link-active-bg;
     @media (min-width: $scaffold-breakpoint) {
         padding: 0;
         background-color: $scaffold-topbar-bg;
+        border-bottom:1px solid transparent;
     }
 
     &:after {

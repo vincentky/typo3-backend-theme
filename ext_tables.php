@@ -18,5 +18,5 @@ defined('TYPO3_MODE') || die();
         ]
     );
 
-    $GLOBALS['TBE_STYLES']['skins']['backend']['stylesheetDirectories']['templates'] = 'EXT:templates/Resources/Public/Css/';
+    $GLOBALS['TBE_STYLES']['skins']['backend']['stylesheetDirectories']['css'] = 'EXT:templates/Resources/Public/Css/';
 })();

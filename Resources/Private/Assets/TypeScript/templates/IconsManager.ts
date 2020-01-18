@@ -5,25 +5,15 @@ import Notification from 'TYPO3/CMS/Backend/Notification';
  * @exports Starfishprime/Templates/IconsSearch
  */
 class IconsManager {
-  /**
-   * The constructor, set the class properties default values
-   */
+
   constructor() {
     this.initialize();
-  }
-
-  /**
-   * @param {XMLHttpRequest} response
-   */
-  uploadError(response: XMLHttpRequest): void {
-    console.log(response);
-    Notification.error('Something went wrong');
   }
 
   initialize(): void {
     const searchField = document.querySelector<HTMLInputElement>('#search-field');
     const filtersButton = document.querySelectorAll<HTMLButtonElement>('.t3js-filter-buttons button');
-    const iconUploads = document.querySelectorAll<HTMLInputElement>('.icon-upload');
+    const btnIcons = document.querySelectorAll<HTMLLinkElement>('.feature-icons-container .btn');
     const allIcons: NodeListOf<HTMLDivElement> = document.querySelectorAll<HTMLDivElement>(
       '#t3js-filter-container [data-icon-identifier]',
     );
@@ -36,52 +26,57 @@ class IconsManager {
     const allFontIcons: NodeListOf<HTMLElement> = document.querySelectorAll<HTMLElement>(
       '#t3js-filter-container i.fa',
     );
-    for (let i = 0; i < filtersButton.length; i++) {
-      iconUploads[i].addEventListener('change', (e: Event) => {
-        const files = iconUploads[i].files || [];
-        const formData = new FormData();
-        for (let j = 0; j < files.length; j++) {
-          const file = files[j];
-          // Check the file type.
-          if (!file.type.match('image.*')) {
-            alert('Please choose an image');
-            continue;
+    for (let i = 0; i < btnIcons.length; i++) {
+      const inputFile = btnIcons[i].querySelector<HTMLInputElement>('.feature-icons-container-upload');
+
+      if (inputFile) {
+        btnIcons[i].addEventListener('click', (e: Event) => {
+          e.stopPropagation();
+          inputFile.click();
+        });
+        inputFile.addEventListener('change', (e: Event) => {
+
+          const files = btnIcons[i].files || [];
+          const formData = new FormData();
+          for (let j = 0; j < files.length; j++) {
+            const file = files[j];
+            // Check the file type.
+            if (!file.type.match('image.*')) {
+              alert('Please choose an image');
+              continue;
+            }
+
+            // Add the file to the request.
+            formData.append('icon[]', file, file.name);
+            formData.append('identifier', <string>inputFile.dataset.icon);
           }
 
-          // Add the file to the request.
-          formData.append('icon[]', file, file.name);
-          formData.append('identifier', <string>iconUploads[i].dataset.icon);
-        }
-
-        const response = fetch(TYPO3.settings.ajaxUrls['ext-templates-upload-icon'], {
-          method: 'POST',
-          body: formData,
-        })
-          .then((response: Response) => {
-            if (!response.ok) {
-              throw new Error(response.statusText)
-            }
-            return response.text();
+          const response = fetch(TYPO3.settings.ajaxUrls['ext-templates-upload-icon'], {
+            method: 'POST',
+            body: formData,
           })
-          .then((icon: string) => {
-            const container = iconUploads[i].closest<HTMLDivElement>(
-              '.icon-container',
-            );
-            if (container) {
-              console.log(container)
-console.log('dasdas')
-
-              const iconContainer = container.querySelector<HTMLSpanElement>('.icon-container-icon');
-              console.log('sdasd',iconContainer)
-              if (iconContainer) {
-                iconContainer.innerHTML = icon;
+            .then((response: Response) => {
+              if (!response.ok) {
+                throw new Error(response.statusText)
               }
-            }
-          })
-          .catch((error: Error) => {
-            Notification.error(error);
-          });
-      });
+              return response.text();
+            })
+            .then((icon: string) => {
+              const container = inputFile.closest<HTMLDivElement>(
+                '.feature-icons-container',
+              );
+              if (container) {
+                const iconContainer = container.querySelector<HTMLSpanElement>('.feature-icons-container-icon');
+                if (iconContainer) {
+                  iconContainer.innerHTML = icon;
+                }
+              }
+            })
+            .catch((error: Error) => {
+              Notification.error(error);
+            });
+        });
+      }
     }
     for (let i = 0; i < filtersButton.length; i++) {
       filtersButton[i].addEventListener('click', (e: MouseEvent) => {
@@ -97,6 +92,7 @@ console.log('dasdas')
     if (searchField !== null) {
       searchField.addEventListener('keyup', (e: KeyboardEvent) => {
         const typedQuery = searchField.value;
+        console.log(typedQuery)
         if (typedQuery === '') {
           for (let i = 0; i < allIcons.length; i++) {
             allIcons[i].style.display = 'block';
@@ -140,7 +136,7 @@ console.log('dasdas')
                 }
                 for (let i = 0; i < allSvg.length; i++) {
                   if (allSvg[i]) {
-                    const icon = allFontIcons[i].closest<HTMLDivElement>('[data-icon-identifier]');
+                    const icon = allSvg[i].closest<HTMLDivElement>('[data-icon-identifier]');
                     if (icon) {
                       icon.style.display = 'block';
                     }
@@ -149,11 +145,18 @@ console.log('dasdas')
                 break;
             }
           } else {
+            let f = 0;
+            let z = 0;
             for (let i = 0; i < allIcons.length; i++) {
               const identifier = allIcons[i].dataset.iconIdentifier || '';
-
-              allIcons[i].style.display = identifier.includes(typedQuery) ? 'none' : 'block';
+              if (identifier.includes(typedQuery)) {
+                f++;
+              } else {
+                z++;
+              }
+              allIcons[i].style.display = identifier.includes(typedQuery) ? 'block' : 'none';
             }
+            console.log(f, z)
           }
         }
       });

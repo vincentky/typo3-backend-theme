@@ -6,19 +6,26 @@
 //
 // Variables
 //
-$topbar-bg: $scaffold-topbar-bg;
-$topbar-color: $scaffold-topbar-color;
-$topbar-height: $scaffold-topbar-height;
-$topbar-zindex: $scaffold-topbar-zindex;
-$topbar-workspace-bg: #6d860d;
-$topbar-toolbar-bg: $scaffold-topbar-toolbar-bg;
-$topbar-toolbar-color: $scaffold-topbar-toolbar-color;
-$topbar-button-bg: $topbar-toolbar-bg;
-$topbar-button-hover-bg: lighten($topbar-button-bg, 3%);
-$topbar-button-active-bg: $scaffold-modulemenu-bg;
-$topbar-button-width: 40px;
-$toolbar-item-padding-vertical: 9px;
-$toolbar-item-padding-horizontal: 15px;
+$topbar-bg: $scaffold-topbar-bg !default;
+$topbar-color: $scaffold-topbar-color !default;
+$topbar-height: $scaffold-topbar-height !default;
+$topbar-zindex: $scaffold-topbar-zindex !default;
+$topbar-workspace-bg: #6d860d !default;
+$topbar-toolbar-bg: $scaffold-topbar-toolbar-bg !default;
+$topbar-toolbar-color: $scaffold-topbar-toolbar-color !default;
+$topbar-button-bg: $topbar-toolbar-bg !default;
+$topbar-button-hover-bg: lighten($topbar-button-bg, 3%) !default;
+$topbar-button-active-bg: $scaffold-modulemenu-bg !default;
+$topbar-button-width: 40px !default;
+$toolbar-item-padding-vertical: 9px !default;
+$toolbar-item-padding-horizontal: 15px !default;
+$topbar-header-site-after-bg: linear-gradient(to right, transparentize($topbar-bg, 1) 0%, transparentize($topbar-bg, 0) 100%) !default;
+$topbar-header-site-max-width: $scaffold-modulemenu-expanded-width - $scaffold-modulemenu-snapped-width !default;
+$topbar-header-site-bg-color: $scaffold-modulemenu-header-bg !default;
+$topbar-button-navigation-component-active-bg: $topbar-button-active-bg !default;
+$topbar-button-diabled-bg: $topbar-button-active-bg !default;
+$topbar-header-color: inherit !default;
+$topbar-button-navigation-component-color: $topbar-header-color !default;
 
 //
 // Component
@@ -54,7 +61,7 @@ $toolbar-item-padding-horizontal: 15px;
     &[disabled],
     &[disabled]:focus,
     &[disabled]:hover {
-        background-color: $topbar-button-active-bg;
+        background-color: $topbar-button-diabled-bg;
         cursor: not-allowed;
         opacity: 0.5;
     }
@@ -69,6 +76,8 @@ $toolbar-item-padding-horizontal: 15px;
 
     &.topbar-button-navigationcomponent {
         left: $topbar-button-width;
+        background-color: $topbar-button-navigation-component-active-bg;
+        color: $topbar-button-navigation-component-color;
     }
 
     &.topbar-button-toolbar {
@@ -84,9 +93,21 @@ $toolbar-item-padding-horizontal: 15px;
     .topbar-button.topbar-button-modulemenu {
         background-color: $topbar-button-active-bg;
     }
+
+    .topbar-header-site {
+        background-color: $topbar-header-site-bg-color;
+        display: block;
+    }
+
+    .topbar-button {
+        &.topbar-button-navigationcomponent {
+            left: $scaffold-modulemenu-expanded-width;
+        }
+    }
 }
 
 .scaffold-content-navigation-expanded {
+
     .topbar-button-navigationcomponent {
         background-color: $topbar-button-active-bg;
     }
@@ -137,7 +158,8 @@ $toolbar-item-padding-horizontal: 15px;
 // Header
 //
 .topbar-header {
-    padding-left: $topbar-button-width * 2;
+    padding-left: $topbar-button-width;
+    color: $topbar-header-color;
 
     @media (max-width: $scaffold-breakpoint-max) {
         padding-right: ($topbar-button-width * 2) !important;
@@ -147,12 +169,14 @@ $toolbar-item-padding-horizontal: 15px;
 .topbar-header-site {
     overflow: hidden;
     position: relative;
-    max-width: 100%;
+    max-width: $topbar-header-site-max-width;
+    width: 100%;
     height: $topbar-height;
     line-height: $topbar-height;
     padding-left: 1em;
     padding-right: 1em;
     white-space: nowrap;
+    display: none;
 
     &:before,
     &:after {
@@ -166,12 +190,12 @@ $toolbar-item-padding-horizontal: 15px;
 
     &:before {
         right: 0;
-        background: $topbar-bg;
+        background: $topbar-header-site-after-bg;
     }
 
     &:after {
         right: 1em;
-        background: linear-gradient(to right, transparentize($topbar-bg, 1) 0%, transparentize($topbar-bg, 0) 100%);
+        background: $topbar-header-site-after-bg;
     }
 }
 

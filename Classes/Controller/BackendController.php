@@ -1,50 +1,52 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Starfishprime\Templates\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starfishprime\Templates\Configuration\ConfigurationManagerInterface;
+use Starfishprime\Templates\Configuration\FeatureManager;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Http\HtmlResponse;
-use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\File\ExtendedFileUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\JsonView;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
-use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 
 class BackendController extends ActionController
 {
     protected IconRegistry $iconRegistry;
 
-    protected ExtendedFileUtility $fileProcessor;
-
     protected IconFactory $iconFactory;
+
+    protected FeatureManager $featureManager;
+
+    protected ExtendedFileUtility $fileProcessor;
 
     /**
      * List of allowed icon file extensions with their Provider class
      *
      * @var string[]
      */
-    protected $backendIconAllowedExtensionsWithProvider = [
-        'png' => BitmapIconProvider::class,
-        'svg' => SvgIconProvider::class
+    protected const BACKEND_ICON_ALLOWED_EXTENSIONS = [
+        'png', 'svg'
     ];
+
     /**
      * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
      */
     public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager)
     {
         $this->configurationManager = $configurationManager;
-        $this->settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_YAML_SETTINGS, 'templates');
+        $this->settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FILE_SETTINGS, 'Templates');
     }
+
     /**
      * Backend Template Container
      *
@@ -55,14 +57,13 @@ class BackendController extends ActionController
     public function __construct(
         IconRegistry $iconRegistry,
         IconFactory $iconFactory,
-        ExtendedFileUtility $fileProcessor/*,
-        ConfigurationManagerInterface $configurationManager*/
-    )
-    {
+        ExtendedFileUtility $fileProcessor,
+        FeatureManager $featureManager
+    ) {
         $this->iconRegistry = $iconRegistry;
         $this->iconFactory = $iconFactory;
+        $this->featureManager = $featureManager;
         $this->fileProcessor = $fileProcessor;
-     /*   */
     }
 
     /**
@@ -94,11 +95,38 @@ class BackendController extends ActionController
         $this->defaultViewObjectName = JsonView::class;
     }
 
-    public function indexAction()
+    public function initializeFeaturesAction()
+    {
+        $this->defaultViewObjectName = JsonView::class;
+    }
+
+    public function indexAction(): void
     {
     }
 
-    public function iconsAction()
+    public function featuresAction()
+    {
+        $presetFeatures = $this->featureManager->getFeatures();
+        $formProtection = FormProtectionFactory::get(InstallToolFormProtection::class);
+        $view->assignMultiple([
+            'presetsActivateToken' => $formProtection->generateToken('installTool', 'presetsActivate'),
+            // This action is called again from within the card itself if a custom image path is supplied
+            'presetsGetContentToken' => $formProtection->generateToken('installTool', 'presetsGetContent'),
+            'presetFeatures' => $presetFeatures,
+        ]);
+        return new JsonResponse([
+            'success' => true,
+            'html' => $view->render(),
+            'buttons' => [
+                [
+                    'btnClass' => 'btn-default t3js-presets-activate',
+                    'text' => 'Activate preset',
+                ],
+            ],
+        ]);
+    }
+
+    public function iconsAction(): void
     {
         $allIcons = $this->iconRegistry->getAllRegisteredIconIdentifiers();
 
@@ -121,12 +149,11 @@ class BackendController extends ActionController
         $parsedBody = $request->getParsedBody();
         $uploadedFiles = $request->getUploadedFiles();
 
-
         if (isset($parsedBody['identifier']) && (boolean)count($uploadedFiles) && (boolean)count($uploadedFiles['icon'])) {
             $namespace = key($_FILES);
-            $targetDirectory = $this->settings['Icons']['upload_foder'] ?? '1:/_temp_/';
+            $targetDirectory = $this->settings['Icons']['path'] ?? '1:/_temp_/';
             $fileExt = pathinfo($uploadedFiles['icon'][0]->getClientFilename(), PATHINFO_EXTENSION);
-            if (empty($this->backendIconAllowedExtensionsWithProvider[$fileExt])) {
+            if (!in_array($fileExt, self::BACKEND_ICON_ALLOWED_EXTENSIONS)) {
                 return (new HtmlResponse(null))->withStatus(400, 'File extension not valid. Please use svg or png');
             }
             $data['upload'][0] = [
@@ -146,14 +173,16 @@ class BackendController extends ActionController
             $result = $this->fileProcessor->processData();
             if (isset($result['upload'][0][0])) {
                 $file = $result['upload'][0][0];
-                if ($file instanceof File){
+                if ($file instanceof File) {
                     $this->iconRegistry->registerIcon(
                         $parsedBody['identifier'],
-                        $this->backendIconAllowedExtensionsWithProvider[$fileExt],
+                        $this->iconRegistry->detectIconProvider($fileExt),
                         [
                             'source' => $file->getPublicUrl()
                         ]
                     );
+                    $this->settings['Icons']['list'][$parsedBody['identifier']] = $file->getPublicUrl();
+                    $this->configurationManager->writeConfiguration('Icons', $this->settings['Icons']);
                     return new HtmlResponse($this->iconFactory->getIcon($parsedBody['identifier'])->render());
                 }
             }

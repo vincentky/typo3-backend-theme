@@ -3,13 +3,10 @@ declare(strict_types = 1);
 
 namespace Starfishprime\Templates\Configuration;
 
-use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
-use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\Exception\InvalidFileNameException;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager as ExtbaseConfigurationManager;
@@ -21,7 +18,6 @@ use TYPO3\CMS\Extbase\Configuration\Exception\ParseErrorException;
  */
 class ConfigurationManager extends ExtbaseConfigurationManager implements ConfigurationManagerInterface
 {
-
     /**
      * @var CacheManager
      */
@@ -32,13 +28,7 @@ class ConfigurationManager extends ExtbaseConfigurationManager implements Config
      */
     protected TypoScriptService $typoScriptService;
 
-    /**
-     * @param YamlFileLoader $yamlFileLoader
-     */
-    public function injectYamlFileLoader(YamlFileLoader $yamlFileLoader)
-    {
-        $this->yamlFileLoader = $yamlFileLoader;
-    }
+    protected ConfigurationPersistenceManagerInterface $configurationPersistenceManager;
 
     /**
      * @param TypoScriptService $typoScriptService
@@ -57,67 +47,83 @@ class ConfigurationManager extends ExtbaseConfigurationManager implements Config
     }
 
     /**
-     * @param string $configurationType The kind of configuration to fetch - must be one of the CONFIGURATION_TYPE_* constants
-     * @param string $extensionName if specified, the configuration for the given extension will be returned.
-     * @param string $pluginName if specified, the configuration for the given plugin will be returned.
-     * @return array The configuration
+     * @param ConfigurationPersistenceManagerInterface $configurationPersistenceManager
+     */
+    public function injectConfigurationPersistenceManager(ConfigurationPersistenceManagerInterface $configurationPersistenceManager)
+    {
+        $this->configurationPersistenceManager = $configurationPersistenceManager;
+    }
+
+    /**
+     * @param string $configurationType
+     * @param string $extensionName
+     * @param string|null $pluginName
+     * @return array
+     * @throws FileDoesNotExistException
      * @throws InvalidConfigurationTypeException
      * @throws NoSuchCacheException
+     * @throws ParseErrorException
      */
     public function getConfiguration(string $configurationType, string $extensionName = null, string $pluginName = null): array
     {
         switch ($configurationType) {
-            case self::CONFIGURATION_TYPE_YAML_SETTINGS:
-                return $this->getConfigurationFromYamlFile($extensionName);
+            case self::CONFIGURATION_TYPE_FILE_SETTINGS:
+                return $this->getConfigurationFromFile($extensionName);
             default:
                 return parent::getConfiguration($configurationType, $extensionName, $pluginName);
         }
     }
 
     /**
-     * Load and parse YAML files which are configured within the TypoScript
-     * path plugin.tx_extensionkey.settings.yaml
-     *
-     * The following steps will be done:
-     *
-     * * Convert each single YAML file into an array
-     * * merge this arrays together
-     * * resolve all declared inheritances
-     * * remove all keys if their values are NULL
-     * * return all configuration paths within TYPO3.CMS
-     * * sort by array keys, if all keys within the current nesting level are numerical keys
-     * * resolve possible TypoScript settings in FE mode
-     *
+     * @param string $extensionName
+     * @return string
+     */
+    protected function getCacheKeySuffix(string $extensionName = ''): string
+    {
+        return ucfirst($extensionName) . md5(json_encode($extensionName));
+    }
+
+    /**
      * @param string $extensionName
      * @return array
      * @throws InvalidConfigurationTypeException
-     * @throws NoSuchCacheException
      */
-    protected function getConfigurationFromYamlFile(string $extensionName = ''): array
+    protected function getSettingsFileIdentifier(string $extensionName): array
     {
-        $ucFirstExtensioName = ucfirst($extensionName);
-
         $typoscriptSettings = $this->getTypoScriptSettings($extensionName);
 
-        $yamlSettingsFilePaths = isset($typoscriptSettings['yaml'])
-            ? ArrayUtility::sortArrayWithIntegerKeys($typoscriptSettings['yaml'])
+        return isset($typoscriptSettings['import'])
+            ? ArrayUtility::sortArrayWithIntegerKeys($typoscriptSettings['import'])
             : [];
+    }
 
-        $cacheKeySuffix = $extensionName . md5(json_encode($yamlSettingsFilePaths));
+    /**
+     * Load and parse YAML files which are configured within the TypoScript
+     * path plugin.tx_extensionkey.settings.yaml
+     *
+     * @param string $extensionName
+     * @return array
+     * @throws FileDoesNotExistException
+     * @throws InvalidConfigurationTypeException
+     * @throws NoSuchCacheException
+     * @throws ParseErrorException
+     */
+    protected function getConfigurationFromFile(string $extensionName = 'Templates'): array
+    {
+        $settings = $this->getSettingsFromCache($extensionName);
 
-        $yamlSettings = $this->getYamlSettingsFromCache($cacheKeySuffix);
-        if (!empty($yamlSettings)) {
-            return $this->overrideConfigurationByTypoScript($yamlSettings, $extensionName);
+        if (!empty($settings)) {
+            return $settings;
         }
 
-        $yamlSettings = $this->loadYamlFiles($yamlSettingsFilePaths);
+        $settings = $this->loadConfigurationFiles($this->getSettingsFileIdentifier($extensionName));
 
-        $yamlSettings = ArrayUtility::removeNullValuesRecursive($yamlSettings);
+        $settings = ArrayUtility::removeNullValuesRecursive($settings);
 
-        $yamlSettings = ArrayUtility::sortArrayWithIntegerKeysRecursive($yamlSettings);
-        $this->setYamlSettingsIntoCache($cacheKeySuffix, $yamlSettings);
+        $settings = ArrayUtility::sortArrayWithIntegerKeysRecursive($settings);
+        $this->setFileSettingsIntoCache($extensionName, $settings);
 
-        return $this->overrideConfigurationByTypoScript($yamlSettings, $extensionName);
+        return $settings;
     }
 
     /**
@@ -134,61 +140,41 @@ class ConfigurationManager extends ExtbaseConfigurationManager implements Config
     }
 
     /**
-     * @param string $cacheKeySuffix
+     * @param string $extensionName
      * @return mixed
+     * @throws InvalidConfigurationTypeException
      * @throws NoSuchCacheException
      */
-    protected function getYamlSettingsFromCache(string $cacheKeySuffix)
+    protected function getSettingsFromCache(string $extensionName)
     {
         return $this->cacheManager->getCache('assets')->get(
-            $this->getConfigurationCacheKey($cacheKeySuffix)
+            $this->getConfigurationCacheKey($extensionName)
         );
     }
 
     /**
-     * @param string $cacheKeySuffix
-     * @return string
-     */
-    protected function getConfigurationCacheKey(string $cacheKeySuffix): string
-    {
-        return strtolower(self::CONFIGURATION_TYPE_YAML_SETTINGS . '_' . $cacheKeySuffix);
-    }
-
-    /**
-     * @param array $yamlSettings
      * @param string $extensionName
-     * @return array
+     * @return string
      * @throws InvalidConfigurationTypeException
      */
-    protected function overrideConfigurationByTypoScript(array $yamlSettings, string $extensionName): array
+    protected function getConfigurationCacheKey(string $extensionName): string
     {
-        $typoScript = parent::getConfiguration(self::CONFIGURATION_TYPE_SETTINGS, $extensionName);
-        if (is_array($typoScript['yamlSettingsOverrides']) && !empty($typoScript['yamlSettingsOverrides'])) {
-            ArrayUtility::mergeRecursiveWithOverrule(
-                $yamlSettings,
-                $typoScript['yamlSettingsOverrides']
-            );
-
-            if ($this->environmentService->isEnvironmentInFrontendMode()) {
-                $yamlSettings = $this->typoScriptService
-                    ->resolvePossibleTypoScriptConfiguration($yamlSettings);
-            }
-        }
-        return $yamlSettings;
+        return strtolower(sprintf('%ssettings_%s%s', self::CONFIGURATION_TYPE_FILE_SETTINGS, $extensionName, sha1(json_encode($this->getSettingsFileIdentifier($extensionName)))));
     }
 
     /**
-     * @param string $cacheKeySuffix
-     * @param array $yamlSettings
+     * @param string $extensionName
+     * @param array $settings
+     * @throws InvalidConfigurationTypeException
      * @throws NoSuchCacheException
      */
-    protected function setYamlSettingsIntoCache(
-        string $cacheKeySuffix,
-        array $yamlSettings
+    protected function setFileSettingsIntoCache(
+        string $extensionName,
+        array $settings
     ) {
         $this->cacheManager->getCache('assets')->set(
-            $this->getConfigurationCacheKey($cacheKeySuffix),
-            $yamlSettings
+            $this->getConfigurationCacheKey($extensionName),
+            $settings
         );
     }
 
@@ -198,16 +184,12 @@ class ConfigurationManager extends ExtbaseConfigurationManager implements Config
      * @throws FileDoesNotExistException
      * @throws ParseErrorException
      */
-    protected function loadYamlFiles(array $files)
+    protected function loadConfigurationFiles(array $files)
     {
         $configuration = [];
 
         foreach ($files as $file) {
-            if ($file instanceof File) {
-                $loadedConfiguration = $this->loadFromFile($file);
-            } else {
-                $loadedConfiguration = $this->loadFromFilePath($file);
-            }
+            $loadedConfiguration = $this->configurationPersistenceManager->load($file);
 
             if (is_array($loadedConfiguration)) {
                 $configuration = array_replace_recursive($configuration, $loadedConfiguration);
@@ -220,53 +202,28 @@ class ConfigurationManager extends ExtbaseConfigurationManager implements Config
     }
 
     /**
-     * Load YAML configuration from a File
-     *
-     * @throws ParseErrorException
+     * @param string $namespace
+     * @param array $data
+     * @param string $extensionName
      * @throws FileDoesNotExistException
-     */
-    protected function loadFromFile(File $file): array
-    {
-        $fileIdentifier = $file->getIdentifier();
-        $rawYamlContent = $file->getContents();
-
-        if ($rawYamlContent === false) {
-            throw new FileDoesNotExistException(
-                sprintf('The file "%s" does not exist', $fileIdentifier),
-                1492804251
-            );
-        }
-
-        try {
-            $loadedConfiguration = Yaml::parse($rawYamlContent);
-        } catch (ParseException $e) {
-            throw new ParseErrorException(
-                sprintf('An error occurred while parsing file "%s": %s', $fileIdentifier, $e->getMessage()),
-                1578490322,
-                $e
-            );
-        }
-
-        return $loadedConfiguration;
-    }
-
-    /**
-     * Load YAML configuration from a local file path
-     *
+     * @throws InvalidConfigurationTypeException
+     * @throws InvalidFileNameException
+     * @throws NoSuchCacheException
      * @throws ParseErrorException
      */
-    protected function loadFromFilePath(string $filePath): array
+    public function writeConfiguration(string $namespace, array $data, string $extensionName = 'Templates'): void
     {
-        try {
-            $loadedConfiguration = $this->yamlFileLoader->load($filePath);
-        } catch (\RuntimeException $e) {
-            throw new ParseErrorException(
-                sprintf('An error occurred while parsing file "%s": %s', $filePath, $e->getMessage()),
-                1480195405,
-                $e
+        $settings = $this->getConfigurationFromFile($extensionName);
+        ArrayUtility::mergeRecursiveWithOverrule($settings, [$namespace => $data]);
+        if (empty($settings['persistence']['path'])) {
+            throw new InvalidFileNameException(
+                'No filename',
+                1493932874
             );
         }
 
-        return $loadedConfiguration;
+        $this->configurationPersistenceManager->write(sprintf('%s/%s.%s', trim($settings['persistence']['path'], '/'), $namespace, $this->configurationPersistenceManager->getFileExtension()), $settings[$namespace]);
+
+        $this->setFileSettingsIntoCache($extensionName, $settings);
     }
 }
