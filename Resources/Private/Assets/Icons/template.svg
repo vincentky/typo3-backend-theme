@@ -7,25 +7,24 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   viewBox="0 0 36 23.593"
+   viewBox="0 0 64 64"
    version="1.1"
-   id="svg4"
-   sodipodi:docname="view.svg"
+   id="svg10"
+   sodipodi:docname="template.svg"
    inkscape:version="0.92.4 5da689c313, 2019-01-14">
   <metadata
-     id="metadata10">
+     id="metadata16">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <defs
-     id="defs8" />
+     id="defs14" />
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -37,20 +36,30 @@
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
      inkscape:window-height="985"
-     id="namedview6"
+     id="namedview12"
      showgrid="false"
-     inkscape:zoom="14.75"
-     inkscape:cx="12.937738"
-     inkscape:cy="5.1961044"
+     inkscape:zoom="10.429825"
+     inkscape:cx="40.487294"
+     inkscape:cy="30.773733"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg4"
-     inkscape:pagecheckerboard="true" />
+     inkscape:current-layer="svg10" />
   <path
-     d="M 18,21.367 C 11.5,20.992 6,17.292 2.25,11.804 4.4,8.991 6.941,6.066 10.141,4.466 9.341,5.866 9,7.792 9,9.392 c 0,5 4,8.657 9,8.6 5,0.057 9,-3.6 9,-8.6 0,-1.6 -0.262,-3.626 -1.062,-4.926 3.1,1.6 5.562,4.526 7.812,7.338 C 30.1,17.292 24.5,20.992 18,21.367 Z M 35.6,10.2 C 31.9,4.1 25.1,0 18,0 10.9,0 4.1,4.1 0.4,10.2 0.1,10.6 0,11.493 0,11.993 c 0,0.5 0.2,1 0.4,1.4 3.7,6.1 10.5,10.2 17.6,10.2 7.1,0 13.9,-4.1 17.6,-10.2 0.3,-0.4 0.4,-0.9 0.4,-1.4 0,-0.5 -0.2,-1.393 -0.4,-1.793 z"
-     id="path2"
-     inkscape:connector-curvature="0"
-     style="fill:#ffffff"
-     sodipodi:nodetypes="cccscsccccscscscsc" />
+     fill="#1A568F"
+     d="M0 0h64v64H0z"
+     id="path2" />
+  <path
+     fill="#FFF"
+     d="M14 14h36v36H14z"
+     id="path4" />
+  <path
+     d="M 16,16 H 48 V 48 H 16 Z"
+     id="path6"
+     style="fill:currentColor;"
+     inkscape:connector-curvature="0" />
+  <path
+     fill="#FFF"
+     d="M18 18h28v8H18zM18 28h10v18H18zM30 28h16v18H30z"
+     id="path8" />
 </svg>

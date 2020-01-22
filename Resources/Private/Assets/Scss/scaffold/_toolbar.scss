@@ -22,7 +22,9 @@ $toolbar-dropdown-link-active-color: #fff !default;
 $toolbar-navigation-search-bg: $toolbar-navigation-bg !default;
 $toolbar-navigation-search-hover-bg: $toolbar-dropdown-link-hover-bg !default;
 $toolbar-navigation-search-focus-bg: $toolbar-dropdown-link-active-bg !default;
-
+$toolbar-avatar-width: 28px !default;
+$toolbar-avatar-text-margin: 2px !default;
+$toolbar-item-open-bg-color:$dark-bg !default;
 
 .toolbar {
     padding: 8px;
@@ -30,7 +32,7 @@ $toolbar-navigation-search-focus-bg: $toolbar-dropdown-link-active-bg !default;
     @media (min-width: $scaffold-breakpoint) {
         padding: 0;
         background-color: $scaffold-topbar-bg;
-        border-bottom:1px solid transparent;
+        border-bottom: 1px solid transparent;
     }
 
     &:after {
@@ -51,11 +53,13 @@ $toolbar-navigation-search-focus-bg: $toolbar-dropdown-link-active-bg !default;
         content: '';
     }
 
-    li:last-child {
-        @media (min-width: $scaffold-breakpoint) {
-            width: 300px;
+    .toolbar-item:last-child{
+        .dropdown-menu{
+            left:auto;
+            right: 0;
         }
     }
+
 }
 
 // Toolbar Item
@@ -118,14 +122,17 @@ $toolbar-navigation-search-focus-bg: $toolbar-dropdown-link-active-bg !default;
 
 // Toolbar Item
 .toolbar-item-avatar {
-    width: 28px;
-    margin-right: 2px;
-    display: inline-block;
+    width: $toolbar-avatar-width;
+    height: 100%;
+    margin-left: $toolbar-avatar-text-margin;
+    display: block;
+    position: relative;
+    float: right;
 
     .avatar {
         position: absolute;
         top: 50%;
-        left: 10px;
+        left: 0;
         transform: translate(0, -50%);
     }
 
@@ -138,13 +145,14 @@ $toolbar-navigation-search-focus-bg: $toolbar-dropdown-link-active-bg !default;
 
 .toolbar-item-badge {
     position: absolute;
-    bottom: 4px;
+    top: 8px;
     right: 4px;
-    padding: 3px 4px;
-    border-radius: 0;
+    padding: 2px 3px;
+    border-radius: 100%;
     font-size: 10px;
     font-weight: normal;
     min-width: 16px;
+    line-height: 1.5;
 }
 
 // Toolbar Item Link
@@ -172,7 +180,7 @@ $toolbar-navigation-search-focus-bg: $toolbar-dropdown-link-active-bg !default;
 
 .open {
     .toolbar-item-link {
-        background-color: #292929;
+        background-color: $toolbar-item-open-bg-color;
     }
 }
 

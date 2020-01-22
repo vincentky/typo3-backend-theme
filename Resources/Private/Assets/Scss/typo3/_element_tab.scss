@@ -3,7 +3,7 @@
 //
 .nav-tabs {
     border-radius: $border-radius-base $border-radius-base 0 0;
-    background-color: darken($nav-tabs-active-link-bg, 5%);
+    background-color: $nav-tabs-bg;
 
     > li {
         + li {
@@ -39,6 +39,7 @@
                 @include transition(all 0.25s ease-in-out);
             }
         }
+
         // Has error state
         &.has-validation-error {
             > a {
@@ -68,6 +69,7 @@
                 }
             }
         }
+
         // Active state
         &.active {
             > a,
@@ -75,8 +77,8 @@
             > a:active,
             > a:hover {
                 border: 1px solid $nav-tabs-active-link-hover-border-color;
-                border-bottom-color: $nav-tabs-active-link-bg;
-                background-color: $nav-tabs-active-link-bg;
+                border-bottom: 2px solid $nav-tabs-active-link-border-bottom-color;
+                background-color: $nav-tabs-active-link-hover-bg;
             }
         }
     }

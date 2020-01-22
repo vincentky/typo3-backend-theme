@@ -1,7 +1,7 @@
 //
 // Tables
 //
-
+$table-fit-border-color: #ddd !default;
 //
 // used in the admin tools => DB check
 //
@@ -155,6 +155,7 @@ table {
     .col-min {
         min-width: 150px;
     }
+
     // Column contents are cut off with an ellipsis if they get too large.
     .col-responsive {
         max-width: 200px;
@@ -257,6 +258,7 @@ table {
         }
     }
 }
+
 //
 // Fits the table in the viewport and makes overflow possible
 //
@@ -267,7 +269,7 @@ table {
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     -ms-overflow-style: -ms-autohiding-scrollbar;
-    border: 1px solid #ddd;
+    border: 1px solid $table-fit-border-color;
 
     > .dataTables_wrapper > .table,
     > .table {

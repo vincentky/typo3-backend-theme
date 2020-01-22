@@ -207,34 +207,40 @@
 //
 // Variables
 //
-$card-spacing: 10px;
-$card-padding: 1.5em;
-$card-base-color: #000;
-$card-border-color: lighten($card-base-color, 80);
-$card-border-hover-color: lighten($card-base-color, 70);
-$card-shadow-color: transparentize($card-base-color, 0.8);
-$card-shadow-hover-color: transparentize($card-base-color, 0.7);
+$card-spacing: 10px !default;
+$card-padding: 1.5em !default;
+$card-base-color: #000 !default;
+$card-border-radius:2px !default;
+$card-border-color: lighten($card-base-color, 80) !default;
+$card-border-hover-color: lighten($card-base-color, 70) !default;
+$card-shadow-color: transparentize($card-base-color, 0.8) !default;
+$card-shadow-hover-color: transparentize($card-base-color, 0.7) !default;
+$card-shadow-hover-offset-x: 0 !default;
+$card-shadow-hover-offset-y: 2px !default;
+$card-shadow-hover-blur: 1px !default;
+$card-bg-color: transparent !default;
+
 
 //
 // Component
 //
 .card {
     overflow: hidden;
-    border-radius: 2px;
+    border-radius: $card-border-radius;
     display: flex;
     flex-direction: column;
     box-shadow: 0 1px 1px $card-shadow-color;
     border: 1px solid $card-border-color;
     margin-bottom: ($card-spacing*2);
     transition: all 0.2s ease-in-out;
-    transition-property: box-shadow, border, transform;
+    transition-property: box-shadow, border;
+    background-color: $card-bg-color;
 }
 
 a.card:hover {
     text-decoration: none;
     border: 1px solid $card-border-hover-color;
-    transform: translate(0, -1px);
-    box-shadow: 0 2px 1px $card-shadow-hover-color;
+    box-shadow: $card-shadow-hover-offset-x $card-shadow-hover-offset-y $card-shadow-hover-blur $card-shadow-hover-color;
 }
 
 .card-container {

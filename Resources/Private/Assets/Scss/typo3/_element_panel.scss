@@ -2,12 +2,12 @@
 // Variables
 //
 $panel-lg-padding: 35px;
-
+$panel-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1) !default;
 //
 // Panel
 //
 .panel {
-    @include box-shadow(0 2px 0 rgba(0, 0, 0, 0.1));
+    box-shadow: $panel-box-shadow;
 
     &.ui-sortable-helper {
         border-style: dashed;

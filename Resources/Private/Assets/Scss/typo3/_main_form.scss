@@ -318,7 +318,7 @@ select {
 .form-group-dashed {
     & + .form-group-dashed {
         padding-top: 15px;
-        border-top: 1px dashed #ccc;
+        border-top: 1px dashed $form-section-border;
     }
 }
 
@@ -326,7 +326,7 @@ select {
 // Form Sections
 //
 .form-section {
-    border: 1px solid #ccc;
+    border: 1px solid $form-section-border;
     background-color: #fafafa;
     padding: 15px 12px 3px;
 

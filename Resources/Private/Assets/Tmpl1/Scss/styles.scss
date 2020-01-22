@@ -6,7 +6,10 @@
 
 @import 'backend';
 @import 'editor';
-@import 'errorpage';
 @import 'form';
 @import 'linkvalidator';
 @import 'templates';
+
+.node-icon-container {
+    transform: scale(1.5);
+}

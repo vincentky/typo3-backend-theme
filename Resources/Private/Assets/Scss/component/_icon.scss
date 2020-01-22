@@ -20,11 +20,11 @@
 //
 // Variables
 //
-$icon-size-small: 16px;
-$icon-size-default: 32px;
-$icon-size-large: 48px;
-$icon-unify-modifier: 0.86;
-$icon-opacity-disabled: 0.5;
+$icon-size-small: 16px !default;
+$icon-size-default: 32px !default;
+$icon-size-large: 48px !default;
+$icon-unify-modifier: 0.86 !default;
+$icon-opacity-disabled: 0.5 !default;
 
 //
 // Component

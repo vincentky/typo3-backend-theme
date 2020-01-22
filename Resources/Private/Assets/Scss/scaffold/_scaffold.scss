@@ -27,7 +27,7 @@ $scaffold-modulemenu-expanded-width: 230px !default;
 $scaffold-modulemenu-zindex: $zindex-navbar !default;
 $scaffold-toolbar-bg: lighten($scaffold-secondary-bg, 8) !default;
 $scaffold-toolbar-color: $scaffold-secondary-color !default;
-$scaffold-toolbar-zindex: $zindex-navbar !default;
+$scaffold-toolbar-zindex: $zindex-navbar + 2 !default;
 $scaffold-content-navigation-width: 300px !default;
 $scaffold-content-toggle-bg: lighten($scaffold-secondary-bg, 12) !default;
 $scaffold-content-toggle-color: $scaffold-secondary-color !default;
@@ -69,14 +69,15 @@ body {
     right: 0;
     left: 0;
     z-index: $zindex-navbar + 1;
-    &:after{
-        content:'';
+
+    &:after {
+        content: '';
         height: 1px;
         width: 100%;
         background-color: $topbar-border-bottom-color;
         position: absolute;
-        bottom:-2px;
-        left:0;
+        bottom: -2px;
+        left: 0;
     }
 }
 
@@ -122,18 +123,8 @@ body {
     right: 0;
     bottom: 0;
     display: none;
-    z-index: $zindex-navbar + 2;
-    .dropdown-menu a,
+
     a {
-        color: transparentize($scaffold-toolbar-color, 0.3);
-
-        &:focus,
-        &:hover {
-            color: $scaffold-toolbar-color;
-        }
-    }
-
-    .active > a {
         color: $scaffold-toolbar-color;
     }
 

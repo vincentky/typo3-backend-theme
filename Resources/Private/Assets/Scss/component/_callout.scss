@@ -39,39 +39,39 @@
 //
 // Variables
 //
-$callout-padding: 20px;
-$callout-color: #333;
-$callout-icon-color: #fff;
-$callout-bg: #f0f0f0;
-$callout-border: #ccc;
-$callout-border-radius: 2px;
-$callout-success-bg: $state-success-bg;
-$callout-success-color: $callout-color;
-$callout-success-icon-color: $callout-icon-color;
-$callout-success-border: $state-success-border;
-$callout-info-bg: $state-info-bg;
-$callout-info-color: $callout-color;
-$callout-info-icon-color: $callout-icon-color;
-$callout-info-border: $state-info-border;
-$callout-warning-bg: $state-warning-bg;
-$callout-warning-color: $callout-color;
-$callout-warning-icon-color: $callout-icon-color;
-$callout-warning-border: $state-warning-border;
-$callout-danger-bg: $state-danger-bg;
-$callout-danger-color: $callout-color;
-$callout-danger-icon-color: $callout-icon-color;
-$callout-danger-border: $state-danger-border;
-$callout-notice-bg: $state-notice-bg;
-$callout-notice-color: $callout-color;
-$callout-notice-icon-color: $callout-icon-color;
-$callout-notice-border: $state-notice-border;
+$callout-padding: 20px !default;
+$callout-color: #333 !default;
+$callout-icon-color: #fff !default;
+$callout-bg: #f0f0f0 !default;
+$callout-border: #ccc !default;
+$callout-border-radius: 2px !default;
+$callout-success-bg: $state-success-bg !default;
+$callout-success-color: $callout-color !default;
+$callout-success-icon-color: $callout-icon-color !default;
+$callout-success-border: $state-success-border !default;
+$callout-info-bg: $state-info-bg !default;
+$callout-info-color: $callout-color !default;
+$callout-info-icon-color: $callout-icon-color !default;
+$callout-info-border: $state-info-border !default;
+$callout-warning-bg: $state-warning-bg !default;
+$callout-warning-color: $callout-color !default;
+$callout-warning-icon-color: $callout-icon-color !default;
+$callout-warning-border: $state-warning-border !default;
+$callout-danger-bg: $state-danger-bg !default;
+$callout-danger-color: $callout-color !default;
+$callout-danger-icon-color: $callout-icon-color !default;
+$callout-danger-border: $state-danger-border !default;
+$callout-notice-bg: $state-notice-bg !default;
+$callout-notice-color: $callout-color !default;
+$callout-notice-icon-color: $callout-icon-color !default;
+$callout-notice-border: $state-notice-border !default;
 
 //
 // Component
 //
 .callout {
     background-color: $callout-bg;
-    border-left: 3px solid $callout-border;
+    border: 1px solid $callout-border;
     margin: 20px 0;
     padding: $callout-padding;
     color: $callout-color;
@@ -83,10 +83,10 @@ $callout-notice-border: $state-notice-border;
         margin: 0;
 
         .fa-stack {
-            color: $callout-icon-color;
+            color: $callout-bg;
 
             > .fa:first-child {
-                color: $callout-border;
+                color: $callout-icon-color;
             }
         }
     }
@@ -136,10 +136,10 @@ $callout-notice-border: $state-notice-border;
         margin: 0;
 
         .fa-stack {
-            color: $icon-color;
+            color: $background ;
 
             > .fa:first-child {
-                color: $border;
+                color: $icon-color;
             }
         }
     }

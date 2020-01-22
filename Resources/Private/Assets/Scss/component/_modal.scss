@@ -269,12 +269,12 @@ $modal-danger-border: $btn-danger-border;
 
     .modal-content {
         overflow: hidden;
-        background-color: #292929;
+        background-color: $dark-bg;
     }
 
     .modal-body,
     .modal-footer {
-        background-color: #292929;
+        background-color: $dark-bg;
         color: #fff;
     }
 

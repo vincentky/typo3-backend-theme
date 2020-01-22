@@ -75,7 +75,7 @@ $elementbrowser-breakpoint: 600px;
 .element-browser-title {
     padding: ($grid-gutter-width / 2);
     color: #fff;
-    background-color: #292929;
+    background-color: $dark-bg;
 
     a {
         color: inherit;

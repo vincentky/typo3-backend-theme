@@ -354,7 +354,7 @@ $page-ce-dropzone-possible-border: $state-warning-border;
     padding: 0;
 
     .t3-new-content-element-wizard-title {
-        background-color: #292929;
+        background-color: $dark-bg;
         color: #fff;
         padding: $grid-gutter-width / 3 $grid-gutter-width / 2;
 

@@ -18,28 +18,33 @@ $path-sysext: "#{$path-root}/typo3/sysext";
 //
 $sourcesanspro-font-path: "#{$path-sysext}/backend/Resources/Public/Fonts/SourceSansPro";
 $fa-font-path: "#{$path-sysext}/backend/Resources/Public/Fonts/FontAwesome";
+$font-family-base: -apple-system, BlinkMacSystemFont, segoe ui, roboto, oxygen, ubuntu, cantarell, fira sans, droid sans, helvetica neue, sans-serif;
+$font-size-base: 14px;
+$line-height-base: 1.5;
 
 //
 // Bootstrap
 // =========
 //
 
+
 // Colors
 $gray-darker: rgb(30, 30, 30);
 $gray-dark: rgb(90, 90, 90);
 $gray: rgb(115, 115, 115);
-$gray-light: rgb(215, 215, 215);
-$gray-lighter: rgb(245, 245, 245);
+$gray-light: rgba(0, 0, 0, 0.1);
+$gray-lighter: rgba(0, 0, 0, 0.08);
 $brand-primary: #6d5cae;
 $brand-success: #10cfbd;
 $brand-info: #3b4752;
 $brand-warning: #f8d053;
 $brand-danger: #f55753;
 $brand-notice: #333;
+$dark-bg: #222 !default;
 
 // Scaffolding
-$body-bg: #fff;
-$text-color: #000;
+$body-bg: #f5f5f5;
+$text-color: #626262;
 $link-color: #212424;
 $link-hover-color: #000;
 
@@ -96,6 +101,7 @@ $table-bg-accent: darken($table-bg, 1%);
 $table-bg-hover: darken($table-bg, 5%);
 $table-bg-active: $table-bg-hover;
 $table-border-color: #ccc;
+$table-fit-border-color: transparent;
 
 // Buttons
 $btn-font-weight: normal;
@@ -107,13 +113,18 @@ $btn-primary-bg: $brand-primary !default;
 $btn-primary-border: darken($btn-primary-bg, 5%) !default;
 
 // Forms
-$input-bg: #fefefe;
-$input-color: #333;
-$input-border: #bbb;
-$input-border-focus: #aaa;
-$input-color-placeholder: $gray-light;
-$input-color-disabled: $gray;
+$input-bg: #fff;
+$input-color: #2c2c2c;
+$input-border: $gray-lighter;
+$input-border-focus: $gray-light;
+$input-focus-bg: #f0f0f0;
+$input-color-placeholder: $gray-lighter;
+$input-color-disabled: rgba(98, 98, 98, .23);
+$input-bg-disabled: #f8f8f8;
 $input-height-large: (ceil($font-size-large * $line-height-large) + ($padding-large-vertical * 1.6) + 2);
+
+// Typo3 forms
+$form-section-border: $gray-lighter;
 
 // Navbar
 $navbar-height: 60px;
@@ -138,34 +149,48 @@ $nav-open-link-hover-color: #fff;
 $nav-link-padding: 6px 12px;
 $nav-disabled-link-hover-color: $gray-dark;
 
+
 // Tabs
 $nav-tabs-border-color: #ccc;
 $nav-tabs-link-hover-bg: darken(#fafafa, 10%);
-$nav-tabs-link-hover-border-color: $gray-light;
-$nav-tabs-active-link-bg: #fafafa;
-$nav-tabs-active-link-hover-bg: $body-bg;
+$nav-tabs-link-hover-border-color: $gray-lighter;
+$nav-tabs-active-link-border-bottom-color: $brand-danger;
+$nav-tabs-active-link-bg: transparent;
+$nav-tabs-active-link-hover-bg: transparent;
 $nav-tabs-active-link-hover-color: #000;
-$nav-tabs-active-link-hover-border-color: #ccc;
-$nav-tabs-active-link-hover-bg: darken(#fafafa, 5%);
+$nav-tabs-active-link-hover-border-color: transparent;
 $nav-tabs-justified-link-border-color: #ccc;
 $nav-tabs-justified-active-link-border-color: $nav-tabs-border-color;
+$nav-tabs-bg: transparent;
 
 // Form states and alerts
-$state-success-text: $brand-success;
-$state-success-bg: lighten($brand-success, 35%);
-$state-success-border: $brand-success;
-$state-info-text: $brand-info;
-$state-info-bg: lighten($brand-info, 30%);
-$state-info-border: $brand-info;
-$state-warning-text: $brand-warning;
-$state-warning-bg: lighten($brand-warning, 35%);
-$state-warning-border: $brand-warning;
-$state-danger-text: $brand-danger;
-$state-danger-bg: lighten($brand-danger, 35%);
-$state-danger-border: $brand-danger;
+$state-success-text: #326e41;
+$state-success-bg: #d4ecda;
+$state-success-border: #d4e8d9;
+$state-info-text: #325981;
+$state-info-bg: #cde5fe;
+$state-info-border: #b6d9fd;
+$state-warning-text: #836a27;
+$state-warning-bg: #fff2d0;
+$state-warning-border: #fdf0d0;
+$state-danger-text: #733037;
+$state-danger-bg: #f7d7db;
+$state-danger-border: #f5c3c8;
 $state-notice-text: rgb(160, 160, 160); // TYPO3 SPECIFIC
 $state-notice-bg: lighten(rgb(160, 160, 160), 35%); // TYPO3 SPECIFIC
 $state-notice-border: rgb(160, 160, 160); // TYPO3 SPECIFIC
+
+$callout-success-color: $state-success-text;
+$callout-success-icon-color: $callout-success-color;
+$callout-info-color: $state-info-text;
+$callout-info-icon-color: $callout-info-color;
+$callout-warning-color: $state-warning-text;
+$callout-warning-icon-color: $callout-warning-color;
+$callout-danger-color: $state-danger-text;
+$callout-danger-icon-color: $callout-danger-color;
+$callout-notice-color: $state-notice-text;
+$callout-notice-icon-color: $callout-notice-color;
+
 
 // Tooltips
 $tooltip-bg: #333;
@@ -194,7 +219,8 @@ $alert-notice-border: transparent; // TYPO3 SPECIFIC
 
 // Panels
 $panel-default-border: #ccc;
-$panel-default-heading-bg: #ddd;
+$panel-box-shadow: none;
+$panel-default-heading-bg: #fff;
 
 // Wells
 $well-bg: #fafafa;
@@ -213,9 +239,9 @@ $hr-border: #7a7a7a;
 $zindex-modal: 5000;
 
 // Dropdown
-$dropdown-bg: #292929;
-$dropdown-color: #fff; // TYPO3 SPECIFIC
-$dropdown-border: rgba(0, 0, 0, 0.15);
+$dropdown-bg: #fafafa;
+$dropdown-color: #626262; // TYPO3 SPECIFIC
+$dropdown-border: rgba(222, 227, 231, 0.56);
 $dropdown-fallback-border: #ccc;
 $dropdown-divider-bg: #424242;
 $dropdown-link-color: #fff;
@@ -223,8 +249,8 @@ $dropdown-link-hover-color: #fff;
 $dropdown-link-hover-bg: #424242;
 $dropdown-link-active-color: #fff;
 $dropdown-link-active-bg: #424242;
-$dropdown-link-disabled-color: $gray-light;
-$dropdown-header-color: $gray-light;
+$dropdown-link-disabled-color: $gray-lighter;
+$dropdown-header-color: $gray-lighter;
 $dropdown-caret-color: #000;
 
 // Datetime Picker
@@ -249,8 +275,8 @@ $progress-bg: #dedede;
 //
 
 // Module
-$module-bg: #fff;
-$module-color: inherit;
+$module-bg: $body-bg;
+$module-color: $text-color;
 $module-dark-bg: #333;
 $module-dark-color: #ccc;
 $module-docheader-bg: #fff;
@@ -267,7 +293,10 @@ $module-docheader-bar-margin: $module-docheader-bar-margin-vertical $module-doch
 $module-body-padding-vertical: 24px;
 $module-body-padding-horizontal: 24px;
 $module-body-padding: $module-body-padding-vertical $module-body-padding-horizontal;
-$modulemenu-item-icon-bg-color: #2b303b;
+
+
+$modulemenu-item-icon-bg-color: transparent;
+$modulemenu-item-icon-color: #2b303b;
 $modulemenu-group-icon-bg-color: #21252d;
 $modulemenu-group-title-font-weight: bold;
 $modulemenu-item-padding-expanded: 12px 0 12px 45px;
@@ -305,4 +334,20 @@ $topbar-button-diabled-bg: none;
 $topbar-button-active-bg: $scaffold-modulemenu-header-bg;
 $topbar-header-color: #fff;
 $topbar-button-navigation-component-color: #222;
-$topbar-border-bottom-color:#dfdede;
+$topbar-border-bottom-color: #dfdede;
+$toolbar-navigation-search-hover-bg: none;
+$toolbar-avatar-text-margin: 10px;
+$toolbar-item-open-bg-color: #fff;
+
+
+$icon-size-small: 16px;
+$icon-size-default: 32px;
+$icon-size-large: 48px;
+$icon-unify-modifier: 0.86;
+$icon-opacity-disabled: 0.5;
+
+$card-shadow-color: transparent;
+$card-border-color: $gray-lighter;
+$card-border-hover-color: rgba(0, 0, 0, 0.1);
+$card-shadow-hover-offset-y: 1px;
+$card-bg-color: #fff;
