@@ -3,5 +3,9 @@ Icons:
   list:
     module-web_dashboard: 'EXT:templates/Resources/Public/Icons/dashboard.svg'
     module-web_layout: 'EXT:templates/Resources/Public/Icons/page.svg'
-    module-web_ViewpageView: 'EXT:templates/Resources/Public/Icons/view.svg'
-
+    module-web_list: 'EXT:templates/Resources/Public/Icons/list.svg'
+    module-web_ts: 'EXT:templates/Resources/Public/Icons/template.svg'
+    module-web_FormFormbuilder: 'EXT:templates/Resources/Public/Icons/form.svg'
+    module-site_configuration: 'EXT:templates/Resources/Public/Icons/sites.svg'
+    module-site_redirects:  'EXT:templates/Resources/Public/Icons/redirects.svg'
+    module-file_FilelistList:  'EXT:templates/Resources/Public/Icons/filelist.svg'
