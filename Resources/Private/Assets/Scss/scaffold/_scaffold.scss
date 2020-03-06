@@ -17,7 +17,6 @@ $scaffold-secondary-color: #f5f5f5 !default;
 $scaffold-topbar-bg: $scaffold-secondary-bg !default;
 $scaffold-topbar-color: $scaffold-secondary-color !default;
 $scaffold-topbar-height: 45px !default;
-$scaffold-topbar-zindex: $zindex-navbar !default;
 $scaffold-topbar-toolbar-bg: $scaffold-secondary-bg !default;
 $scaffold-topbar-toolbar-color: $scaffold-secondary-color !default;
 $scaffold-modulemenu-bg: lighten($scaffold-secondary-bg, 8) !default;
@@ -27,11 +26,12 @@ $scaffold-modulemenu-expanded-width: 230px !default;
 $scaffold-modulemenu-zindex: $zindex-navbar !default;
 $scaffold-toolbar-bg: lighten($scaffold-secondary-bg, 8) !default;
 $scaffold-toolbar-color: $scaffold-secondary-color !default;
-$scaffold-toolbar-zindex: $zindex-navbar + 2 !default;
+$scaffold-header-zindex: $zindex-navbar !default;
 $scaffold-content-navigation-width: 300px !default;
 $scaffold-content-toggle-bg: lighten($scaffold-secondary-bg, 12) !default;
 $scaffold-content-toggle-color: $scaffold-secondary-color !default;
 $topbar-border-bottom-color: none !default;
+$topbar-button-active-color: $topbar-header-color !default;
 
 //
 // Prevent Browser Rebounce
@@ -64,21 +64,7 @@ body {
     background-color: $scaffold-topbar-bg;
     color: $scaffold-topbar-color;
     height: $scaffold-topbar-height;
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: $zindex-navbar + 1;
-
-    &:after {
-        content: '';
-        height: 1px;
-        width: 100%;
-        background-color: $topbar-border-bottom-color;
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-    }
+    flex: 1 0 auto;
 }
 
 //
@@ -94,7 +80,7 @@ body {
     width: $scaffold-modulemenu-snapped-width;
     max-width: 100%;
     z-index: $scaffold-modulemenu-zindex;
-    overflow: hidden;
+    overflow: hidden !important;
 
     a {
         color: transparentize($scaffold-modulemenu-color, 0.3);
@@ -113,15 +99,8 @@ body {
 // Toolbar
 //
 .scaffold-toolbar {
-    overflow: auto;
     background-color: $scaffold-toolbar-bg;
     color: $scaffold-toolbar-color;
-    z-index: $scaffold-toolbar-zindex;
-    position: fixed;
-    top: $scaffold-topbar-height;
-    left: 0;
-    right: 0;
-    bottom: 0;
     display: none;
 
     a {
@@ -129,12 +108,8 @@ body {
     }
 
     @media (min-width: $scaffold-breakpoint) {
-        overflow: visible;
         background-color: transparent;
         height: $scaffold-topbar-height;
-        top: 0;
-        left: auto;
-        bottom: auto;
         display: block;
     }
 }
@@ -233,6 +208,18 @@ body {
         padding-left: $scaffold-modulemenu-snapped-width;
     }
 
+    &:not(.scaffold-modulemenu-expanded) {
+        .scaffold-modulemenu {
+            width: $scaffold-modulemenu-snapped-width !important;
+            transition: all 0.2s ease-out;
+
+            &:hover {
+                width: $scaffold-modulemenu-expanded-width !important;
+                overflow: auto !important;
+            }
+        }
+    }
+
     .scaffold-modulemenu {
         width: $scaffold-modulemenu-snapped-width;
 
@@ -267,19 +254,34 @@ body {
     .scaffold-content-module {
         left: $scaffold-content-navigation-width;
     }
+
+    .topbar-button-navigationcomponent {
+        color: $topbar-button-active-color;
+    }
+
 }
 
 @media (min-width: $scaffold-breakpoint) {
     .scaffold {
         .scaffold-content {
-            left: $scaffold-modulemenu-snapped-width;
+            left: $scaffold-modulemenu-snapped-width !important;
         }
     }
 
     .scaffold-modulemenu-expanded {
         .scaffold-content {
-            left: $scaffold-modulemenu-expanded-width;
+            left: $scaffold-modulemenu-expanded-width !important;
             transform: none;
         }
     }
+}
+
+.t3js-scaffold-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    z-index: $scaffold-header-zindex;
 }

@@ -9,4 +9,7 @@ defined('TYPO3_MODE') || die();
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['BE']['toolbarItems'][1435433111] = \Starfishprime\Templates\Backend\ToolbarItems\UserToolbarItem::class;
+
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['constructPostProcess'][] = \Starfishprime\Templates\Hooks\BackendControllerHook::class . '->addJavaScript';
+
 })();

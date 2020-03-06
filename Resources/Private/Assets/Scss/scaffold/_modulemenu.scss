@@ -6,16 +6,19 @@
 $modulemenu-group-padding-vertical: 2px !default;
 $modulemenu-group-padding-horizontal: 4px !default;
 $modulemenu-item-icon-bg-color: inherit !default;
-$modulemenu-item-icon-color: #fff !default;
 $modulemenu-group-icon-bg-color: inherit !default;
-$modulemenu-group-container: inherit !default;
+$modulemenu-group-container-bg: inherit !default;
 $modulemenu-group-title-font-weight: bold !default;
 $modulemenu-group-title-padding-y: 7px !default;
 $modulemenu-group-title-padding-x: 20px !default;
+$modulemenu-group-bottom-border: 1px solid rgba(0, 0, 0, 0.2) !default;
 $modulemenu-item-title-padding-y: 0 !default;
 $modulemenu-item-title-padding-x: 10px !default;
 $modulemenu-item-padding: 2px 4px !default;
 $modulemenu-item-padding-expanded: 2px 4px !default;
+$modulemenu-group-header-icon-padding: 0 !default;
+$modulemenu-inner-padding-x: 0 !default;
+$modulemenu-inner-padding-y: 10px !default;
 
 // Module menu wrapper
 .module-wrapper {
@@ -26,24 +29,19 @@ $modulemenu-item-padding-expanded: 2px 4px !default;
     }
 }
 
-.scaffold-modulemenu {
-    overflow: visible !important;
-}
-
 // Module menu styling
 .modulemenu {
+    padding: $modulemenu-inner-padding-y $modulemenu-inner-padding-x;
     /// Module menu group
     .modulemenu-group-container {
-        clear: both;
-        background-color: $modulemenu-group-container;
-        display: none;
+        padding: $modulemenu-inner-padding-y $modulemenu-inner-padding-x;
+        background-color: $modulemenu-group-container-bg;
         @extend .list-unstyled;
     }
 
     .modulemenu-group {
         position: relative;
-        padding: 5px 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        border-bottom: $modulemenu-group-bottom-border;
     }
 
     .modulemenu-group-header,
@@ -51,7 +49,8 @@ $modulemenu-item-padding-expanded: 2px 4px !default;
         @extend .clearfix;
 
         position: relative;
-        display: block;
+        display: flex;
+        align-items: center;
         cursor: pointer;
         text-decoration: none;
     }
@@ -60,6 +59,10 @@ $modulemenu-item-padding-expanded: 2px 4px !default;
         user-select: none;
         text-transform: uppercase;
         padding: $modulemenu-group-padding-vertical $modulemenu-group-padding-horizontal;
+
+        .modulemenu-icon {
+            padding: $modulemenu-group-header-icon-padding;
+        }
     }
 
     .modulemenu-item-link {
@@ -68,7 +71,6 @@ $modulemenu-item-padding-expanded: 2px 4px !default;
 
         .modulemenu-icon {
             background-color: $modulemenu-item-icon-bg-color;
-            color:$modulemenu-item-icon-color;
         }
 
         &:focus,
@@ -86,7 +88,7 @@ $modulemenu-item-padding-expanded: 2px 4px !default;
 
     // Module menu icons
     .modulemenu-icon {
-        float: left;
+        z-index: 1;
         margin-right: $modulemenu-item-padding-horizontal;
         background-color: $modulemenu-group-icon-bg-color;
 
@@ -113,14 +115,14 @@ $modulemenu-item-padding-expanded: 2px 4px !default;
         font-weight: $modulemenu-group-title-font-weight;
         line-height: 1;
         padding: $modulemenu-group-title-padding-y $modulemenu-group-title-padding-x;
-        display: none;
+        flex: 1 0 auto;
 
         .caret {
             @include rotate(90deg);
-
             position: absolute;
-            top: 17px;
-            right: 18px;
+            top: 50%;
+            right: 25px;
+            margin-top: -2px;
         }
     }
 
@@ -131,24 +133,25 @@ $modulemenu-item-padding-expanded: 2px 4px !default;
                 @include rotate(0deg);
             }
         }
+        .modulemenu-icon{
+            color: $brand-primary;
+        }
     }
 }
 
 
 .scaffold:not(.scaffold-modulemenu-expanded) {
-    .modulemenu-group {
-        &:hover {
-            background-color: $modulemenu-group-icon-bg-color;
+    .modulemenu-item-title {
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s;
+    }
 
-            .modulemenu-group-container {
-                position: absolute;
-                top: 0;
-                left: $scaffold-modulemenu-snapped-width - 1;
-                width: 200px;
-                display: block !important;
-                padding: 8px 0 !important;
-                background-color: $modulemenu-group-icon-bg-color;
-                height: auto !important;
+    .scaffold-modulemenu {
+        &:hover {
+            .modulemenu-item-title {
+                opacity: 1;
+                visibility: visible;
             }
         }
     }
@@ -156,9 +159,6 @@ $modulemenu-item-padding-expanded: 2px 4px !default;
 
 // Module menu snapped
 .scaffold-modulemenu-expanded {
-    .modulemenu-group-container{
-        display: block;
-    }
     .modulemenu-item-link {
         padding: $modulemenu-item-padding-expanded;
     }
@@ -173,11 +173,12 @@ $modulemenu-item-padding-expanded: 2px 4px !default;
 }
 
 .modulemenu-item-icon {
-    .icon-markup{
+    .icon-markup {
         transform: scale(1.8);
     }
+
     path {
-        &:not([fill="#FFF"]):not([fill="#fff"]):not([fill="currentColor"])  {
+        &:not([fill="#FFF"]):not([fill="#fff"]):not([fill="currentColor"]) {
             visibility: hidden;
         }
     }

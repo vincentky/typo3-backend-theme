@@ -9,3 +9,4 @@ Icons:
     module-site_configuration: 'EXT:templates/Resources/Public/Icons/sites.svg'
     module-site_redirects:  'EXT:templates/Resources/Public/Icons/redirects.svg'
     module-file_FilelistList:  'EXT:templates/Resources/Public/Icons/filelist.svg'
+    #actions-pagetree: 'EXT:templates/Resources/Public/Icons/pagetree.svg'

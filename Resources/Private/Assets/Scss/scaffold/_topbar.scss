@@ -9,7 +9,6 @@
 $topbar-bg: $scaffold-topbar-bg !default;
 $topbar-color: $scaffold-topbar-color !default;
 $topbar-height: $scaffold-topbar-height !default;
-$topbar-zindex: $scaffold-topbar-zindex !default;
 $topbar-workspace-bg: #6d860d !default;
 $topbar-toolbar-bg: $scaffold-topbar-toolbar-bg !default;
 $topbar-toolbar-color: $scaffold-topbar-toolbar-color !default;
@@ -24,8 +23,8 @@ $topbar-header-site-max-width: $scaffold-modulemenu-expanded-width - $scaffold-m
 $topbar-header-site-bg-color: $scaffold-modulemenu-header-bg !default;
 $topbar-button-navigation-component-active-bg: $topbar-button-active-bg !default;
 $topbar-button-diabled-bg: $topbar-button-active-bg !default;
-$topbar-header-color: inherit !default;
 $topbar-button-navigation-component-color: $topbar-header-color !default;
+$topbar-max-content-width: $topbar-button-width  * 3 + $scaffold-modulemenu-expanded-width !default;
 
 //
 // Component
@@ -33,7 +32,7 @@ $topbar-button-navigation-component-color: $topbar-header-color !default;
 .topbar {
     background-color: inherit;
     position: relative;
-    height: $topbar-height;
+    height: 100%;
 
     a {
         color: inherit;
@@ -50,7 +49,7 @@ $topbar-button-navigation-component-color: $topbar-header-color !default;
     display: inline-block;
     border: 0;
     background-color: $topbar-button-bg;
-    height: $topbar-height;
+    height: 100%;
     width: $topbar-button-width;
 
     &:focus,
@@ -95,21 +94,17 @@ $topbar-button-navigation-component-color: $topbar-header-color !default;
     }
 
     .topbar-header-site {
-        background-color: $topbar-header-site-bg-color;
-        display: block;
+        @media (min-width: $topbar-max-content-width) {
+            display: block;
+        }
     }
 
     .topbar-button {
         &.topbar-button-navigationcomponent {
-            left: $scaffold-modulemenu-expanded-width;
+            @media (min-width: $topbar-max-content-width) {
+                left: $scaffold-modulemenu-expanded-width;
+            }
         }
-    }
-}
-
-.scaffold-content-navigation-expanded {
-
-    .topbar-button-navigationcomponent {
-        background-color: $topbar-button-active-bg;
     }
 }
 
@@ -159,7 +154,6 @@ $topbar-button-navigation-component-color: $topbar-header-color !default;
 //
 .topbar-header {
     padding-left: $topbar-button-width;
-    color: $topbar-header-color;
 
     @media (max-width: $scaffold-breakpoint-max) {
         padding-right: ($topbar-button-width * 2) !important;
@@ -176,6 +170,7 @@ $topbar-button-navigation-component-color: $topbar-header-color !default;
     padding-left: 1em;
     padding-right: 1em;
     white-space: nowrap;
+    background-color: $topbar-header-site-bg-color;
     display: none;
 
     &:before,

@@ -11,7 +11,8 @@
 	},
 	"paths": {
 		"css": {
-			"src": ["./Resources/Private/Assets/Tmpl1/Scss"],
+			"cmsSrc": ["./Resources/Private/Assets/Scss"],
+			"themeSrc": ["./Resources/Private/Assets/Tmpl1/Scss"],
 			"dest": "./Resources/Public/Css"
 		},
 		"icons": {

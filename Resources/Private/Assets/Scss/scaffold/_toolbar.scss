@@ -90,10 +90,6 @@ $toolbar-item-open-bg-color:$dark-bg !default;
     .dropdown-menu {
         width: 350px;
 
-        .text-muted {
-            color: lighten($text-muted, 10%);
-        }
-
         a:hover,
         a:focus {
             .text-muted {

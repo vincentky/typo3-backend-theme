@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-import { task, parallel, watch as gwatch, series, src, dest } from 'gulp';
+import { dest, parallel, series, src, watch as gwatch } from 'gulp';
 import notifier from 'gulp-plumber-notifier';
 import stylelint from 'gulp-stylelint';
 import sass from 'gulp-sass';
@@ -44,7 +44,7 @@ export const buildStyles = () => {
     series(lintScss);
 };
 export const compileScss = () =>
-    src(config.paths.css.src.map(path => `${path}/**/*.scss`))
+    src(config.paths.css.themeSrc.map(path => `${path}/**/*.scss`))
         .pipe(notifier())
         .pipe(sourcemaps.init())
         .pipe(
@@ -72,16 +72,14 @@ export const compileTypescript = () =>
         .pipe(dest(config.paths.js.dest));
 
 // Watch Task
-export const watch = () => {
+export const watch = () =>
     gwatch(
-        config.paths.js.src.map(path => `${path}/**/*.ts`),
-        compileTypescript,
+        [
+            ...config.paths.css.themeSrc.map(path => `${path}/**/*.scss`),
+            ...config.paths.css.cmsSrc.map(path => `${path}/**/*.scss`),
+        ],
+        series(compileScss),
     );
-    gwatch(
-        config.paths.css.src.map(path => `${path}/**/*.scss`),
-        compileScss,
-    );
-};
 
 // Development Task
 export const dev = parallel(lintJs, lintScss);

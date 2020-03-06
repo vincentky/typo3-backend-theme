@@ -129,8 +129,6 @@
 			"php .ddev/scripts/coding-standard-setup.php extension"
 		],
 		"post-autoload-dump": [
-			"@setup-cgl",
-			"@cgl",
 			"@folder-structure",
 			"@prepare-extension-test-structure"
 		]

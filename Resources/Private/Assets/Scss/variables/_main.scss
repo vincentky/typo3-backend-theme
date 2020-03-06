@@ -34,7 +34,7 @@ $gray-dark: rgb(90, 90, 90);
 $gray: rgb(115, 115, 115);
 $gray-light: rgba(0, 0, 0, 0.1);
 $gray-lighter: rgba(0, 0, 0, 0.08);
-$brand-primary: #6d5cae;
+$brand-primary: #fe8500;
 $brand-success: #10cfbd;
 $brand-info: #3b4752;
 $brand-warning: #f8d053;
@@ -230,7 +230,7 @@ $well-border: #ccc;
 $badge-bg: $gray;
 
 // Type
-$text-muted: lighten($text-color, 45%);
+$text-muted: #9c9a9a;
 $headings-small-color: $gray;
 $dl-horizontal-offset: 90px;
 $hr-border: #7a7a7a;
@@ -296,17 +296,18 @@ $module-body-padding: $module-body-padding-vertical $module-body-padding-horizon
 
 
 $modulemenu-item-icon-bg-color: transparent;
-$modulemenu-item-icon-color: #2b303b;
 $modulemenu-group-icon-bg-color: #21252d;
-$modulemenu-group-title-font-weight: bold;
+$modulemenu-group-title-font-weight: normal;
+$modulemenu-group-bottom-border: none;
 $modulemenu-item-padding-expanded: 12px 0 12px 45px;
 $modulemenu-item-padding: 12px 26px;
-$modulemenu-group-padding-vertical: 8px;
-$modulemenu-group-padding-horizontal: 18px;
-$modulemenu-group-container: #21252d;
+$modulemenu-group-padding-vertical: 5px;
+$modulemenu-group-padding-horizontal: 15px;
+$modulemenu-group-container-bg: #1f2334;
 $modulemenu-item-padding-horizontal: 0;
 $modulemenu-group-title-padding-x: 20px;
-$modulemenu-group-title-padding-y: ((32 - $font-size-base) / 2);
+$modulemenu-group-title-padding-y: 0;
+$modulemenu-group-header-icon-padding: 4px;
 
 //
 // Scaffold
@@ -317,7 +318,7 @@ $scaffold-topbar-height: $navbar-height;
 $scaffold-secondary-bg: #fff;
 $scaffold-secondary-color: #626262;
 
-$scaffold-modulemenu-bg: #2b303b;
+$scaffold-modulemenu-bg: #2d3140;
 $scaffold-modulemenu-color: #fff;
 $scaffold-modulemenu-snapped-width: 70px;
 $scaffold-modulemenu-expanded-width: 280px;
@@ -329,16 +330,15 @@ $toolbar-height: $scaffold-topbar-height;
 $toolbar-navigation-bg: $scaffold-secondary-bg;
 $topbar-button-width: $scaffold-modulemenu-snapped-width;
 $topbar-header-site-after-bg: none;
-$topbar-button-navigation-component-active-bg: none;
+$topbar-button-navigation-component-active-bg: transparent;
 $topbar-button-diabled-bg: none;
 $topbar-button-active-bg: $scaffold-modulemenu-header-bg;
-$topbar-header-color: #fff;
 $topbar-button-navigation-component-color: #222;
 $topbar-border-bottom-color: #dfdede;
 $toolbar-navigation-search-hover-bg: none;
 $toolbar-avatar-text-margin: 10px;
 $toolbar-item-open-bg-color: #fff;
-
+$topbar-button-active-color: blue;
 
 $icon-size-small: 16px;
 $icon-size-default: 32px;
