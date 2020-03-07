@@ -72,7 +72,7 @@ export const compileTypescript = () =>
         .pipe(dest(config.paths.js.dest));
 
 // Watch Task
-export const watch = () =>
+export const watch = () => {
     gwatch(
         [
             ...config.paths.css.themeSrc.map(path => `${path}/**/*.scss`),
@@ -80,6 +80,11 @@ export const watch = () =>
         ],
         series(compileScss),
     );
+    gwatch(
+        config.paths.js.src.map(path => `${path}/**/*.ts`),
+        series(compileTypescript),
+    );
+};
 
 // Development Task
 export const dev = parallel(lintJs, lintScss);

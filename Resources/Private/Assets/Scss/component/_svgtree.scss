@@ -16,8 +16,9 @@ $svgColors: (
     dragTooltipBg: #d7e4f1,
     dragTooltipAlertBg: #f6d3cf,
     dragTooltipAlertBorder: #d66c68
-);
-
+) !default;
+$svg-toolbar-height : $module-docheader-height !default;
+$svg-toolbar-border:$module-docheader-border !default;
 .svg-tree {
     position: relative;
 }
@@ -283,10 +284,14 @@ $svgColors: (
 }
 
 .svg-toolbar {
-    min-height: $module-docheader-height;
+    height: $svg-toolbar-height;
     padding: 4px 10px 0;
-    border-bottom: 1px solid $module-docheader-border;
+    border-bottom: 1px solid $svg-toolbar-border;
     background-color: $module-docheader-bg;
+    position: fixed;
+    top: 0;
+    margin-left: 100px;
+    z-index: 999999;
 
     &__btn {
         padding: 0;

@@ -23,7 +23,7 @@ $scaffold-modulemenu-bg: lighten($scaffold-secondary-bg, 8) !default;
 $scaffold-modulemenu-color: $scaffold-secondary-color !default;
 $scaffold-modulemenu-snapped-width: 40px !default;
 $scaffold-modulemenu-expanded-width: 230px !default;
-$scaffold-modulemenu-zindex: $zindex-navbar !default;
+$scaffold-modulemenu-zindex: $zindex-navbar+2 !default;
 $scaffold-toolbar-bg: lighten($scaffold-secondary-bg, 8) !default;
 $scaffold-toolbar-color: $scaffold-secondary-color !default;
 $scaffold-header-zindex: $zindex-navbar !default;
@@ -127,7 +127,7 @@ body {
 // Content
 //
 .scaffold-content {
-    position: fixed !important;
+    position: absolute;
     top: $scaffold-topbar-height;
     left: 0;
     right: 0;
@@ -284,4 +284,5 @@ body {
     display: flex;
     justify-content: space-between;
     z-index: $scaffold-header-zindex;
+    border-bottom: 1px solid $topbar-border-bottom-color;
 }

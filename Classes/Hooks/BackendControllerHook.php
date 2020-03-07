@@ -16,6 +16,7 @@ class BackendControllerHook
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Viewport', 'function(viewport) {
             viewport.doLayout = function(){viewport.NavigationContainer.cleanup(), viewport.NavigationContainer.calculateScrollbar()}
         }');
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/Templates/PageTree');
     }
 
     /**

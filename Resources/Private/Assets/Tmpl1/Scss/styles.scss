@@ -9,3 +9,20 @@
 @import 'form';
 @import 'linkvalidator';
 @import 'templates';
+
+.svg-toolbar__submenu {
+    position: absolute;
+    background: #fff;
+    top: -140px;
+    right: 0;
+}
+
+#typo3-pagetree-tree {
+    .node-icon {
+        transform: scale(1.2) translate(8px, -8px);
+    }
+
+    .node-icon-overlay {
+        transform: scale(1.2) translate(8px, -3px);
+    }
+}

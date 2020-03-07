@@ -67,10 +67,8 @@ $topbar-max-content-width: $topbar-button-width  * 3 + $scaffold-modulemenu-expa
 
     &.topbar-button-modulemenu {
         left: 0;
-
-        @media (min-width: $scaffold-breakpoint) {
-            background-color: $topbar-button-active-bg;
-        }
+        background-color: $topbar-button-active-bg;
+        color:$toolbar-item-open-bg-color;
     }
 
     &.topbar-button-navigationcomponent {

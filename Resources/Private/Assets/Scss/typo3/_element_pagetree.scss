@@ -1,3 +1,6 @@
+$typo3-pagetree-bg: #272d36 !default;
+$typo3-pagetree-color: #fff !default;
+
 //
 // Pagetree
 //
@@ -7,6 +10,9 @@
 
 #typo3-pagetree {
     height: 100%;
+    background-color: $typo3-pagetree-bg;
+    color: $typo3-pagetree-color;
+    fill: currentColor;
 
     .x-panel-bwrap,
     .x-panel-body {

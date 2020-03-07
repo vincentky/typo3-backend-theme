@@ -34,7 +34,7 @@ $gray-dark: rgb(90, 90, 90);
 $gray: rgb(115, 115, 115);
 $gray-light: rgba(0, 0, 0, 0.1);
 $gray-lighter: rgba(0, 0, 0, 0.08);
-$brand-primary: #fe8500;
+$brand-primary: #e95a5a;
 $brand-success: #10cfbd;
 $brand-info: #3b4752;
 $brand-warning: #f8d053;
@@ -296,18 +296,18 @@ $module-body-padding: $module-body-padding-vertical $module-body-padding-horizon
 
 
 $modulemenu-item-icon-bg-color: transparent;
-$modulemenu-group-icon-bg-color: #21252d;
+$modulemenu-group-icon-bg-color: #2c313b;
 $modulemenu-group-title-font-weight: normal;
 $modulemenu-group-bottom-border: none;
 $modulemenu-item-padding-expanded: 12px 0 12px 45px;
 $modulemenu-item-padding: 12px 26px;
 $modulemenu-group-padding-vertical: 5px;
 $modulemenu-group-padding-horizontal: 15px;
-$modulemenu-group-container-bg: #1f2334;
+$modulemenu-group-container-bg: #272d36;
 $modulemenu-item-padding-horizontal: 0;
 $modulemenu-group-title-padding-x: 20px;
 $modulemenu-group-title-padding-y: 0;
-$modulemenu-group-header-icon-padding: 4px;
+$modulemenu-group-header-icon-padding: 0;
 
 //
 // Scaffold
@@ -318,7 +318,7 @@ $scaffold-topbar-height: $navbar-height;
 $scaffold-secondary-bg: #fff;
 $scaffold-secondary-color: #626262;
 
-$scaffold-modulemenu-bg: #2d3140;
+$scaffold-modulemenu-bg: #313642;
 $scaffold-modulemenu-color: #fff;
 $scaffold-modulemenu-snapped-width: 70px;
 $scaffold-modulemenu-expanded-width: 280px;
@@ -351,3 +351,27 @@ $card-border-color: $gray-lighter;
 $card-border-hover-color: rgba(0, 0, 0, 0.1);
 $card-shadow-hover-offset-y: 1px;
 $card-bg-color: #fff;
+
+
+$svg-toolbar-height: 0;
+$svg-toolbar-border: transparent;
+$typo3-pagetree-color:#cacaca;
+$svgColors: (
+    border: #d7d7d7,
+    lines: #4a4a4a,
+    nodeSelectedBg: #fff,
+    nodeOverBg: #f2f2f2,
+    dragOverBg: #d7e4f1,
+    dragOverBorder: transparent,
+    dragAlertBg: #f6d3cf,
+    dragAlertBorder: #d66c68,
+    dragAboveBg: transparent,
+    dragAboveBorder: transparent,
+    dragBetweenBg: transparent,
+    dragBetweenBorder: transparent,
+    dragBelowBg: transparent,
+    dragBelowBorder: transparent,
+    dragTooltipBg: #d7e4f1,
+    dragTooltipAlertBg: #f6d3cf,
+    dragTooltipAlertBorder: #d66c68
+)

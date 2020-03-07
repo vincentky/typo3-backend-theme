@@ -19,6 +19,9 @@ $modulemenu-item-padding-expanded: 2px 4px !default;
 $modulemenu-group-header-icon-padding: 0 !default;
 $modulemenu-inner-padding-x: 0 !default;
 $modulemenu-inner-padding-y: 10px !default;
+$modulemenu-group-icon-border: 1px solid #23272F !default;
+$modulemenu-group-icon-color: #fff !default;
+$modulemenu-group-icon-color-active: #fff !default;
 
 // Module menu wrapper
 .module-wrapper {
@@ -91,7 +94,11 @@ $modulemenu-inner-padding-y: 10px !default;
         z-index: 1;
         margin-right: $modulemenu-item-padding-horizontal;
         background-color: $modulemenu-group-icon-bg-color;
-
+        border: $modulemenu-group-icon-border;
+        color: $modulemenu-group-icon-color;
+.icon{
+    opacity: 0.75;
+}
         .fa {
             font-size: 0.5em;
         }
@@ -133,8 +140,12 @@ $modulemenu-inner-padding-y: 10px !default;
                 @include rotate(0deg);
             }
         }
-        .modulemenu-icon{
-            color: $brand-primary;
+
+        .modulemenu-icon {
+            color: $modulemenu-group-icon-color-active;
+            .icon{
+                opacity: 1;
+            }
         }
     }
 }
