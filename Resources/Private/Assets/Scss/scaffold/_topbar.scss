@@ -68,7 +68,7 @@ $topbar-max-content-width: $topbar-button-width  * 3 + $scaffold-modulemenu-expa
     &.topbar-button-modulemenu {
         left: 0;
         background-color: $topbar-button-active-bg;
-        color:$toolbar-item-open-bg-color;
+        color: $toolbar-item-open-bg-color;
     }
 
     &.topbar-button-navigationcomponent {
@@ -101,6 +101,16 @@ $topbar-max-content-width: $topbar-button-width  * 3 + $scaffold-modulemenu-expa
         &.topbar-button-navigationcomponent {
             @media (min-width: $topbar-max-content-width) {
                 left: $scaffold-modulemenu-expanded-width;
+            }
+        }
+    }
+}
+
+.scaffold-content-navigation-expanded {
+    .topbar-button {
+        &.topbar-button-navigationcomponent {
+            @media (min-width: $topbar-max-content-width) {
+                margin-left: $scaffold-content-navigation-width;
             }
         }
     }

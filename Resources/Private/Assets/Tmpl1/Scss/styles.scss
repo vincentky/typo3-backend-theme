@@ -19,10 +19,19 @@
 
 #typo3-pagetree-tree {
     .node-icon {
-        transform: scale(1.2) translate(8px, -8px);
+        transform: scale(1.2) translate(8px, -4px);
     }
 
     .node-icon-overlay {
-        transform: scale(1.2) translate(8px, -3px);
+        transform: scale(1.2) translate(8px, 0px);
     }
+
+    .links {
+        transform: translateY(4px);
+    }
+}
+
+.tree-toolbar {
+    height: $navbar-height;
+    background: $typo3-pagetree-bg;
 }

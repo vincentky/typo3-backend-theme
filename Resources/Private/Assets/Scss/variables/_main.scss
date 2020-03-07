@@ -303,7 +303,8 @@ $modulemenu-item-padding-expanded: 12px 0 12px 45px;
 $modulemenu-item-padding: 12px 26px;
 $modulemenu-group-padding-vertical: 5px;
 $modulemenu-group-padding-horizontal: 15px;
-$modulemenu-group-container-bg: #272d36;
+$modulemenu-group-container-bg: #383c48;
+$modulemenu-group-container-bg-border-color: #262931;
 $modulemenu-item-padding-horizontal: 0;
 $modulemenu-group-title-padding-x: 20px;
 $modulemenu-group-title-padding-y: 0;
@@ -355,16 +356,17 @@ $card-bg-color: #fff;
 
 $svg-toolbar-height: 0;
 $svg-toolbar-border: transparent;
-$typo3-pagetree-color:#cacaca;
+$typo3-pagetree-color: #cacaca;
+$typo3-pagetree-bg: #282c37;
 $svgColors: (
-    border: #d7d7d7,
+    border: none,
     lines: #4a4a4a,
-    nodeSelectedBg: #fff,
-    nodeOverBg: #f2f2f2,
-    dragOverBg: #d7e4f1,
+    nodeSelectedBg: rgba(255, 255, 255, 0.2),
+    nodeOverBg: rgba(255, 255, 255, 0.2),
+    dragOverBg: rgba(233, 90, 90, 0.2),
     dragOverBorder: transparent,
-    dragAlertBg: #f6d3cf,
-    dragAlertBorder: #d66c68,
+    dragAlertBg: rgba(233, 90, 90, 0.6),
+    dragAlertBorder: transparent,
     dragAboveBg: transparent,
     dragAboveBorder: transparent,
     dragBetweenBg: transparent,
@@ -374,4 +376,8 @@ $svgColors: (
     dragTooltipBg: #d7e4f1,
     dragTooltipAlertBg: #f6d3cf,
     dragTooltipAlertBorder: #d66c68
-)
+);
+$svg-toolbar-padding: 0;
+
+
+$navigation-bg: transparent;

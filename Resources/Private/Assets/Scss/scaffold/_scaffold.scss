@@ -212,6 +212,8 @@ body {
         .scaffold-modulemenu {
             width: $scaffold-modulemenu-snapped-width !important;
             transition: all 0.2s ease-out;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25);
 
             &:hover {
                 width: $scaffold-modulemenu-expanded-width !important;

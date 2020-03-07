@@ -22,6 +22,7 @@ $modulemenu-inner-padding-y: 10px !default;
 $modulemenu-group-icon-border: 1px solid #23272F !default;
 $modulemenu-group-icon-color: #fff !default;
 $modulemenu-group-icon-color-active: #fff !default;
+$modulemenu-group-container-bg-border-color:transparent !default;
 
 // Module menu wrapper
 .module-wrapper {
@@ -39,6 +40,9 @@ $modulemenu-group-icon-color-active: #fff !default;
     .modulemenu-group-container {
         padding: $modulemenu-inner-padding-y $modulemenu-inner-padding-x;
         background-color: $modulemenu-group-container-bg;
+        border-width: 1px 0;
+        border-style: solid;
+        border-color: $modulemenu-group-container-bg-border-color;
         @extend .list-unstyled;
     }
 

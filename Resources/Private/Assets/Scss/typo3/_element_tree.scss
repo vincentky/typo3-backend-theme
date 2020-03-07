@@ -1,20 +1,20 @@
 //
 // Variables
 //
-$navigation-text: #000;
-$navigation-bg: $gray-lighter;
-$navigation-border: rgb(195, 195, 195);
+$navigation-text: #000 !default;
+$navigation-bg: $gray-lighter !default;
+$navigation-border: rgb(195, 195, 195) !default;
 
 //
 // Trees Variables
 //
-$tree-indentation: 16px;
-$tree-intendation-space: 6px;
-$tree-line-height: 21px;
-$tree-border: #666;
-$tree-bg: white;
-$tree-control-size: 20px;
-$tree-control-icon-size: 12px;
+$tree-indentation: 20px !default;
+$tree-intendation-space: 6px !default;
+$tree-line-height: 21px !default;
+$tree-border: #666 !default;
+$tree-bg: white !default;
+$tree-control-size: 20px !default;
+$tree-control-icon-size: 12px !default;
 
 //
 // Tree
