@@ -50,7 +50,7 @@ $link-hover-color: #000;
 
 // Typography
 $font-family-sans-serif: Verdana, Arial, Helvetica, sans-serif;
-$font-size-base: 12px;
+$font-size-base: 13px;
 $font-size-large: ceil(($font-size-base * 1.25)); // ~15px
 $font-size-small: 11px; // ~11px
 $font-size-h1: floor(($font-size-base * 2.3));
@@ -113,18 +113,20 @@ $btn-primary-bg: $brand-primary !default;
 $btn-primary-border: darken($btn-primary-bg, 5%) !default;
 
 // Forms
-$input-bg: #fff;
+$input-bg: #fafafa;
 $input-color: #2c2c2c;
-$input-border: $gray-lighter;
-$input-border-focus: $gray-light;
-$input-focus-bg: #f0f0f0;
-$input-color-placeholder: $gray-lighter;
-$input-color-disabled: rgba(98, 98, 98, .23);
-$input-bg-disabled: #f8f8f8;
+$input-border: rgba(0, 0, 0, 0.07);
+$input-border-focus: rgba(0, 0, 0, 0.1);
+$input-focus-bg: #efefef;
+$input-color-placeholder: #caccce;
+$input-color-disabled: rgba(98, 98, 98, 0.23);
+$input-bg-disabled: #efefef;
+$input-border-radius: 1px;
 $input-height-large: (ceil($font-size-large * $line-height-large) + ($padding-large-vertical * 1.6) + 2);
+$input-group-addon-bg: #ececec;
 
 // Typo3 forms
-$form-section-border: $gray-lighter;
+$form-section-border: transparent;
 
 // Navbar
 $navbar-height: 60px;
@@ -275,7 +277,7 @@ $progress-bg: #dedede;
 //
 
 // Module
-$module-bg: $body-bg;
+$module-bg: #eef1f5;
 $module-color: $text-color;
 $module-dark-bg: #333;
 $module-dark-color: #ccc;
@@ -292,7 +294,7 @@ $module-docheader-bar-margin-horizontal: 0;
 $module-docheader-bar-margin: $module-docheader-bar-margin-vertical $module-docheader-bar-margin-horizontal;
 $module-body-padding-vertical: 24px;
 $module-body-padding-horizontal: 24px;
-$module-body-padding: $module-body-padding-vertical $module-body-padding-horizontal;
+$module-body-padding: $module-body-padding-vertical $module-body-padding-horizontal $module-docheader-height + $module-body-padding-vertical !important;
 
 
 $modulemenu-item-icon-bg-color: transparent;
@@ -335,7 +337,7 @@ $topbar-button-navigation-component-active-bg: transparent;
 $topbar-button-diabled-bg: none;
 $topbar-button-active-bg: $brand-primary;
 $topbar-button-navigation-component-color: #222;
-$topbar-border-bottom-color: #dfdede;
+$scaffold-toolbar-border-bottom-color: #dfdede;
 $toolbar-navigation-search-hover-bg: none;
 $toolbar-avatar-text-margin: 10px;
 $toolbar-item-open-bg-color: #fff;

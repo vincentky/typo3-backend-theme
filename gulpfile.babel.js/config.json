@@ -4,8 +4,14 @@
 		"failAfterError": true,
 		"reportOutputDir": ".reports",
 		"reporters": [
-			{ "formatter": "verbose", "console": true },
-			{ "formatter": "json", "save": "stylelint.json" }
+			{
+				"formatter": "verbose",
+				"console": true
+			},
+			{
+				"formatter": "json",
+				"save": "stylelint.json"
+			}
 		],
 		"debug": true
 	},

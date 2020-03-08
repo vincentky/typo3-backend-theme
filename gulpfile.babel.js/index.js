@@ -4,6 +4,7 @@
 import { dest, parallel, series, src, watch as gwatch } from 'gulp';
 import notifier from 'gulp-plumber-notifier';
 import stylelint from 'gulp-stylelint';
+import autoprefixer from 'gulp-autoprefixer';
 import sass from 'gulp-sass';
 import babel from 'gulp-babel';
 import eslint from 'gulp-eslint';
@@ -59,6 +60,7 @@ export const compileScss = () =>
                 ],
             }).on('error', sass.logError),
         )
+        .pipe(autoprefixer())
         .pipe(sourcemaps.write())
         .pipe(dest(config.paths.css.dest));
 

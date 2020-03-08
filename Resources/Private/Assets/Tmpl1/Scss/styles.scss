@@ -5,10 +5,10 @@
 //
 
 @import 'backend';
-@import 'editor';
-@import 'form';
-@import 'linkvalidator';
-@import 'templates';
+
+button, a {
+    outline: 0;
+}
 
 .svg-toolbar__submenu {
     position: absolute;
@@ -44,4 +44,12 @@
     border: none;
     border-radius: 0;
     height: 44px;
+}
+
+.tree-toolbar{
+    border-bottom: 1px solid #5e6473;
+}
+
+label{
+    font-weight: normal;
 }

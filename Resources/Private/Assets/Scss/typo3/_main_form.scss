@@ -41,6 +41,7 @@ span.typo3-moduleHeader img {
     .thumbnail-status {
         border: 1px solid $state-info-text;
     }
+
     // A loading order issue prevents .has-change to be overridden with .has-error
     // this is a workaround needs to be cleaned up in a less file restructuring
     &.has-error {
@@ -79,8 +80,14 @@ label {
 //
 // Form control additions
 //
+
 .form-control {
     min-width: 120px;
+
+    &:focus {
+        box-shadow: none;
+        background: $input-focus-bg;
+    }
 }
 
 .form-control-adapt {
@@ -328,11 +335,9 @@ select {
 .form-section {
     border: 1px solid $form-section-border;
     background-color: #fafafa;
-    padding: 15px 12px 3px;
-
-    & + .form-section {
-        margin-top: -1px;
-    }
+    padding: 30px 30px 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0), 0 2px 2px rgba(0, 0, 0, 0.1);
+    margin: 30px 0;
 }
 
 .tab-pane {
@@ -343,7 +348,9 @@ select {
 
 .form-section-headline {
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ececec;
+    padding-bottom: 15px;
 }
 
 //
@@ -508,3 +515,4 @@ textarea {
         resize: none;
     }
 }
+

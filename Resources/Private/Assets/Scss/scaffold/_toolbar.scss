@@ -31,26 +31,17 @@ $toolbar-item-open-bg-color: $dark-bg !default;
     @media (min-width: $scaffold-breakpoint) {
         padding: 0;
         background-color: $scaffold-topbar-bg;
-        border-bottom: 1px solid transparent;
     }
 
-    &:after {
-        clear: both;
-        display: table;
-        content: '';
-    }
 }
 
 .toolbar-list {
     list-style: none;
     padding: 0;
     margin: 0;
-
-    &:after {
-        clear: both;
-        display: table;
-        content: '';
-    }
+    display: flex;
+    justify-content: flex-end;
+    height: $navbar-height;
 
     .toolbar-item:last-child {
         .dropdown-menu {
@@ -66,7 +57,6 @@ $toolbar-item-open-bg-color: $dark-bg !default;
     padding: 4px;
     position: relative;
     display: block;
-    float: left;
     width: 100%;
 
     @media (min-width: 600px) {

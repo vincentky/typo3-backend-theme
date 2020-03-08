@@ -19,7 +19,7 @@ $topbar-button-width: 40px !default;
 $toolbar-item-padding-vertical: 9px !default;
 $toolbar-item-padding-horizontal: 15px !default;
 $topbar-header-site-after-bg: linear-gradient(to right, transparentize($topbar-bg, 1) 0%, transparentize($topbar-bg, 0) 100%) !default;
-$topbar-header-site-max-width: $scaffold-modulemenu-expanded-width - $scaffold-modulemenu-snapped-width !default;
+$topbar-header-site-width: $scaffold-modulemenu-expanded-width - $scaffold-modulemenu-snapped-width !default;
 $topbar-header-site-bg-color: $scaffold-modulemenu-header-bg !default;
 $topbar-button-navigation-component-active-bg: $topbar-button-active-bg !default;
 $topbar-button-diabled-bg: $topbar-button-active-bg !default;
@@ -44,12 +44,9 @@ $topbar-max-content-width: $topbar-button-width  * 3 + $scaffold-modulemenu-expa
 // Buttons
 //
 .topbar-button {
-    position: absolute;
-    top: 0;
-    display: inline-block;
     border: 0;
     background-color: $topbar-button-bg;
-    height: 100%;
+    height: $navbar-height;
     width: $topbar-button-width;
 
     &:focus,
@@ -66,7 +63,6 @@ $topbar-max-content-width: $topbar-button-width  * 3 + $scaffold-modulemenu-expa
     }
 
     &.topbar-button-modulemenu {
-        left: 0;
         background-color: $topbar-button-active-bg;
         color: $toolbar-item-open-bg-color;
     }
@@ -101,6 +97,7 @@ $topbar-max-content-width: $topbar-button-width  * 3 + $scaffold-modulemenu-expa
         &.topbar-button-navigationcomponent {
             @media (min-width: $topbar-max-content-width) {
                 left: $scaffold-modulemenu-expanded-width;
+                position: absolute;
             }
         }
     }
@@ -161,18 +158,13 @@ $topbar-max-content-width: $topbar-button-width  * 3 + $scaffold-modulemenu-expa
 // Header
 //
 .topbar-header {
-    padding-left: $topbar-button-width;
-
-    @media (max-width: $scaffold-breakpoint-max) {
-        padding-right: ($topbar-button-width * 2) !important;
-    }
+    display: flex;
 }
 
 .topbar-header-site {
     overflow: hidden;
     position: relative;
-    max-width: $topbar-header-site-max-width;
-    width: 100%;
+    width: $topbar-header-site-width;
     height: $topbar-height;
     line-height: $topbar-height;
     padding-left: 1em;
