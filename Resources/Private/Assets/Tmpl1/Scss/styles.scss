@@ -12,9 +12,10 @@
 
 .svg-toolbar__submenu {
     position: absolute;
-    background: #fff;
-    top: -140px;
+    background: $typo3-pagetree-bg;
+    top: $navbar-height;
     right: 0;
+    padding: 10px 15px;
 }
 
 #typo3-pagetree-tree {
@@ -31,7 +32,16 @@
     }
 }
 
-.tree-toolbar {
+.tree-topbar {
     height: $navbar-height;
     background: $typo3-pagetree-bg;
+    display: flex;
+    justify-content: space-between;
+}
+
+.tree-filter-search-input {
+    background: #40434a;
+    border: none;
+    border-radius: 0;
+    height: 44px;
 }

@@ -16,7 +16,7 @@
 		"downlevelIteration": true,
 		"experimentalDecorators": true,
 		"noImplicitAny": true,
-		"noImplicitThis": true,
+		"noImplicitThis": false,
 		"noImplicitReturns": true,
 		"pretty": true,
 		"baseUrl": "./Resources/Private/Assets/TypeScript",

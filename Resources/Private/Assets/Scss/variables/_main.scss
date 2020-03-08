@@ -34,7 +34,7 @@ $gray-dark: rgb(90, 90, 90);
 $gray: rgb(115, 115, 115);
 $gray-light: rgba(0, 0, 0, 0.1);
 $gray-lighter: rgba(0, 0, 0, 0.08);
-$brand-primary: #e95a5a;
+$brand-primary: #e57e31;
 $brand-success: #10cfbd;
 $brand-info: #3b4752;
 $brand-warning: #f8d053;
@@ -319,7 +319,7 @@ $scaffold-topbar-height: $navbar-height;
 $scaffold-secondary-bg: #fff;
 $scaffold-secondary-color: #626262;
 
-$scaffold-modulemenu-bg: #313642;
+$scaffold-modulemenu-bg: #2d313a;
 $scaffold-modulemenu-color: #fff;
 $scaffold-modulemenu-snapped-width: 70px;
 $scaffold-modulemenu-expanded-width: 280px;
@@ -333,7 +333,7 @@ $topbar-button-width: $scaffold-modulemenu-snapped-width;
 $topbar-header-site-after-bg: none;
 $topbar-button-navigation-component-active-bg: transparent;
 $topbar-button-diabled-bg: none;
-$topbar-button-active-bg: $scaffold-modulemenu-header-bg;
+$topbar-button-active-bg: $brand-primary;
 $topbar-button-navigation-component-color: #222;
 $topbar-border-bottom-color: #dfdede;
 $toolbar-navigation-search-hover-bg: none;
@@ -357,7 +357,7 @@ $card-bg-color: #fff;
 $svg-toolbar-height: 0;
 $svg-toolbar-border: transparent;
 $typo3-pagetree-color: #cacaca;
-$typo3-pagetree-bg: #282c37;
+$typo3-pagetree-bg: #343740;
 $svgColors: (
     border: none,
     lines: #4a4a4a,

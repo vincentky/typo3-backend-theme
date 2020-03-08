@@ -35,7 +35,7 @@ $svg-toolbar-padding: 4px 10px 0 !default;
     left: 0;
     text-align: center;
     background: rgba(0, 0, 0, 0.3);
-    z-index: 3000;
+    z-index: 1001;
     user-select: none;
 
     & > * {
@@ -70,7 +70,7 @@ $svg-toolbar-padding: 4px 10px 0 !default;
 
 .svg-tree-wrapper {
     position: relative;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 0 15px;
 
     & > svg {
@@ -337,13 +337,13 @@ $svg-toolbar-padding: 4px 10px 0 !default;
     }
 
     &__drag-node {
-        display: inline-block;
         cursor: move;
         padding: 5px;
         border: none;
         background: 0 0;
         font-size: 11px;
         line-height: 16px;
+        display: flex;
     }
 }
 

@@ -23,7 +23,7 @@ $toolbar-navigation-search-hover-bg: $toolbar-dropdown-link-hover-bg !default;
 $toolbar-navigation-search-focus-bg: $toolbar-dropdown-link-active-bg !default;
 $toolbar-avatar-width: 28px !default;
 $toolbar-avatar-text-margin: 2px !default;
-$toolbar-item-open-bg-color:$dark-bg !default;
+$toolbar-item-open-bg-color: $dark-bg !default;
 
 .toolbar {
     padding: 8px;
@@ -52,9 +52,9 @@ $toolbar-item-open-bg-color:$dark-bg !default;
         content: '';
     }
 
-    .toolbar-item:last-child{
-        .dropdown-menu{
-            left:auto;
+    .toolbar-item:last-child {
+        .dropdown-menu {
+            left: auto;
             right: 0;
         }
     }
@@ -157,11 +157,12 @@ $toolbar-item-open-bg-color:$dark-bg !default;
     text-overflow: ellipsis;
     border: 1px solid rgba(0, 0, 0, 0.5);
     position: relative;
-    display: block;
+    display: inline-block;
     text-decoration: none;
     padding: $toolbar-item-padding-vertical $toolbar-item-padding-horizontal;
     height: $toolbar-height;
     line-height: $toolbar-height - ($toolbar-item-padding-vertical * 2);
+    background: none;
 
     &:hover,
     &:focus {
