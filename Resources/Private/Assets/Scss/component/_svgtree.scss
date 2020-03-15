@@ -293,7 +293,7 @@ $svg-toolbar-padding: 4px 10px 0 !default;
     background-color: $module-docheader-bg;
     position: absolute;
     top: -$navbar-height;
-    z-index: 999999;
+    z-index: $zindex-navbar;
     width: 100%;
 
     &__btn {

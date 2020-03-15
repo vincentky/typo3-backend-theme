@@ -122,7 +122,7 @@ $input-bg: #fafafa;
 $input-color: #2c2c2c;
 $input-border: rgba(0, 0, 0, 0.07);
 $input-border-focus: rgba(0, 0, 0, 0.1);
-$input-focus-bg: rgba(255,255,255,0.1);
+$input-focus-bg: rgba(255, 255, 255, 0.1);
 $input-color-placeholder: #caccce;
 $input-color-disabled: rgba(98, 98, 98, 0.23);
 $input-bg-disabled: #efefef;
@@ -326,6 +326,11 @@ $modulemenu-group-header-icon-padding: 0;
 $modulemenu-item-link-active-bg: $bg-dark-item-active-bg;
 
 //
+// Elements Browser
+// ========
+//
+$element-browser-main-sidebar: var(--link-browser-navigation-width, 320px);
+//
 // Scaffold
 // ========
 //
@@ -340,8 +345,7 @@ $scaffold-modulemenu-snapped-width: 70px;
 $scaffold-modulemenu-expanded-width: 240px;
 $scaffold-modulemenu-header-bg: $brand-notice;
 
-$scaffold-content-navigation-width: 280px;
-
+$scaffold-content-navigation-width: var(--scaffold-content-navigation-width, 280px);
 $toolbar-height: $scaffold-topbar-height;
 $toolbar-navigation-bg: $scaffold-secondary-bg;
 $topbar-button-width: $scaffold-modulemenu-snapped-width;

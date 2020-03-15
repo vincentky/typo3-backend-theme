@@ -1,0 +1,6 @@
+# cat=PageTree; type=integer; label=LLL:EXT:templates/Resources/Private/Language/locallang.xlf:PageTree.defaultPageTreeWidth
+defaultPageTreeWidth = 280
+# cat=PageTree; type=integer; label=LLL:EXT:templates/Resources/Private/Language/locallang.xlf:PageTree.defaultLinkBrowserTreeWidth
+defaultLinkBrowserTreeWidth = 320
+# cat=PageTree; type=integer; label=LLL:EXT:templates/Resources/Private/Language/locallang.xlf:PageTree.pageTreeNodeHeight
+pageTreeNodeHeight = 30

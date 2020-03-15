@@ -12,6 +12,15 @@
 			<trans-unit id="mlang_labels_tablabel">
 				<source>Backend conf</source>
 			</trans-unit>
+			<trans-unit id="PageTree.defaultPageTreeWidth">
+				<source>Default PageTree width (in px)</source>
+			</trans-unit>
+			<trans-unit id="PageTree.defaultLinkBrowserTreeWidth">
+				<source>Default Link Browser page tree width (in px)</source>
+			</trans-unit>
+			<trans-unit id="PageTree.pageTreeNodeHeight">
+				<source>PageTree node height (in px)</source>
+			</trans-unit>
         </body>
     </file>
 </xliff>

@@ -38,7 +38,8 @@
 //
 // Variables
 //
-$elementbrowser-breakpoint: 600px;
+$elementbrowser-breakpoint: 600px !default;
+$element-browser-main-sidebar: 320px !default;
 
 //
 // Component
@@ -111,23 +112,10 @@ $elementbrowser-breakpoint: 600px;
 .element-browser-main-sidebar {
     background-color: #f2f2f2;
 
-    @media (min-width: $elementbrowser-breakpoint) {
-        flex-shrink: 0;
-        width: 260px;
-        border-right: 1px solid #ddd;
-    }
+    flex-shrink: 0;
+    width: $element-browser-main-sidebar;
+    border-right: 1px solid #ddd;
 
-    @media (min-width: $elementbrowser-breakpoint * 1.2) {
-        width: 280px;
-    }
-
-    @media (min-width: $elementbrowser-breakpoint * 1.4) {
-        width: 300px;
-    }
-
-    @media (min-width: $elementbrowser-breakpoint * 1.6) {
-        width: 320px;
-    }
 
     .list-tree {
         li:last-child:before {

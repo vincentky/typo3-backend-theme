@@ -5,8 +5,11 @@ namespace Starfishprime\Templates\Controller\Page;
 
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Controller\Page\TreeController as BaseTreeController;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Type\Bitmask\JsConfirmation;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 class TreeController extends BaseTreeController
 {
@@ -22,15 +25,21 @@ class TreeController extends BaseTreeController
             'doktypes' => $this->getDokTypes(),
             'displayDeleteConfirmation' => $this->getBackendUser()->jsConfirmation(JsConfirmation::DELETE),
             'temporaryMountPoint' => $this->getMountPointPath((int)($this->getBackendUser()->uc['pageTree_temporaryMountPoint'] ?? 0)),
-            'nodeHeight' => 30,
-            'marginTop' => 200,
-            'indentWidth' => 20,
-            'width'=> 280,
-            'showIcons'=> true,
-            'showCheckboxes'=> true,
+            'nodeHeight' => (int)$this->getExtensionConfiguration()->get('templates','pageTreeNodeHeight') ?? 30,
+            'width' => (int)$this->getExtensionConfiguration()->get('templates','defaultPageTreeWidth') ?? 280,
+            'showIcons' => true,
+            'showCheckboxes' => true
         ];
 
         return new JsonResponse($configuration);
+    }
+
+    /**
+     * @return ExtensionConfiguration
+     */
+    protected function getExtensionConfiguration(): ExtensionConfiguration
+    {
+        return GeneralUtility::makeInstance(ExtensionConfiguration::class);
     }
 
 }

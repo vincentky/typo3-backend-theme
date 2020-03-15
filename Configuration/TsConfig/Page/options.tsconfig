@@ -1,0 +1,4 @@
+options.file_list.thumbnail {
+  width = 128
+  height = 128
+}

@@ -4,15 +4,16 @@ declare(strict_types=1);
 namespace Starfishprime\Templates\Hooks\Backend;
 
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Backend\Template\DocumentTemplate;
 
 class DocumentTemplateHook
 {
     /**
      * @param array $parameters
-     * @param \TYPO3\CMS\Backend\Template\DocumentTemplate $parent
+     * @param DocumentTemplate $parent
      * @return void
      */
-    public function preHeaderRenderHook(array $parameters, \TYPO3\CMS\Backend\Template\DocumentTemplate $parent)
+    public function preHeaderRenderHook(array $parameters,DocumentTemplate $parent)
     {
         /** @var PageRenderer $pageRenderer */
         $pageRenderer = $parameters['pageRenderer'];
@@ -39,7 +40,7 @@ class DocumentTemplateHook
         }
 
       //  $pageRenderer->addCssFile('EXT:pagetree_resizable/Resources/Public/Stylesheet/PagetreeResizable.css');
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/Templates/PagetreeResizable9');
+
     }
 
     /**
