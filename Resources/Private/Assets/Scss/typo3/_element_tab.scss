@@ -1,9 +1,32 @@
+$nav-tabs-mobile-width: 120px !default;
 //
 // Tab menu
 //
 .nav-tabs {
     border-radius: $border-radius-base $border-radius-base 0 0;
     background-color: $nav-tabs-bg;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+
+    @media (min-width: 450px) {
+        flex-direction: column;
+        width: $nav-tabs-mobile-width;
+        position: fixed;
+        + .tab-content {
+            margin-left: $nav-tabs-mobile-width + 15px;
+        }
+    }
+    @media (min-width: 1000px) {
+        flex-direction: row;
+        width: 100%;
+        position: relative;
+        overflow: visible;
+
+        + .tab-content {
+            margin-left: 0;
+        }
+    }
 
     > li {
         + li {
@@ -12,6 +35,9 @@
 
         > a {
             margin-right: 0;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
 
             @include transition(all 0.25s ease-in-out);
 

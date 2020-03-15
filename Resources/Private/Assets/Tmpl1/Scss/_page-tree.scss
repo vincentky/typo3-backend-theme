@@ -1,0 +1,32 @@
+
+#typo3-pagetree-tree {
+    .node-icon {
+        transform: scale(1.2) translate(8px, -4px);
+    }
+
+    .node-icon-overlay {
+        transform: scale(1.2) translate(8px, 0px);
+    }
+
+    .links {
+        transform: translateY(4px);
+    }
+}
+
+.tree-topbar {
+    height: $navbar-height;
+    background: $typo3-pagetree-bg;
+    display: flex;
+    justify-content: space-between;
+}
+
+.tree-filter-search-input {
+    background: #40434a;
+    border: none;
+    border-radius: 0;
+    height: 44px;
+}
+
+.tree-toolbar {
+    border-bottom: 1px solid #5e6473;
+}

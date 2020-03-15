@@ -1,0 +1,44 @@
+$table-button-group-border-color: #ccc !default;
+
+.table {
+    > tbody > tr > td {
+        border-bottom: 1px solid $table-border-color;
+    }
+
+    th {
+        .btn-default {
+            @include button-variant($table-button-color, $brand-primary, $brand-primary);
+            padding: 2px 3px;
+
+            img {
+                filter: invert(90%);
+            }
+        }
+    }
+}
+
+.table-striped {
+    .btn-group {
+        border: solid $table-button-group-border-color;
+        border-width: 0 1px;
+        margin-right: -4px;
+    }
+
+    td {
+        .btn-group {
+            &:first-child {
+                border-left: none;
+            }
+        }
+    }
+}
+
+.table-hover {
+    > tbody > tr {
+        border-left: 4px solid transparent;
+
+        &:hover {
+            border-color: lighten($brand-primary, 20%);
+        }
+    }
+}

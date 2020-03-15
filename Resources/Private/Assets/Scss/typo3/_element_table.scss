@@ -2,6 +2,11 @@
 // Tables
 //
 $table-fit-border-color: #ddd !default;
+$table-button-bg: darken($table-bg-accent, 10%) !default;
+$table-button-color: $btn-default-color !default;
+$table-button-border: darken($table-bg-accent, 20%) !default;
+$table-thead-bg: darken($table-bg, 5%) !default;
+$table-head-padding:0 !default;
 //
 // used in the admin tools => DB check
 //
@@ -72,6 +77,7 @@ table {
             > th {
                 white-space: nowrap;
                 vertical-align: middle;
+                padding: $table-head-padding;
             }
 
             > td {
@@ -81,7 +87,7 @@ table {
     }
 
     > thead > tr {
-        background-color: darken($table-bg, 5%);
+        background-color: $table-thead-bg;
 
         th.col-checkbox {
             + th.col-title {
@@ -109,7 +115,7 @@ table {
     }
 
     .btn-default {
-        @include button-variant($btn-default-color, darken($table-bg-accent, 10%), darken($table-bg-accent, 20%));
+        @include button-variant($table-button-color, $table-button-bg, $table-button-border);
     }
 
     .pagination {

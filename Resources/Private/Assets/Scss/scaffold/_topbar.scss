@@ -25,6 +25,7 @@ $topbar-button-navigation-component-active-bg: $topbar-button-active-bg !default
 $topbar-button-diabled-bg: $topbar-button-active-bg !default;
 $topbar-button-navigation-component-color: $topbar-header-color !default;
 $topbar-max-content-width: $topbar-button-width  * 3 + $scaffold-modulemenu-expanded-width !default;
+$topbar-header-site-color: inherit !default;
 
 //
 // Component
@@ -222,6 +223,7 @@ $topbar-max-content-width: $topbar-button-width  * 3 + $scaffold-modulemenu-expa
     line-height: 1.2em;
     display: inline-block;
     vertical-align: middle;
+    color: $topbar-header-site-color;
 }
 
 .topbar-header-site-name {

@@ -85,10 +85,9 @@ TreeToolbar.prototype.render = function () {
   });
 
   const d3Toolbar = d3.select('.svg-toolbar');
-  console.log(d3Toolbar, this.dragDrop.dragToolbar())
+
   $.each(this.tree.settings.doktypes, (id: number, e: Doktype) => {
     if (e.icon) {
-      console.log('ds', d3Toolbar.selectAll(`[data-tree-icon=${e.icon}]`))
       d3Toolbar.selectAll(`[data-tree-icon=${e.icon}]`).call(this.dragDrop.dragToolbar());
     }
   });

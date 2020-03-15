@@ -7,7 +7,7 @@ $panel-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1) !default;
 // Panel
 //
 .panel {
-    box-shadow: $panel-box-shadow;
+    @include section-card();
 
     &.ui-sortable-helper {
         border-style: dashed;

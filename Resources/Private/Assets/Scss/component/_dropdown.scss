@@ -1,7 +1,7 @@
 $dropdown-box-shadow: 0 0 5px rgba(98, 98, 98, .2) !default;
 $dropdown-border: #ccc !default;
 $dropdown-hr-border-color: #e7e7e7 !default;
-
+$dropdown-content-padding:1.5em !default;
 //
 // Dropdowns
 //
@@ -58,7 +58,7 @@ $dropdown-hr-border-color: #e7e7e7 !default;
 }
 
 div.dropdown-menu {
-    padding: 1.5em;
+    padding: $dropdown-content-padding;
 }
 
 .dropdown-list {

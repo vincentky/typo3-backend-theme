@@ -1,0 +1,31 @@
+$tceform-tab-content-bg: $module-bg !default;
+$form-section-headline-border-color: lighten($nav-tabs-border-color, 10%) !default;
+
+[role='tabpanel'] {
+    @media (min-width: 1000px) {
+        .nav-tabs {
+            &:before {
+                content: '';
+                background: #fff;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 25vh;
+                z-index: -1;
+            }
+
+            position: relative;
+            z-index: 1;
+            margin: 0 ($module-body-padding-horizontal * -1);
+            padding: 0 $module-body-padding-horizontal;
+            width: auto;
+
+            + .tab-content {
+                margin: 0 ($module-body-padding-horizontal * -1);
+                padding: $module-body-padding-vertical $module-body-padding-horizontal 0;
+                background: $tceform-tab-content-bg;
+            }
+        }
+    }
+}

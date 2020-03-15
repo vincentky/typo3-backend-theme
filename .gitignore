@@ -4,4 +4,5 @@
 /.php_cs
 /.php_cs.cache
 /tmp/
+/packages/
 /.reports/

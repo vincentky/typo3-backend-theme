@@ -91,6 +91,7 @@
 			"Starfishprime\\Templates\\": "Classes/",
 			"TYPO3\\CMS\\FrontendEditing\\": ".build/public/typo3conf/ext/frontend_editing/Classes",
 			"EBT\\ExtensionBuilder\\": ".build/public/typo3conf/ext/extension_builder/Classes",
+			"T3\\Dce\\": ".build/public/typo3conf/ext/dce/Classes",
 			"MASK\\Mask\\": ".build/public/typo3conf/ext/mask/Classes",
 			"IchHabRecht\\MaskExport\\": ".build/public/typo3conf/ext/mask_export/Classes",
 			"CodeFareith\\CfBeskin\\": ".build/public/typo3conf/ext/cf_beskin/Classes",

@@ -1,3 +1,5 @@
+$form-section-padding: 24px 24px (24px - $form-group-padding) !default;
+
 //
 // Disable ms-clear pseudo-element globally to avoid confusion with the
 // existing clearable integration in TYPO3
@@ -333,16 +335,14 @@ select {
 // Form Sections
 //
 .form-section {
-    border: 1px solid $form-section-border;
-    background-color: #fafafa;
-    padding: 30px 30px 3px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0), 0 2px 2px rgba(0, 0, 0, 0.1);
-    margin: 30px 0;
+    @include section-card();
+    padding: $form-section-padding;
 }
 
 .tab-pane {
     > .form-section:first-child {
         border-top: none;
+        margin-top: 0;
     }
 }
 
@@ -515,4 +515,3 @@ textarea {
         resize: none;
     }
 }
-

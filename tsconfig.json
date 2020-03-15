@@ -8,7 +8,10 @@
 		"isolatedModules": true,
 		"esModuleInterop": true,
 		"skipLibCheck": false,
-		"lib": ["es6", "dom"],
+		"lib": [
+			"es6",
+			"dom"
+		],
 		"module": "amd",
 		"sourceMap": true,
 		"removeComments": true,
@@ -19,9 +22,9 @@
 		"noImplicitThis": false,
 		"noImplicitReturns": true,
 		"pretty": true,
+		"strictPropertyInitialization": false,
 		"baseUrl": "./Resources/Private/Assets/TypeScript",
-
-		"outDir": 	"./Resources/Public/JavaScript/*",
+		"outDir": "./Resources/Public/JavaScript/*",
 		"typeRoots": [
 			"node_modules/@types",
 			"./Resources/Private/Assets/types"

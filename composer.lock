@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "brotkrueml/schema",
-            "version": "v1.5.2",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brotkrueml/schema.git",
-                "reference": "47ee105447c099c7a3e78adf8978614f2bc8cbe9"
+                "reference": "f5561b07c4877d6e9dc976a0d327c91032b6856e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brotkrueml/schema/zipball/47ee105447c099c7a3e78adf8978614f2bc8cbe9",
-                "reference": "47ee105447c099c7a3e78adf8978614f2bc8cbe9",
+                "url": "https://api.github.com/repos/brotkrueml/schema/zipball/f5561b07c4877d6e9dc976a0d327c91032b6856e",
+                "reference": "f5561b07c4877d6e9dc976a0d327c91032b6856e",
                 "shasum": ""
             },
             "require": {
@@ -28,24 +28,22 @@
             "conflict": {
                 "brotkrueml/sdbreadcrumb": "*"
             },
-            "replace": {
-                "typo3-ter/schema": "self.version"
-            },
             "require-dev": {
                 "clue/graph": "^0.9",
                 "dg/bypass-finals": "^1.1",
+                "friendsofphp/php-cs-fixer": "^2.16",
                 "infection/infection": "^0.13",
                 "mikey179/vfsstream": "^1.6",
                 "php-coveralls/php-coveralls": "^2.2",
                 "phpstan/phpstan": "^0.11",
-                "phpunit/phpunit": "^8.4",
+                "phpunit/phpunit": "^8.5",
                 "twig/twig": "^3.0",
-                "typo3/testing-framework": "^4.13 || ^5.0"
+                "typo3/testing-framework": "^4.13 || ^5.0 || ^6.2"
             },
             "type": "typo3-cms-extension",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.5.x-dev"
+                    "dev-master": "1.6.x-dev"
                 },
                 "typo3/cms": {
                     "app-dir": ".Build",
@@ -76,7 +74,7 @@
                 "seo",
                 "structured data"
             ],
-            "time": "2020-02-09T08:35:55+00:00"
+            "time": "2020-03-09T12:46:13+00:00"
         },
         {
             "name": "cogpowered/finediff",
@@ -1561,16 +1559,16 @@
         },
         {
             "name": "schams-net/t3extensions-widget",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schams-net/t3extensions_widget.git",
-                "reference": "5b98a8d32ef75e5b9a61fa45df525e39ca2038e5"
+                "reference": "4847e24787299d2945e3c107047caec61bc3f363"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schams-net/t3extensions_widget/zipball/5b98a8d32ef75e5b9a61fa45df525e39ca2038e5",
-                "reference": "5b98a8d32ef75e5b9a61fa45df525e39ca2038e5",
+                "url": "https://api.github.com/repos/schams-net/t3extensions_widget/zipball/4847e24787299d2945e3c107047caec61bc3f363",
+                "reference": "4847e24787299d2945e3c107047caec61bc3f363",
                 "shasum": ""
             },
             "require": {
@@ -1586,7 +1584,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "description": "Dashboard widget that displays the most recent TYPO3 extensions published/updated at the TER",
-            "time": "2020-02-26T03:46:09+00:00"
+            "time": "2020-03-03T04:23:50+00:00"
         },
         {
             "name": "symfony/cache",
@@ -7756,5 +7754,6 @@
     "platform": {
         "php": ">=7.4"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

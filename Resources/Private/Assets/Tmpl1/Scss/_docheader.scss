@@ -1,0 +1,30 @@
+.module-docheader-bar {
+    .btn-toolbar {
+        .btn {
+            padding: 6px 10px;
+            img {
+                opacity: 0.7;
+            }
+
+            &:hover {
+                img {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+}
+
+.module-docheader-bar-column-left {
+    .btn-toolbar {
+        .btn {
+            border: 1px solid #c4c0c0;
+            height: auto;
+            background: #eaeaea;
+            border-radius: 5px;
+            &:hover {
+                border-color: #8c8c8c;
+            }
+        }
+    }
+}

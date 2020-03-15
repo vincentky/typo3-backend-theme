@@ -3,8 +3,16 @@
 // ---------------
 // Description: Backend template demo v1
 //
-
+@import 'mixins/components';
+@import 'editor';
 @import 'backend';
+@import 'clipboard';
+@import 'page-tree';
+@import 'tables';
+@import 'docheader';
+@import 'tceform';
+@import 'tabpanel';
+@import 'features/icons';
 
 button, a {
     outline: 0;
@@ -18,38 +26,32 @@ button, a {
     padding: 10px 15px;
 }
 
-#typo3-pagetree-tree {
-    .node-icon {
-        transform: scale(1.2) translate(8px, -4px);
-    }
 
-    .node-icon-overlay {
-        transform: scale(1.2) translate(8px, 0px);
-    }
-
-    .links {
-        transform: translateY(4px);
-    }
-}
-
-.tree-topbar {
-    height: $navbar-height;
-    background: $typo3-pagetree-bg;
-    display: flex;
-    justify-content: space-between;
-}
-
-.tree-filter-search-input {
-    background: #40434a;
-    border: none;
-    border-radius: 0;
-    height: 44px;
-}
-
-.tree-toolbar{
-    border-bottom: 1px solid #5e6473;
-}
-
-label{
+label {
     font-weight: normal;
+}
+
+.topbar-button {
+
+    &.topbar-button-navigationcomponent {
+        border-bottom: 1px solid $scaffold-toolbar-border-bottom-color;
+        margin-top: 1px;
+    }
+
+    &[disabled],
+    &[disabled]:focus,
+    &[disabled]:hover {
+        opacity: 1;
+
+        .icon {
+            opacity: 0.5;
+        }
+    }
+}
+
+.module {
+    h1:first-of-type {
+        position: relative;
+        z-index: 2;
+    }
 }

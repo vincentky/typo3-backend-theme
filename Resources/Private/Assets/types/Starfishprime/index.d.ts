@@ -8,12 +8,14 @@ declare namespace Starfishprime {
   export let IconsManager: any;
 
 }
+
 interface Doktype {
   nodeType: number;
   icon: string;
   title: string;
   tooltip: string;
 }
+
 interface TreeNode {
   hasChildren: boolean;
   nameSourceField: string;
@@ -33,10 +35,14 @@ interface TreeNode {
   identifier: number;
   depth: number;
   tip: string;
-  icon:string;
+  icon: string;
   name: string;
   mountPoint: number;
   workspaceId: number;
   siblingsCount: number;
   siblingsPosition: number;
+
+  append(text: string): TreeNode;
+
+  attr(attr: string, callback: (node: TreeNode) => number | string | number): TreeNode;
 }

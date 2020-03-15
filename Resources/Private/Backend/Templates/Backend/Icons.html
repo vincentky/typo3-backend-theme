@@ -11,9 +11,9 @@
                 <div class="input-group">
                     <label>Filter: </label><br/>
                     <div class="btn-group t3js-filter-buttons">
-                        <button class="btn btn-default" data-filter="type:bitmap">Bitmap</button>
-                        <button class="btn btn-default" data-filter="type:font">Font</button>
-                        <button class="btn btn-default" data-filter="type:vector">Vector</button>
+                        <button class="btn btn-secondary" data-filter="type:bitmap">Bitmap</button>
+                        <button class="btn btn-secondary" data-filter="type:font">Font</button>
+                        <button class="btn btn-secondary" data-filter="type:vector">Vector</button>
                     </div>
                 </div>
             </div>
@@ -24,11 +24,11 @@
                 </div>
             </div>
     </div>
-    <div class="row" id="t3js-filter-container">
+    <div class="row feature-icons-list" id="t3js-filter-container">
         <f:for each="{allIcons}" as="icon">
-            <div class="col-md-2 feature-icons-container" data-icon-identifier="{icon}">
-                <a class="btn btn-default" href="#">
-                    <span class="feature-icons-container-icon"><core:icon identifier="{icon}" size="large" /></span>
+            <div class="col col-xs-6 col-sm-4 col-md-3 col-lg-2" data-icon-identifier="{icon}">
+                <a class="btn btn-default feature-icons-container" href="#">
+                    <core:icon identifier="{icon}" size="large" />
                     <span class="feature-icons-container-label">{icon}</span>
                     <input type="file" name="icon" data-icon="{icon}" class="feature-icons-container-upload hidden" value=""/>
                 </a>

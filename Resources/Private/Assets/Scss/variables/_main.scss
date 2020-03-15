@@ -39,11 +39,12 @@ $brand-success: #10cfbd;
 $brand-info: #3b4752;
 $brand-warning: #f8d053;
 $brand-danger: #f55753;
-$brand-notice: #333;
+$brand-notice: #343740;
 $dark-bg: #222 !default;
+$btn-border-radius-base: 0;
 
 // Scaffolding
-$body-bg: #f5f5f5;
+$body-bg: #ebeef1;
 $text-color: #626262;
 $link-color: #212424;
 $link-hover-color: #000;
@@ -94,14 +95,17 @@ $border-radius-large: 2px;
 $border-radius-small: 2px;
 
 // Tables
-$table-cell-padding: 6px;
+$table-cell-padding: 5px 10px;
 $table-condensed-cell-padding: 6px;
-$table-bg: #fafafa;
-$table-bg-accent: darken($table-bg, 1%);
-$table-bg-hover: darken($table-bg, 5%);
+$table-bg: transparent;
+$table-bg-accent: #f0f0f0;
+$table-bg-hover: #e1e1e1;
 $table-bg-active: $table-bg-hover;
-$table-border-color: #ccc;
+$table-border-color: #e1e1e1;
 $table-fit-border-color: transparent;
+$table-thead-bg: transparent;
+$table-head-padding: 10px;
+$table-button-color: inherit;
 
 // Buttons
 $btn-font-weight: normal;
@@ -111,6 +115,7 @@ $btn-default-border: #fff;
 $btn-primary-color: #fff !default;
 $btn-primary-bg: $brand-primary !default;
 $btn-primary-border: darken($btn-primary-bg, 5%) !default;
+$bg-dark-item-active-bg: rgba(255, 255, 255, 0.2) !default;
 
 // Forms
 $input-bg: #fafafa;
@@ -127,6 +132,7 @@ $input-group-addon-bg: #ececec;
 
 // Typo3 forms
 $form-section-border: transparent;
+$form-group-padding: 15px;
 
 // Navbar
 $navbar-height: 60px;
@@ -153,7 +159,7 @@ $nav-disabled-link-hover-color: $gray-dark;
 
 
 // Tabs
-$nav-tabs-border-color: #ccc;
+$nav-tabs-border-color: transparent;
 $nav-tabs-link-hover-bg: darken(#fafafa, 10%);
 $nav-tabs-link-hover-border-color: $gray-lighter;
 $nav-tabs-active-link-border-bottom-color: $brand-danger;
@@ -240,13 +246,18 @@ $hr-border: #7a7a7a;
 // Modal
 $zindex-modal: 5000;
 
+// Lists
+$list-group-hover-bg: #d7d7d7;
+$list-group-link-hover-color: #222;
+
+
 // Dropdown
 $dropdown-bg: #fafafa;
 $dropdown-color: #626262; // TYPO3 SPECIFIC
 $dropdown-border: rgba(222, 227, 231, 0.56);
 $dropdown-fallback-border: #ccc;
 $dropdown-divider-bg: #424242;
-$dropdown-link-color: #fff;
+$dropdown-link-color: $text-color;
 $dropdown-link-hover-color: #fff;
 $dropdown-link-hover-bg: #424242;
 $dropdown-link-active-color: #fff;
@@ -254,6 +265,7 @@ $dropdown-link-active-bg: #424242;
 $dropdown-link-disabled-color: $gray-lighter;
 $dropdown-header-color: $gray-lighter;
 $dropdown-caret-color: #000;
+$dropdown-content-padding: 2rem;
 
 // Datetime Picker
 $bs-datetimepicker-timepicker-font-size: $font-size-base;
@@ -277,14 +289,14 @@ $progress-bg: #dedede;
 //
 
 // Module
-$module-bg: #eef1f5;
+$module-bg: $body-bg;
 $module-color: $text-color;
 $module-dark-bg: #333;
 $module-dark-color: #ccc;
 $module-docheader-bg: #fff;
 $module-docheader-border: #f0f0f0;
 $module-docheader-zindex: 300;
-$module-docheader-height: 65px;
+$module-docheader-height: 70px;
 $module-docheader-padding-vertical: 0;
 $module-docheader-padding-horizontal: 24px;
 $module-docheader-padding: $module-docheader-padding-vertical $module-docheader-padding-horizontal;
@@ -311,6 +323,7 @@ $modulemenu-item-padding-horizontal: 0;
 $modulemenu-group-title-padding-x: 20px;
 $modulemenu-group-title-padding-y: 0;
 $modulemenu-group-header-icon-padding: 0;
+$modulemenu-item-link-active-bg: $bg-dark-item-active-bg;
 
 //
 // Scaffold
@@ -324,10 +337,10 @@ $scaffold-secondary-color: #626262;
 $scaffold-modulemenu-bg: #2d313a;
 $scaffold-modulemenu-color: #fff;
 $scaffold-modulemenu-snapped-width: 70px;
-$scaffold-modulemenu-expanded-width: 280px;
-$scaffold-modulemenu-header-bg: #222;
+$scaffold-modulemenu-expanded-width: 240px;
+$scaffold-modulemenu-header-bg: $brand-notice;
 
-$scaffold-content-navigation-width: 320px;
+$scaffold-content-navigation-width: 280px;
 
 $toolbar-height: $scaffold-topbar-height;
 $toolbar-navigation-bg: $scaffold-secondary-bg;
@@ -337,6 +350,7 @@ $topbar-button-navigation-component-active-bg: transparent;
 $topbar-button-diabled-bg: none;
 $topbar-button-active-bg: $brand-primary;
 $topbar-button-navigation-component-color: #222;
+$topbar-header-site-color: #fff;
 $scaffold-toolbar-border-bottom-color: #dfdede;
 $toolbar-navigation-search-hover-bg: none;
 $toolbar-avatar-text-margin: 10px;
@@ -359,7 +373,7 @@ $card-bg-color: #fff;
 $svg-toolbar-height: 0;
 $svg-toolbar-border: transparent;
 $typo3-pagetree-color: #cacaca;
-$typo3-pagetree-bg: #343740;
+$typo3-pagetree-bg: $scaffold-modulemenu-header-bg;
 $svgColors: (
     border: none,
     lines: #4a4a4a,
@@ -383,3 +397,6 @@ $svg-toolbar-padding: 0;
 
 
 $navigation-bg: transparent;
+$table-button-bg: transparent;
+$table-button-border: transparent;
+

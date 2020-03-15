@@ -7,12 +7,12 @@ $EM_CONF[$_EXTKEY] = [
     'state' => 'alpha',
     'clearCacheOnLoad' => 1,
     'author' => 'Vincent Kolly',
-    'author_email' => 'vincent@vincentk.ch',
+    'author_email' => 'vincentk0125@gmail.com',
     'author_company' => '',
     'version' => '0.0.1',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.2.*@dev',
+            'typo3' => '10.3.*@dev',
         ],
         'conflicts' => [],
         'suggests' => [],

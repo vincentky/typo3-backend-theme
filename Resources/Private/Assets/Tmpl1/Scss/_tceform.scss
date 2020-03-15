@@ -1,0 +1,18 @@
+$form-group-padding: 15px !default;
+$form-section-headline-border-color: #e4e4e4 !default;
+
+.form-section-headline {
+    border-color: $form-section-headline-border-color;
+    margin: ($module-body-padding-vertical * -1) ($module-body-padding-horizontal * -1) $form-group-padding;
+    padding: $form-group-padding $module-body-padding-horizontal;
+}
+
+
+.panel-space {
+    @include section-card();
+    padding: $form-section-padding;
+
+    .panel-heading {
+        @extend .form-section-headline;
+    }
+}
