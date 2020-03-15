@@ -25,7 +25,7 @@ class TreeController extends BaseTreeController
             'nodeHeight' => 30,
             'marginTop' => 200,
             'indentWidth' => 20,
-            'width'=> 300,
+            'width'=> 280,
             'showIcons'=> true,
             'showCheckboxes'=> true,
         ];

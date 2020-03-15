@@ -6,3 +6,4 @@
 /tmp/
 /packages/
 /.reports/
+!/Resources/Private/Assets/TypeScript/templates/NavigationContainer.ts

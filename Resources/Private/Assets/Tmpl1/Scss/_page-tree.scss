@@ -5,11 +5,15 @@
     }
 
     .node-icon-overlay {
-        transform: scale(1.2) translate(8px, 0px);
+        transform: scale(1.15) translate(6px, 4px);
+    }
+
+    .nodes {
+        transform: translateX(15px);
     }
 
     .links {
-        transform: translateY(4px);
+        transform: translate(15px, 4px);
     }
 }
 
@@ -29,4 +33,13 @@
 
 .tree-toolbar {
     border-bottom: 1px solid #5e6473;
+}
+
+.svg-toolbar__drag-node {
+    color: white;
+    span:first-child {
+        margin-right: 8px;
+        display: inline-block;
+        width: 16px;
+    }
 }

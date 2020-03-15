@@ -5,50 +5,53 @@ import PersistentStorage from 'TYPO3/CMS/Backend/Storage/Persistent';
  * @exports Starfishprime/Templates/Clipboard
  */
 class Clipboard {
-  private clipboardContainer: HTMLDivElement;
+    private clipboardContainer: HTMLDivElement;
 
-  constructor() {
-    this.initialize();
-  }
-
-  isPersistedOpen(): boolean {
-    if (!PersistentStorage.isset('clipboardOpen')) {
-      return false;
+    constructor() {
+        this.initialize();
     }
-    return <boolean>JSON.parse(PersistentStorage.get('clipboardOpen'));
-  }
 
-  initialize(): void {
-    const clipboardToggle = document.querySelector<HTMLLinkElement>('a[name="clip_head"]');
-    if (clipboardToggle) {
-      this.clipboardContainer = <HTMLDivElement>clipboardToggle.closest('.db_list-dashboard');
-      if (this.clipboardContainer) {
-        if (this.isPersistedOpen()) {
-          this.clipboardContainer.classList.add('open');
+    isPersistedOpen(): boolean {
+        if (!PersistentStorage.isset('clipboardOpen')) {
+            return false;
         }
-        clipboardToggle.addEventListener('click', (e: MouseEvent) => {
-          e.stopPropagation();
-          this.toggleClipboard();
-        });
-
-        window.addEventListener('click', (e: MouseEvent) => {
-          if (!this.clipboardContainer.contains(<Node>e.target) && this.clipboardContainer.classList.contains('open')) {
-            this.closeClipboard();
-          }
-        });
-      }
+        return <boolean>JSON.parse(PersistentStorage.get('clipboardOpen'));
     }
-  }
 
-  closeClipboard(): void {
-    this.clipboardContainer.classList.remove('open');
-    PersistentStorage.set('clipboardOpen', false);
-  }
+    initialize(): void {
+        const clipboardToggle = document.querySelector<HTMLLinkElement>('a[name="clip_head"]');
+        if (clipboardToggle) {
+            this.clipboardContainer = <HTMLDivElement>clipboardToggle.closest('.db_list-dashboard');
+            if (this.clipboardContainer) {
+                if (this.isPersistedOpen()) {
+                    this.clipboardContainer.classList.add('open');
+                }
+                clipboardToggle.addEventListener('click', (e: MouseEvent) => {
+                    e.stopPropagation();
+                    this.toggleClipboard();
+                });
 
-  toggleClipboard(): void {
-    this.clipboardContainer.classList.toggle('open');
-    PersistentStorage.set('clipboardOpen', this.clipboardContainer.classList.contains('open'))
-  }
+                window.addEventListener('click', (e: MouseEvent) => {
+                    if (
+                        !this.clipboardContainer.contains(<Node>e.target) &&
+                        this.clipboardContainer.classList.contains('open')
+                    ) {
+                        this.closeClipboard();
+                    }
+                });
+            }
+        }
+    }
+
+    closeClipboard(): void {
+        this.clipboardContainer.classList.remove('open');
+        PersistentStorage.set('clipboardOpen', false);
+    }
+
+    toggleClipboard(): void {
+        this.clipboardContainer.classList.toggle('open');
+        PersistentStorage.set('clipboardOpen', this.clipboardContainer.classList.contains('open'));
+    }
 }
 
 // create an instance and return it

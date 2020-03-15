@@ -10,9 +10,16 @@ $form-section-headline-border-color: #e4e4e4 !default;
 
 .panel-space {
     @include section-card();
-    padding: $form-section-padding;
+    padding: 24px;
 
     .panel-heading {
         @extend .form-section-headline;
+    }
+}
+
+.module-body{
+    > .table-fit{
+        @include section-card();
+        padding: 24px;
     }
 }

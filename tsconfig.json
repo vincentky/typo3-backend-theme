@@ -27,6 +27,7 @@
 		"outDir": "./Resources/Public/JavaScript/*",
 		"typeRoots": [
 			"node_modules/@types",
+			"node_modules/@interactjs/types",
 			"./Resources/Private/Assets/types"
 		]
 	}

@@ -122,7 +122,7 @@ $input-bg: #fafafa;
 $input-color: #2c2c2c;
 $input-border: rgba(0, 0, 0, 0.07);
 $input-border-focus: rgba(0, 0, 0, 0.1);
-$input-focus-bg: #efefef;
+$input-focus-bg: rgba(255,255,255,0.1);
 $input-color-placeholder: #caccce;
 $input-color-disabled: rgba(98, 98, 98, 0.23);
 $input-bg-disabled: #efefef;
@@ -376,7 +376,7 @@ $typo3-pagetree-color: #cacaca;
 $typo3-pagetree-bg: $scaffold-modulemenu-header-bg;
 $svgColors: (
     border: none,
-    lines: #4a4a4a,
+    lines: #5a5a5a,
     nodeSelectedBg: rgba(255, 255, 255, 0.2),
     nodeOverBg: rgba(255, 255, 255, 0.2),
     dragOverBg: rgba(233, 90, 90, 0.2),
