@@ -11,10 +11,11 @@ additional_fqdns: []
 mariadb_version: "10.2"
 provider: default
 hooks:
+  pre-start:
+    - exec: mkdir -p .build/public/typo3conf
   post-start:
     - exec: composer install
     - exec: DBFILE=.ddev/res/db.tar.gz;test -f $DBFILE && if [ $(mysql --host=db --user=root --password=root --database=db -sse "SHOW TABLES LIKE 'be_users';") ];then false; else true; fi  && mysql  --host=db --user=root --password=root --database=db < $(tar -xvzf $DBFILE) || echo 'Database already imported, skip'
-    - exec: cp -n .ddev/res/LocalConfiguration.php .build/public/typo3conf
 use_dns_when_possible: true
 timezone: Europe/Berlin
 
