@@ -1,4 +1,4 @@
-name: typo3-templates
+name: typo3-backend-theme
 type: typo3
 docroot: .build/public
 php_version: "7.4"

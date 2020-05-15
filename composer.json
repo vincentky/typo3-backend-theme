@@ -1,5 +1,5 @@
 {
-	"name": "starfishprime/typo3-templates",
+	"name": "starfishprime/typo3-backend-theme",
 	"type": "typo3-cms-extension",
 	"description": "Wip of new template gesture for typo3. Backend and frontend.",
 	"license": [
