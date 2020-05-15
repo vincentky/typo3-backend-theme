@@ -3,7 +3,6 @@
 /.editorconfig
 /.php_cs
 /.php_cs.cache
-/tmp/
 /packages/
 /.reports/
-!/Resources/Private/Assets/TypeScript/templates/NavigationContainer.ts
+/node_modules
