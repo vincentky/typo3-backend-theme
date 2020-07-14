@@ -1,0 +1,14 @@
+#!/bin/bash
+
+## Description: Setup database
+## Usage: setup
+
+DBFILE=.ddev/res/db.sql.gz;
+test -f $DBFILE &&
+if [ $(mysql --host=db --user=root --password=root --database=db -sse "SHOW TABLES LIKE 'be_users';") ]
+    then
+        echo 'Database already imported, skip'
+    else
+      zcat $DBFILE |  mysql  --host=db --user=root --password=root --database=db
+
+fi
