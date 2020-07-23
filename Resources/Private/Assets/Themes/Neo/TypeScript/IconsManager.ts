@@ -33,7 +33,7 @@ class IconsManager {
                     e.stopPropagation();
                     inputFile.click();
                 });
-                inputFile.addEventListener('change', (e: Event) => {
+                inputFile.addEventListener('change', () => {
                     const files = btnIcons[i].files || [];
                     const formData = new FormData();
                     for (let j = 0; j < files.length; j++) {
@@ -49,7 +49,7 @@ class IconsManager {
                         formData.append('identifier', <string>inputFile.dataset.icon);
                     }
 
-                    const response = fetch(TYPO3.settings.ajaxUrls['ext-templates-upload-icon'], {
+                    fetch(TYPO3.settings.ajaxUrls['ext-templates-upload-icon'], {
                         method: 'POST',
                         body: formData,
                     })
@@ -88,7 +88,7 @@ class IconsManager {
             });
         }
         if (searchField !== null) {
-            searchField.addEventListener('keyup', (e: KeyboardEvent) => {
+            searchField.addEventListener('keyup', () => {
                 const typedQuery = searchField.value;
                 if (typedQuery === '') {
                     for (let i = 0; i < allIcons.length; i++) {
@@ -142,15 +142,8 @@ class IconsManager {
                                 break;
                         }
                     } else {
-                        let f = 0;
-                        let z = 0;
-                        for (let i = 0; i < allIcons.length; i++) {
+                        for (const i = 0; i < allIcons.length; i++) {
                             const identifier = allIcons[i].dataset.iconIdentifier || '';
-                            if (identifier.includes(typedQuery)) {
-                                f++;
-                            } else {
-                                z++;
-                            }
                             allIcons[i].style.display = identifier.includes(typedQuery) ? 'block' : 'none';
                         }
                     }

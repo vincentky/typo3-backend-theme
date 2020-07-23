@@ -1,5 +1,3 @@
-import * as $ from 'jquery';
-import Modal from 'TYPO3/CMS/Backend/Modal';
 import Notification from 'TYPO3/CMS/Backend/Notification';
 
 /**
@@ -7,7 +5,7 @@ import Notification from 'TYPO3/CMS/Backend/Notification';
  * @exports Starfishprime/Templates/Features
  */
 class Features {
-    private selectorSaveTrigger: string = '.t3js-features-save';
+    private selectorSaveTrigger = '.t3js-features-save';
     private currentModal: HTMLElement;
 
     constructor() {
@@ -15,7 +13,7 @@ class Features {
     }
 
     initialize(): void {
-        const response = fetch(TYPO3.settings.ajaxUrls['ext-templates-features'], {
+        fetch(TYPO3.settings.ajaxUrls['ext-templates-features'], {
             method: 'POST',
             body: null,
         })
@@ -25,7 +23,6 @@ class Features {
                 }
                 return response.text();
             })
-            .then((icon: string) => {})
             .catch((error: Error) => {
                 Notification.error(error);
             });

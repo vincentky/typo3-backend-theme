@@ -52,8 +52,6 @@ class NavigationContainer {
                 listeners: [
                     {
                         end: (e: InteractEvent) => {
-                            console.log(e);
-                            const target = <HTMLDivElement>e.target;
                             const sheetId = this.navigationType;
                             let sheet = document.getElementById(sheetId);
                             if (!sheet) {

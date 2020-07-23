@@ -5,6 +5,7 @@ import PersistentStorage from 'TYPO3/CMS/Backend/Storage/Persistent';
  * @exports Starfishprime/Templates/Clipboard
  */
 class Clipboard {
+
     private clipboardContainer: HTMLDivElement;
 
     constructor() {
