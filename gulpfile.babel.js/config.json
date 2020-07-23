@@ -1,5 +1,4 @@
 {
-	"version": " 0.0.1",
 	"stylelint": {
 		"failAfterError": true,
 		"reportOutputDir": ".reports",
@@ -16,22 +15,26 @@
 		"debug": true
 	},
 	"paths": {
-		"css": {
-			"cmsSrc": ["./Resources/Private/Assets/Scss"],
-			"themeSrc": ["./Resources/Private/Assets/Tmpl1/Scss"],
-			"dest": "./Resources/Public/Css"
+		"src": {
+			"themes": "./Resources/Private/Assets/Themes"
 		},
-		"icons": {
-			"src": ["./Resources/Private/Assets/Icons"],
-			"dest": "./Resources/Public/Icons"
-		},
-		"images": {
-			"src": ["./Resources/Private/Assets/Images"],
-			"dest": "./Resources/Public/Images"
-		},
-		"js": {
-			"src": ["./Resources/Private/Assets/TypeScript/templates"],
-			"dest": "./Resources/Public/JavaScript"
+		"dest": {
+			"css": "./Resources/Public/Css",
+			"icons": "./Resources/Public/Icons",
+			"images": "./Resources/Public/Images",
+			"js": "./Resources/Public/JavaScript",
+			"definitions": "./Resources/Public/def"
 		}
-	}
+	},
+	"FILES_EXTENSIONS": {
+		"Scss": "scss",
+		"TypeScript": "ts"
+	},
+	"includePaths": [
+		"Resources/Private/Assets/Scss",
+		"node_modules",
+		"node_modules/bootstrap-sass/assets/stylesheets",
+		"node_modules/font-awesome/scss",
+		"node_modules/eonasdan-bootstrap-datetimepicker/src/sass"
+	]
 }
