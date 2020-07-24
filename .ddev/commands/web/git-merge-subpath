@@ -32,7 +32,7 @@
     fi &&
 
     if [[ -z $SQUASH ]]; then
-        git merge -s ours --no-commit "$SOURCE_COMMIT"
+        git merge -s ours --no-commit --allow-unrelated-histories "$SOURCE_COMMIT"
     fi &&
 
     git diff --color=never "$OLD_TREEISH" "$SOURCE_COMMIT:$SOURCE_PREFIX" \
