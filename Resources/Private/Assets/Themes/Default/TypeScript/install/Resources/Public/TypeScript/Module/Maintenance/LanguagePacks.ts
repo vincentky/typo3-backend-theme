@@ -11,15 +11,18 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {AbstractInteractableModule} from '../AbstractInteractableModule';
-import * as $ from 'jquery';
 import 'bootstrap';
-import Router = require('../../Router');
-import FlashMessage = require('../../Renderable/FlashMessage');
-import ProgressBar = require('../../Renderable/ProgressBar');
-import InfoBox = require('../../Renderable/InfoBox');
+import * as $ from 'jquery';
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import {ResponseError} from 'TYPO3/CMS/Core/Ajax/ResponseError';
+import {AbstractInteractableModule} from '../AbstractInteractableModule';
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
 import SecurityUtility = require('TYPO3/CMS/Core/SecurityUtility');
+import FlashMessage = require('../../Renderable/FlashMessage');
+import InfoBox = require('../../Renderable/InfoBox');
+import ProgressBar = require('../../Renderable/ProgressBar');
 import Severity = require('../../Renderable/Severity');
+import Router = require('../../Router');
 
 /**
  * Module: TYPO3/CMS/Install/Module/LanguagePacks
@@ -35,7 +38,6 @@ class LanguagePacks extends AbstractInteractableModule {
   private selectorDeactivateLanguageIcon: string = '#t3js-languagePacks-deactivate-icon';
   private selectorUpdate: string = '.t3js-languagePacks-update';
   private selectorLanguageUpdateIcon: string = '#t3js-languagePacks-languageUpdate-icon';
-  private selectorExtensionPackMissesIcon: string = '#t3js-languagePacks-extensionPack-misses-icon';
   private selectorNotifications: string = '.t3js-languagePacks-notifications';
 
   private activeLanguages: Array<any> = [];
@@ -87,30 +89,31 @@ class LanguagePacks extends AbstractInteractableModule {
 
   private getData(): void {
     const modalContent = this.getModalBody();
-    $.ajax({
-      url: Router.getUrl('languagePacksGetData'),
-      cache: false,
-      success: (data: any): void => {
-        if (data.success === true) {
-          this.activeLanguages = data.activeLanguages;
-          this.activeExtensions = data.activeExtensions;
-          modalContent.empty().append(data.html);
-          const contentContainer: JQuery = modalContent.parent().find(this.selectorContentContainer);
-          contentContainer.empty();
-          contentContainer.append(this.languageMatrixHtml(data));
-          contentContainer.append(this.extensionMatrixHtml(data));
-          $('[data-toggle="tooltip"]').tooltip(<any>({container: contentContainer}));
-        } else {
-          const message = InfoBox.render(Severity.error, 'Something went wrong', '');
-          this.addNotification(message);
-        }
+    (new AjaxRequest(Router.getUrl('languagePacksGetData')))
+      .get({cache: 'no-cache'})
+      .then(
+        async (response: AjaxResponse): Promise<any> => {
+          const data = await response.resolve();
+          if (data.success === true) {
+            this.activeLanguages = data.activeLanguages;
+            this.activeExtensions = data.activeExtensions;
+            modalContent.empty().append(data.html);
+            const contentContainer: JQuery = modalContent.parent().find(this.selectorContentContainer);
+            contentContainer.empty();
+            contentContainer.append(this.languageMatrixHtml(data));
+            contentContainer.append(this.extensionMatrixHtml(data));
+            $('[data-toggle="tooltip"]').tooltip(<any>({container: contentContainer}));
+          } else {
+            const message = InfoBox.render(Severity.error, 'Something went wrong', '');
+            this.addNotification(message);
+          }
 
-        this.renderNotifications();
-      },
-      error: (xhr: XMLHttpRequest): void => {
-        Router.handleAjaxError(xhr, modalContent);
-      },
-    });
+          this.renderNotifications();
+        },
+        (error: ResponseError): void => {
+          Router.handleAjaxError(error, modalContent);
+        }
+      );
   }
 
   private activateLanguage(iso: string): void {
@@ -119,38 +122,34 @@ class LanguagePacks extends AbstractInteractableModule {
     const message = ProgressBar.render(Severity.loading, 'Loading...', '');
     $outputContainer.empty().append(message);
 
-    $.ajax({
-      url: Router.getUrl(),
-      method: 'POST',
-      context: this,
-      data: {
-        'install': {
-          'action': 'languagePacksActivateLanguage',
-          'token': this.getModuleContent().data('language-packs-activate-language-token'),
-          'iso': iso,
+    this.getNotificationBox().empty();
+    (new AjaxRequest(Router.getUrl()))
+      .post({
+        install: {
+          action: 'languagePacksActivateLanguage',
+          token: this.getModuleContent().data('language-packs-activate-language-token'),
+          iso: iso,
         },
-      },
-      cache: false,
-      beforeSend: (): void => {
-        this.getNotificationBox().empty();
-      },
-      success: (data: any): void => {
-        $outputContainer.empty();
-        if (data.success === true && Array.isArray(data.status)) {
-          data.status.forEach((element: any): void => {
-            const m: any = InfoBox.render(element.severity, element.title, element.message);
-            this.addNotification(m);
-          });
-        } else {
-          const m2: any = FlashMessage.render(Severity.error, 'Something went wrong', '');
-          this.addNotification(m2);
+      })
+      .then(
+        async (response: AjaxResponse): Promise<any> => {
+          const data = await response.resolve();
+          $outputContainer.empty();
+          if (data.success === true && Array.isArray(data.status)) {
+            data.status.forEach((element: any): void => {
+              const m: any = InfoBox.render(element.severity, element.title, element.message);
+              this.addNotification(m);
+            });
+          } else {
+            const m2: any = FlashMessage.render(Severity.error, 'Something went wrong', '');
+            this.addNotification(m2);
+          }
+          this.getData();
+        },
+        (error: ResponseError): void => {
+          Router.handleAjaxError(error, modalContent);
         }
-        this.getData();
-      },
-      error: (xhr: XMLHttpRequest): any => {
-        Router.handleAjaxError(xhr, modalContent);
-      },
-    });
+      );
   }
 
   private deactivateLanguage(iso: string): void {
@@ -158,48 +157,44 @@ class LanguagePacks extends AbstractInteractableModule {
     const $outputContainer = this.findInModal(this.selectorOutputContainer);
     const message = ProgressBar.render(Severity.loading, 'Loading...', '');
     $outputContainer.empty().append(message);
-    $.ajax({
-      url: Router.getUrl(),
-      method: 'POST',
-      context: this,
-      data: {
-        'install': {
-          'action': 'languagePacksDeactivateLanguage',
-          'token': this.getModuleContent().data('language-packs-deactivate-language-token'),
-          'iso': iso,
+    this.getNotificationBox().empty();
+    (new AjaxRequest(Router.getUrl()))
+      .post({
+        install: {
+          action: 'languagePacksDeactivateLanguage',
+          token: this.getModuleContent().data('language-packs-deactivate-language-token'),
+          iso: iso,
         },
-      },
-      cache: false,
-      beforeSend: (): void => {
-        this.getNotificationBox().empty();
-      },
-      success: (data: any): void => {
-        $outputContainer.empty();
-        if (data.success === true && Array.isArray(data.status)) {
-          data.status.forEach((element: any): void => {
-            const m: any = InfoBox.render(element.severity, element.title, element.message);
-            this.addNotification(m);
-          });
-        } else {
-          const m2: any = FlashMessage.render(Severity.error, 'Something went wrong', '');
-          this.addNotification(m2);
+      })
+      .then(
+        async (response: AjaxResponse): Promise<any> => {
+          const data = await response.resolve();
+          $outputContainer.empty();
+          if (data.success === true && Array.isArray(data.status)) {
+            data.status.forEach((element: any): void => {
+              const m: any = InfoBox.render(element.severity, element.title, element.message);
+              this.addNotification(m);
+            });
+          } else {
+            const m2: any = FlashMessage.render(Severity.error, 'Something went wrong', '');
+            this.addNotification(m2);
+          }
+          this.getData();
+        },
+        (error: ResponseError): void => {
+          Router.handleAjaxError(error, modalContent);
         }
-        this.getData();
-      },
-      error: (xhr: XMLHttpRequest): void => {
-        Router.handleAjaxError(xhr, modalContent);
-      },
-    });
+      );
   }
 
   private updatePacks(iso: string, extension: string): void {
     const $outputContainer = this.findInModal(this.selectorOutputContainer);
     const $contentContainer = this.findInModal(this.selectorContentContainer);
-    const isos = iso === undefined ? this.activeLanguages : [ iso ];
+    const isos = iso === undefined ? this.activeLanguages : [iso];
     let updateIsoTimes = true;
     let extensions = this.activeExtensions;
     if (extension !== undefined) {
-      extensions = [ extension ];
+      extensions = [extension];
       updateIsoTimes = false;
     }
 
@@ -232,45 +227,42 @@ class LanguagePacks extends AbstractInteractableModule {
 
     isos.forEach((isoCode: string): void => {
       extensions.forEach((extensionKey: string): void => {
-        $.ajax({
-          url: Router.getUrl(),
-          method: 'POST',
-          context: this,
-          data: {
-            'install': {
-              'action': 'languagePacksUpdatePack',
-              'token': this.getModuleContent().data('language-packs-update-pack-token'),
-              'iso': isoCode,
-              'extension': extensionKey,
+        this.getNotificationBox().empty();
+
+        (new AjaxRequest(Router.getUrl()))
+          .post({
+            install: {
+              action: 'languagePacksUpdatePack',
+              token: this.getModuleContent().data('language-packs-update-pack-token'),
+              iso: isoCode,
+              extension: extensionKey,
             },
-          },
-          cache: false,
-          beforeSend: (): void => {
-            this.getNotificationBox().empty();
-          },
-          success: (data: any): void => {
-            if (data.success === true) {
-              this.packsUpdateDetails.handled++;
-              if (data.packResult === 'new') {
-                this.packsUpdateDetails.new++;
-              } else if (data.packResult === 'update') {
-                this.packsUpdateDetails.updated++;
+          })
+          .then(
+            async (response: AjaxResponse): Promise<any> => {
+              const data = await response.resolve();
+              if (data.success === true) {
+                this.packsUpdateDetails.handled++;
+                if (data.packResult === 'new') {
+                  this.packsUpdateDetails.new++;
+                } else if (data.packResult === 'update') {
+                  this.packsUpdateDetails.updated++;
+                } else {
+                  this.packsUpdateDetails.failed++;
+                }
+                this.packUpdateDone(updateIsoTimes, isos);
               } else {
+                this.packsUpdateDetails.handled++;
                 this.packsUpdateDetails.failed++;
+                this.packUpdateDone(updateIsoTimes, isos);
               }
-              this.packUpdateDone(updateIsoTimes, isos);
-            } else {
+            },
+            (): void => {
               this.packsUpdateDetails.handled++;
               this.packsUpdateDetails.failed++;
               this.packUpdateDone(updateIsoTimes, isos);
             }
-          },
-          error: (): void => {
-            this.packsUpdateDetails.handled++;
-            this.packsUpdateDetails.failed++;
-            this.packUpdateDone(updateIsoTimes, isos);
-          },
-        });
+          );
       });
     });
   }
@@ -289,30 +281,28 @@ class LanguagePacks extends AbstractInteractableModule {
       );
       this.addNotification(message);
       if (updateIsoTimes === true) {
-        $.ajax({
-          url: Router.getUrl(),
-          method: 'POST',
-          context: this,
-          data: {
-            'install': {
-              'action': 'languagePacksUpdateIsoTimes',
-              'token': this.getModuleContent().data('language-packs-update-iso-times-token'),
-              'isos': isos,
+        (new AjaxRequest(Router.getUrl()))
+          .post({
+            install: {
+              action: 'languagePacksUpdateIsoTimes',
+              token: this.getModuleContent().data('language-packs-update-iso-times-token'),
+              isos: isos,
             },
-          },
-          cache: false,
-          success: (data: any): void => {
-            if (data.success === true) {
-              this.getData();
-            } else {
-              const m: any = FlashMessage.render(Severity.error, 'Something went wrong', '');
-              this.addNotification(m);
+          })
+          .then(
+            async (response: AjaxResponse): Promise<any> => {
+              const data = await response.resolve();
+              if (data.success === true) {
+                this.getData();
+              } else {
+                const m: any = FlashMessage.render(Severity.error, 'Something went wrong', '');
+                this.addNotification(m);
+              }
+            },
+            (error: ResponseError): void => {
+              Router.handleAjaxError(error, modalContent);
             }
-          },
-          error: (xhr: XMLHttpRequest): void => {
-            Router.handleAjaxError(xhr, modalContent);
-          },
-        });
+          );
       } else {
         this.getData();
       }
@@ -392,7 +382,10 @@ class LanguagePacks extends AbstractInteractableModule {
           $('<tr>').append(
             $('<th>').append(
               $('<div />', {class: 'btn-group'}).append(
-                $('<button>', {'class': 'btn btn-default t3js-languagePacks-addLanguage-toggle', 'type': 'button'}).append(
+                $('<button>', {
+                  'class': 'btn btn-default t3js-languagePacks-addLanguage-toggle',
+                  'type': 'button'
+                }).append(
                   $('<span>').append(activateIcon),
                   ' Add language',
                 ),
@@ -419,11 +412,9 @@ class LanguagePacks extends AbstractInteractableModule {
 
   private extensionMatrixHtml(data: any): any {
     const securityUtility = new SecurityUtility();
-    const packMissesIcon: string = this.findInModal(this.selectorExtensionPackMissesIcon).html();
     const updateIcon: string = this.findInModal(this.selectorLanguageUpdateIcon).html();
     let tooltip: string = '';
     let extensionTitle: JQuery;
-    let allPackagesExist: boolean = true;
     let rowCount: number = 0;
     const $markupContainer: JQuery = $('<div>');
 
@@ -450,17 +441,8 @@ class LanguagePacks extends AbstractInteractableModule {
 
     const $tbody = $('<tbody>');
     data.extensions.forEach((extension: any): void => {
-      allPackagesExist = true;
-      extension.packs.forEach((pack: any): void => {
-        if (pack.exists === false) {
-          allPackagesExist = false;
-        }
-      });
-      if (allPackagesExist === true) {
-        return;
-      }
       rowCount++;
-      if (extension.icon !== '') {
+      if (typeof extension.icon !== 'undefined') {
         extensionTitle = $('<span>').append(
           $('<img>', {
             'style': 'max-height: 16px; max-width: 16px;',
@@ -486,16 +468,22 @@ class LanguagePacks extends AbstractInteractableModule {
           } else {
             tooltip = 'Language pack not downloaded. Click to download';
           }
-          $column.append(
-            $('<a>', {
-              'class': 'btn btn-default t3js-languagePacks-update',
-              'data-extension': extension.key,
-              'data-iso': pack.iso,
-              'data-toggle': 'tooltip',
-              'title': securityUtility.encodeHtml(tooltip),
-            }).append(packMissesIcon),
-          );
+        } else {
+          if (pack.lastUpdate === null) {
+            tooltip = 'Downloaded. Click to renew';
+          } else {
+            tooltip = 'Language pack downloaded at ' + pack.lastUpdate + '. Click to renew';
+          }
         }
+        $column.append(
+          $('<a>', {
+            'class': 'btn btn-default t3js-languagePacks-update',
+            'data-extension': extension.key,
+            'data-iso': pack.iso,
+            'data-toggle': 'tooltip',
+            'title': securityUtility.encodeHtml(tooltip),
+          }).append(updateIcon),
+        );
       });
       $tbody.append($tr);
     });

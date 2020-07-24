@@ -14,8 +14,7 @@
 import JQueryNativePromises from '../BackwardCompat/JQueryNativePromises';
 import {AjaxResponse} from './AjaxResponse';
 import {ResponseError} from './ResponseError';
-
-type GenericKeyValue = { [key: string]: any};
+import {GenericKeyValue, InputTransformer} from './InputTransformer';
 
 class AjaxRequest {
   private static defaultOptions: RequestInit = {
@@ -25,61 +24,6 @@ class AjaxRequest {
   private readonly url: string;
   private readonly abortController: AbortController;
   private queryArguments: string = '';
-
-  /**
-   * Transforms the incoming object to a flat FormData object used for POST and PUT
-   *
-   * @param {GenericKeyValue} data
-   * @return {FormData}
-   */
-  private static transformToFormData(data: GenericKeyValue): FormData {
-    const flattenObject = (obj: GenericKeyValue, prefix: string = '') =>
-      Object.keys(obj).reduce((acc: GenericKeyValue, k: any) => {
-        const objPrefix = prefix.length ? prefix + '[' : '';
-        const objSuffix = prefix.length ? ']' : '';
-        if (typeof obj[k] === 'object') {
-          Object.assign(acc, flattenObject(obj[k], objPrefix + k + objSuffix))
-        } else {
-          acc[objPrefix + k + objSuffix] = obj[k]
-        }
-        return acc;
-      }, {});
-
-    const flattenedData = flattenObject(data);
-    const formData = new FormData();
-    for (const [key, value] of Object.entries(flattenedData)) {
-      formData.set(key, value);
-    }
-
-    return formData;
-  }
-
-  /**
-   * Creates a query string appended to the URL from either a string (returned as is), an array or an object
-   *
-   * @param {string|array|GenericKeyValue} data
-   * @param {string} prefix Internal argument used for nested objects
-   * @return {string}
-   */
-  private static createQueryString(data: string | Array<string> | GenericKeyValue, prefix?: string): string {
-    if (typeof data === 'string') {
-      return data;
-    }
-
-    if (data instanceof Array) {
-      return data.join('&');
-    }
-
-    return Object.keys(data).map((key: string) => {
-      let pKey = prefix ? `${prefix}[${key}]` : key;
-      let val = data[key];
-      if (typeof val === 'object') {
-        return AjaxRequest.createQueryString(val, pKey);
-      }
-
-      return `${pKey}=${encodeURIComponent(`${val}`)}`
-    }).join('&')
-  }
 
   constructor(url: string) {
     this.url = url;
@@ -96,7 +40,7 @@ class AjaxRequest {
    */
   public withQueryArguments(data: string | Array<string> | GenericKeyValue): AjaxRequest {
     const clone = this.clone();
-    clone.queryArguments = (clone.queryArguments !== '' ? '&' : '') + AjaxRequest.createQueryString(data);
+    clone.queryArguments = (clone.queryArguments !== '' ? '&' : '') + InputTransformer.toSearchParams(data);
     return clone;
   }
 
@@ -118,13 +62,13 @@ class AjaxRequest {
   /**
    * Executes a (by default uncached) POST request
    *
-   * @param {GenericKeyValue} data
+   * @param {string | GenericKeyValue} data
    * @param {RequestInit} init
    * @return {Promise<Response>}
    */
-  public async post(data: GenericKeyValue, init: RequestInit = {}): Promise<AjaxResponse> {
+  public async post(data: string | GenericKeyValue, init: RequestInit = {}): Promise<AjaxResponse> {
     const localDefaultOptions: RequestInit = {
-      body: AjaxRequest.transformToFormData(data),
+      body: typeof data === 'string' ? data : InputTransformer.byHeader(data, init?.headers),
       cache: 'no-cache',
       method: 'POST',
     };
@@ -136,13 +80,13 @@ class AjaxRequest {
   /**
    * Executes a (by default uncached) PUT request
    *
-   * @param {GenericKeyValue} data
+   * @param {string | GenericKeyValue} data
    * @param {RequestInit} init
    * @return {Promise<Response>}
    */
-  public async put(data: GenericKeyValue, init: RequestInit = {}): Promise<AjaxResponse> {
+  public async put(data: string | GenericKeyValue, init: RequestInit = {}): Promise<AjaxResponse> {
     const localDefaultOptions: RequestInit = {
-      body: AjaxRequest.transformToFormData(data),
+      body: typeof data === 'string' ? data : InputTransformer.byHeader(data, init?.headers),
       cache: 'no-cache',
       method: 'PUT',
     };
@@ -154,18 +98,20 @@ class AjaxRequest {
   /**
    * Executes a regular DELETE request
    *
-   * @param {GenericKeyValue} data
+   * @param {string | GenericKeyValue} data
    * @param {RequestInit} init
    * @return {Promise<Response>}
    */
-  public async delete(data: GenericKeyValue = {}, init: RequestInit = {}): Promise<AjaxResponse> {
+  public async delete(data: string | GenericKeyValue = {}, init: RequestInit = {}): Promise<AjaxResponse> {
     const localDefaultOptions: RequestInit = {
       cache: 'no-cache',
       method: 'DELETE',
     };
 
     if (typeof data === 'object' && Object.keys(data).length > 0) {
-      localDefaultOptions.body = AjaxRequest.transformToFormData(data);
+      localDefaultOptions.body = InputTransformer.byHeader(data, init?.headers);
+    } else if (typeof data === 'string' && data.length > 0) {
+      localDefaultOptions.body = data;
     }
 
     const response = await this.send({...localDefaultOptions, ...init});
@@ -173,12 +119,10 @@ class AjaxRequest {
   }
 
   /**
-   * Gets an instance of AbortController used to abort the current request
-   *
-   * @return {AbortController}
+   * Aborts the current request by using the AbortController
    */
-  public getAbort(): AbortController {
-    return this.abortController;
+  public abort(): void {
+    this.abortController.abort();
   }
 
   /**
@@ -197,17 +141,27 @@ class AjaxRequest {
    * @return {Promise<Response>}
    */
   private async send(init: RequestInit = {}): Promise<Response> {
-    // Sanitize URL into a generic format, e.g. ensure a domain only url contains a trailing slash
-    let url = new URL(this.url, window.location.origin).toString();
-    if (this.queryArguments !== '') {
-      const delimiter = !this.url.includes('?') ? '?' : '&';
-      url += delimiter + this.queryArguments;
-    }
-    const response = await fetch(url, this.getMergedOptions(init));
+    const response = await fetch(this.composeRequestUrl(), this.getMergedOptions(init));
     if (!response.ok) {
       throw new ResponseError(response);
     }
     return response;
+  }
+
+  private composeRequestUrl(): string {
+    let url = this.url;
+    if (url.charAt(0) === '?') {
+      // URL is a search string only, prepend current location
+      url = window.location.origin + window.location.pathname + url;
+    }
+    url = new URL(url, window.location.origin).toString();
+
+    if (this.queryArguments !== '') {
+      const delimiter = !this.url.includes('?') ? '?' : '&';
+      url += delimiter + this.queryArguments;
+    }
+
+    return url;
   }
 
   /**

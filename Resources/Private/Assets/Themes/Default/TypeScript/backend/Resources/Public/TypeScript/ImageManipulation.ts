@@ -14,10 +14,12 @@
 import * as $ from 'jquery';
 import 'jquery-ui/draggable';
 import 'jquery-ui/resizable';
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
 import FormEngineValidation = require('TYPO3/CMS/Backend/FormEngineValidation');
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
+import ImagesLoaded = require('TYPO3/CMS/Core/Contrib/imagesloaded.pkgd.min');
 import Icons = require('./Icons');
 import Modal = require('./Modal');
-import ImagesLoaded = require('TYPO3/CMS/Core/Contrib/imagesloaded.pkgd.min');
 
 interface Area {
   x: number;
@@ -229,7 +231,7 @@ class ImageManipulation {
     const payload: object = this.trigger.data('payload');
     const initCropperModal: ()  => void = this.initializeCropperModal.bind(this);
 
-    Icons.getIcon('spinner-circle', Icons.sizes.default, null, null, Icons.markupIdentifiers.inline).done((icon: string): void => {
+    Icons.getIcon('spinner-circle', Icons.sizes.default, null, null, Icons.markupIdentifiers.inline).then((icon: string): void => {
       /**
        * Open modal with image to crop
        */
@@ -262,12 +264,9 @@ class ImageManipulation {
           },
         ],
         callback: (currentModal: JQuery): void => {
-          $.post({
-            url: imageUri,
-            data: payload,
-          }).done((response: string): void => {
+          new AjaxRequest(imageUri).post(payload).then(async (response: AjaxResponse): Promise<void> => {
             initCropperModal();
-            currentModal.find('.t3js-modal-body').append(response).addClass('cropper');
+            currentModal.find('.t3js-modal-body').append(await response.resolve()).addClass('cropper');
           });
         },
         content: $('<div class="modal-loading">').append(icon),
@@ -286,7 +285,7 @@ class ImageManipulation {
 
   /**
    * @method init
-   * @desc Initializes the cropper UI and sets up all the event indings for the UI
+   * @desc Initializes the cropper UI and sets up all the event bindings for the UI
    * @private
    */
   private init(): void {
@@ -321,7 +320,7 @@ class ImageManipulation {
 
       /**
        * Is the current cropVariantTrigger is active, bail out.
-       * Bootstrap doesn't provide this functionality when collapsing the Collaps panels
+       * Bootstrap doesn't provide this functionality when collapsing the Collapse panels
        */
       if ($(e.currentTarget).hasClass('is-active')) {
         e.stopPropagation();
@@ -406,7 +405,7 @@ class ImageManipulation {
      * Initialise the cropper
      *
      * Note: We use the extraneous jQuery object here, as CropperJS won't work inside the <iframe>
-     * The top.require is now inlined @see ImageManipulationElemen.php:143
+     * The top.require is now inlined @see ImageManipulationElement.php:143
      * TODO: Find a better solution for cross iframe communications
      */
     this.cropper = (top.$(image) as any).cropper($.extend(this.defaultOpts, {
@@ -668,7 +667,7 @@ class ImageManipulation {
    * @method initCoverAreas
    * @desc Initialise cover areas inside the cropper container
    * @param {JQuery} container - The container element to append the cover areas
-   * @param {Array<Area>} coverAreas - An array of areas to construxt the cover area elements from
+   * @param {Array<Area>} coverAreas - An array of areas to construct the cover area elements from
    */
   private initCoverAreas(container: JQuery, coverAreas: Area[]): void {
     coverAreas.forEach((coverArea: Area): void => {
@@ -685,7 +684,7 @@ class ImageManipulation {
 
   /**
    * @method updatePreviewThumbnail
-   * @desc Sync the croping (and focus area) to the preview thumbnail
+   * @desc Sync the cropping (and focus area) to the preview thumbnail
    * @param {CropVariant} cropVariant - The crop variant to preview in the thumbnail
    * @param {JQuery} cropVariantTrigger - The crop variant element containing the thumbnail
    * @private

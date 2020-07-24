@@ -12,7 +12,12 @@
  */
 
 import * as $ from 'jquery';
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import Modal = require('TYPO3/CMS/Backend/Modal');
 import Typo3Notification = require('TYPO3/CMS/Backend/Notification');
+import Severity = require('TYPO3/CMS/Backend/Severity');
+import Client = require('TYPO3/CMS/Backend/Storage/Client');
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
 
 enum MarkupIdentifiers {
   loginrefresh = 't3js-modal-loginrefresh',
@@ -54,8 +59,34 @@ class LoginRefresh {
 
     this.startTask();
 
-    if (document.location.protocol === 'https:' && typeof Notification !== 'undefined' && Notification.permission !== 'granted') {
-      Notification.requestPermission();
+    const askForNotifications = !(Client.isset('notifications.asked') && Client.get('notifications.asked') === 'yes');
+    const isDefaultNotificationLevel = typeof Notification !== 'undefined' && Notification.permission === 'default';
+    if (askForNotifications
+      && document.location.protocol === 'https:'
+      && isDefaultNotificationLevel
+    ) {
+      Modal.confirm(
+        TYPO3.lang['notification.request.title'],
+        TYPO3.lang['notification.request.description'],
+        Severity.info,
+        [{
+          text: TYPO3.lang['button.yes'] || 'Yes',
+          btnClass: 'btn-' + Severity.getCssClass(Severity.info),
+          name: 'ok',
+          active: true,
+        }, {
+          text: TYPO3.lang['button.no'] || 'No',
+          btnClass: 'btn-' + Severity.getCssClass(Severity.notice),
+          name: 'cancel'
+        }],
+      ).on('confirm.button.ok', (): void => {
+        Notification.requestPermission();
+        Modal.dismiss();
+      }).on('confirm.button.cancel', (): void => {
+        Modal.dismiss();
+      }).on('hide.bs.modal', (): void => {
+        Client.set('notifications.asked', 'yes');
+      });
     }
   }
 
@@ -157,14 +188,10 @@ class LoginRefresh {
    */
   public showLoginForm(): void {
     // log off for sure
-    $.ajax({
-      url: TYPO3.settings.ajaxUrls.logout,
-      method: 'GET',
-      success: () => {
-        TYPO3.configuration.showRefreshLoginPopup
-          ? this.showLoginPopup()
-          : this.$loginForm.modal(this.options.modalConfig);
-      },
+    new AjaxRequest(TYPO3.settings.ajaxUrls.logout).get().then((): void => {
+      TYPO3.configuration.showRefreshLoginPopup
+        ? this.showLoginPopup()
+        : this.$loginForm.modal(this.options.modalConfig);
     });
   }
 
@@ -234,12 +261,8 @@ class LoginRefresh {
         class: 'btn btn-primary t3js-active',
         'data-action': 'refreshSession',
       }).text(TYPO3.lang['mess.refresh_login_refresh_button']).on('click', () => {
-        $.ajax({
-          url: TYPO3.settings.ajaxUrls.login_timedout,
-          method: 'GET',
-          success: () => {
-            this.hideTimeoutModal();
-          },
+        new AjaxRequest(TYPO3.settings.ajaxUrls.login_timedout).get().then((): void => {
+          this.hideTimeoutModal();
         });
       }),
     );
@@ -389,22 +412,18 @@ class LoginRefresh {
     const postData: any = {
       login_status: 'login',
     };
-    $.each($form.serializeArray(), function(i: number, field: any): void {
+    $.each($form.serializeArray(), function (i: number, field: any): void {
       postData[field.name] = field.value;
     });
-    $.ajax({
-      url: $form.attr('action'),
-      method: 'POST',
-      data: postData,
-      success: (response: { [key: string ]: any }) => {
-        if (response.login.success) {
-          // User is logged in
-          this.hideLoginForm();
-        } else {
-          Typo3Notification.error(TYPO3.lang['mess.refresh_login_failed'], TYPO3.lang['mess.refresh_login_failed_message']);
-          $passwordField.focus();
-        }
-      },
+    new AjaxRequest($form.attr('action')).post(postData).then(async (response: AjaxResponse): Promise<void> => {
+      const data = await response.resolve();
+      if (data.login.success) {
+        // User is logged in
+        this.hideLoginForm();
+      } else {
+        Typo3Notification.error(TYPO3.lang['mess.refresh_login_failed'], TYPO3.lang['mess.refresh_login_failed_message']);
+        $passwordField.focus();
+      }
     });
   }
 
@@ -439,8 +458,9 @@ class LoginRefresh {
    * and opens a dialog.
    */
   protected checkActiveSession = (): void => {
-    $.getJSON(TYPO3.settings.ajaxUrls.login_timedout, [], (response: { [key: string ]: any }) => {
-      if (response.login.locked) {
+    new AjaxRequest(TYPO3.settings.ajaxUrls.login_timedout).get().then(async (response: AjaxResponse): Promise<void> => {
+      const data = await response.resolve();
+      if (data.login.locked) {
         if (!this.backendIsLocked) {
           this.backendIsLocked = true;
           this.showBackendLockedModal();
@@ -453,8 +473,8 @@ class LoginRefresh {
       }
 
       if (!this.backendIsLocked) {
-        if (response.login.timed_out || response.login.will_time_out) {
-          response.login.timed_out
+        if (data.login.timed_out || data.login.will_time_out) {
+          data.login.timed_out
             ? this.showLoginForm()
             : this.showTimeoutModal();
         }

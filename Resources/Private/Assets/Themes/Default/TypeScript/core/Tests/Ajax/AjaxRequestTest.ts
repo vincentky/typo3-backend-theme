@@ -32,25 +32,54 @@ describe('TYPO3/CMS/Core/Ajax/AjaxRequest', (): void => {
     expect(window.fetch).toHaveBeenCalledWith('https://example.com/', jasmine.objectContaining({method: 'GET'}));
   });
 
-  it('sends POST request', (): void => {
-    const payload = {foo: 'bar', bar: 'baz', nested: {works: 'yes'}};
-    const expected = new FormData();
-    expected.set('foo', 'bar');
-    expected.set('bar', 'baz');
-    expected.set('nested[works]', 'yes');
-    (new AjaxRequest('https://example.com')).post(payload);
-    expect(window.fetch).toHaveBeenCalledWith('https://example.com/', jasmine.objectContaining({method: 'POST', body: expected}));
-  });
+  for (let requestMethod of ['POST', 'PUT', 'DELETE']) {
+    describe(`send a ${requestMethod} request`, (): void => {
+      function* requestDataProvider(): any {
+        yield [
+          'object as payload',
+          requestMethod,
+          {foo: 'bar', bar: 'baz', nested: {works: 'yes'}},
+          (): FormData => {
+            const expected = new FormData();
+            expected.set('foo', 'bar');
+            expected.set('bar', 'baz');
+            expected.set('nested[works]', 'yes');
+            return expected;
+          },
+          {}
+        ];
+        yield [
+          'JSON object as payload',
+          requestMethod,
+          {foo: 'bar', bar: 'baz', nested: {works: 'yes'}},
+          (): string => {
+            return JSON.stringify({foo: 'bar', bar: 'baz', nested: {works: 'yes'}})
+          },
+          {'Content-Type': 'application/json'}
+        ];
+        yield [
+          'JSON string as payload',
+          requestMethod,
+          JSON.stringify({foo: 'bar', bar: 'baz', nested: {works: 'yes'}}),
+          (): string => {
+            return JSON.stringify({foo: 'bar', bar: 'baz', nested: {works: 'yes'}})
+          },
+          {'Content-Type': 'application/json'}
+        ];
+      }
 
-  it('sends PUT request', (): void => {
-    (new AjaxRequest('https://example.com')).put({});
-    expect(window.fetch).toHaveBeenCalledWith('https://example.com/', jasmine.objectContaining({method: 'PUT'}));
-  });
-
-  it('sends DELETE request', (): void => {
-    (new AjaxRequest('https://example.com')).delete();
-    expect(window.fetch).toHaveBeenCalledWith('https://example.com/', jasmine.objectContaining({method: 'DELETE'}));
-  });
+      for (let providedData of requestDataProvider()) {
+        let [name, requestMethod, payload, expectedFn, headers] = providedData;
+        const requestFn: string = requestMethod.toLowerCase();
+        it(`with ${name}`, (done: DoneFn): void => {
+          const request: any = (new AjaxRequest('https://example.com'));
+          request[requestFn](payload, {headers: headers});
+          expect(window.fetch).toHaveBeenCalledWith('https://example.com/', jasmine.objectContaining({method: requestMethod, body: expectedFn()}));
+          done();
+        });
+      }
+    });
+  }
 
   describe('send GET requests', (): void => {
     function* responseDataProvider(): any {
@@ -137,6 +166,12 @@ describe('TYPO3/CMS/Core/Ajax/AjaxRequest', (): void => {
         {foo: 'bar', bar: {baz: 'bencer'}},
         window.location.origin + '/foo/bar?foo=bar&bar[baz]=bencer',
       ];
+      yield [
+        'fallback to current script if not defined',
+        '?foo=bar&baz=bencer',
+        {},
+        window.location.origin + window.location.pathname + '?foo=bar&baz=bencer',
+      ];
     }
 
     for (let providedData of urlInputDataProvider()) {
@@ -169,7 +204,43 @@ describe('TYPO3/CMS/Core/Ajax/AjaxRequest', (): void => {
         'array of arguments',
         ['foo=bar', 'husel=pusel'],
         'https://example.com/?foo=bar&husel=pusel',
-      ]
+      ];
+      yield [
+        'object with array',
+        {foo: ['bar', 'baz']},
+        'https://example.com/?foo[0]=bar&foo[1]=baz',
+      ];
+      yield [
+        'complex object',
+        {
+          foo: 'bar',
+          nested: {
+            husel: 'pusel',
+            bar: 'baz',
+            array: ['5', '6']
+          },
+          array: ['1', '2']
+        },
+        'https://example.com/?foo=bar&nested[husel]=pusel&nested[bar]=baz&nested[array][0]=5&nested[array][1]=6&array[0]=1&array[1]=2',
+      ];
+      yield [
+        'complex, deeply nested object',
+        {
+          foo: 'bar',
+          nested: {
+            husel: 'pusel',
+            bar: 'baz',
+            array: ['5', '6'],
+            deep_nested: {
+              husel: 'pusel',
+              bar: 'baz',
+              array: ['5', '6']
+            },
+          },
+          array: ['1', '2']
+        },
+        'https://example.com/?foo=bar&nested[husel]=pusel&nested[bar]=baz&nested[array][0]=5&nested[array][1]=6&nested[deep_nested][husel]=pusel&nested[deep_nested][bar]=baz&nested[deep_nested][array][0]=5&nested[deep_nested][array][1]=6&array[0]=1&array[1]=2',
+      ];
     }
 
     for (let providedData of queryArgumentsDataProvider()) {

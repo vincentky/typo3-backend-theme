@@ -20,13 +20,18 @@ import SecurityUtility = require('TYPO3/CMS/Core/SecurityUtility');
 import ExtensionManagerRepository = require('./Repository');
 import ExtensionManagerUpdate = require('./Update');
 import ExtensionManagerUploadForm = require('./UploadForm');
-import 'datatables';
+import 'tablesort';
+import 'tablesort.dotsep';
 import 'TYPO3/CMS/Backend/Input/Clearable';
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
+import DebounceEvent = require('TYPO3/CMS/Core/Event/DebounceEvent');
+import RegularEvent = require('TYPO3/CMS/Core/Event/RegularEvent');
 
 const securityUtility = new SecurityUtility();
 
 enum ExtensionManagerIdentifier {
-  extensionlist = '#typo3-extension-list',
+  extensionlist = 'typo3-extension-list',
   searchField = '#Tx_Extensionmanager_extensionkey',
 }
 
@@ -54,94 +59,51 @@ class ExtensionManager {
     return vars;
   }
 
-  /**
-   * Special sorting for the extension version column
-   */
-  private static versionCompare(a: string, b: string): number {
-    if (a === b) {
-      return 0;
-    }
-
-    const a_components = a.split('.');
-    const b_components = b.split('.');
-    const len = Math.min(a_components.length, b_components.length);
-
-    // loop while the components are equal
-    for (let i = 0; i < len; i++) {
-      // A bigger than B
-      if (parseInt(a_components[i], 10) > parseInt(b_components[i], 10)) {
-        return 1;
-      }
-
-      // B bigger than A
-      if (parseInt(a_components[i], 10) < parseInt(b_components[i], 10)) {
-        return -1;
-      }
-    }
-
-    // If one's a prefix of the other, the longer one is greaRepository.
-    if (a_components.length > b_components.length) {
-      return 1;
-    }
-
-    if (a_components.length < b_components.length) {
-      return -1;
-    }
-    // Otherwise they are the same.
-    return 0;
-  }
-
-  /**
-   * The extension name column can contain various forms of HTML that
-   * break a direct comparison of values
-   */
-  private static extensionCompare(a: string, b: string): number {
-    const div = document.createElement('div');
-    div.innerHTML = a;
-    const aStr = div.textContent || div.innerText || a;
-
-    div.innerHTML = b;
-    const bStr = div.textContent || div.innerText || b;
-
-    return aStr.trim().localeCompare(bStr.trim());
-  }
-
   constructor() {
+    const me = this;
     $(() => {
-      $.fn.dataTableExt.oSort['extension-asc'] = (a: string, b: string) => {
-        return ExtensionManager.extensionCompare(a, b);
-      };
-
-      $.fn.dataTableExt.oSort['extension-desc'] = (a: string, b: string) => {
-        let result = ExtensionManager.extensionCompare(a, b);
-        return result * -1;
-      };
-
-      $.fn.dataTableExt.oSort['version-asc'] = (a: string, b: string) => {
-        let result = ExtensionManager.versionCompare(a, b);
-        return result * -1;
-      };
-
-      $.fn.dataTableExt.oSort['version-desc'] = (a: string, b: string) => {
-        return ExtensionManager.versionCompare(a, b);
-      };
       this.Update = new ExtensionManagerUpdate();
       this.UploadForm = new ExtensionManagerUploadForm();
       this.Repository = new ExtensionManagerRepository();
 
-      const dataTable: DataTables.Api = this.manageExtensionListing();
+      const extensionList = document.getElementById(ExtensionManagerIdentifier.extensionlist);
+      if (extensionList !== null) {
+        new Tablesort(extensionList);
+
+        new RegularEvent('click', function (this: HTMLAnchorElement, e: Event): void {
+          e.preventDefault();
+
+          Modal.confirm(
+            TYPO3.lang['extensionList.removalConfirmation.title'],
+            TYPO3.lang['extensionList.removalConfirmation.question'],
+            Severity.error,
+            [
+              {
+                text: TYPO3.lang['button.cancel'],
+                active: true,
+                btnClass: 'btn-default',
+                trigger: (): void => {
+                  Modal.dismiss();
+                },
+              }, {
+                text: TYPO3.lang['button.remove'],
+                btnClass: 'btn-danger',
+                trigger: (): void => {
+                  me.removeExtensionFromDisk(this);
+                  Modal.dismiss();
+                },
+              },
+            ],
+          );
+        }).delegateTo(extensionList, '.removeExtension');
+      }
       $(document).on('click', '.onClickMaskExtensionManager', (): void => {
         NProgress.start();
       }).on('click', 'a[data-action=update-extension]', (e: JQueryEventObject): void => {
         e.preventDefault();
-        $.ajax({
-          url: $(e.currentTarget).attr('href'),
-          dataType: 'json',
-          beforeSend: (): void => {
-            NProgress.start();
-          },
-          success: this.updateExtension,
-        });
+
+        NProgress.start();
+        new AjaxRequest($(e.currentTarget).attr('href')).get().then(this.updateExtension);
       }).on('change', 'input[name=unlockDependencyIgnoreButton]', (e: JQueryEventObject): void => {
         const $actionButton = $('.t3js-dependencies');
         $actionButton.toggleClass('disabled', !$(e.currentTarget).prop('checked'));
@@ -149,9 +111,16 @@ class ExtensionManager {
 
       let searchField: HTMLInputElement;
       if ((searchField = document.querySelector(ExtensionManagerIdentifier.searchField)) !== null) {
+        new RegularEvent('submit', (e: Event): void => {
+          e.preventDefault();
+        }).bindTo(searchField.closest('form'));
+
+        new DebounceEvent('keyup', (e: KeyboardEvent): void => {
+          this.filterExtensions(e.target as HTMLInputElement);
+        }, 100).bindTo(searchField);
         searchField.clearable({
-          onClear: (): void => {
-            dataTable.search('').draw();
+          onClear: (input: HTMLInputElement): void => {
+            this.filterExtensions(input);
           },
         });
       }
@@ -175,99 +144,37 @@ class ExtensionManager {
     });
   }
 
-  private manageExtensionListing(): DataTables.Api {
-    const $searchField = $(ExtensionManagerIdentifier.searchField);
-    const dataTable = $(ExtensionManagerIdentifier.extensionlist).DataTable({
-      paging: false,
-      dom: 'lrtip',
-      lengthChange: false,
-      pageLength: 15,
-      stateSave: true,
-      drawCallback: this.bindExtensionListActions,
-      columns: [
-        null,
-        null,
-        {
-          type: 'extension',
-        },
-        null,
-        {
-          type: 'version',
-        }, {
-          orderable: false,
-        },
-        null,
-        null,
-      ],
+  private filterExtensions(input: HTMLInputElement): void {
+    const filterableColumns = document.querySelectorAll('[data-filterable]');
+    const columnIndices: number[] = [];
+    filterableColumns.forEach((element: HTMLTableRowElement): void => {
+      const children = Array.from(element.parentElement.children);
+      columnIndices.push(children.indexOf(element));
     });
-
-    $searchField.parents('form').on('submit', () => {
-      return false;
-    });
-
-    const getVars: any = ExtensionManager.getUrlVars();
-
-    // restore filter
-    const currentSearch = (getVars.search ? getVars.search : dataTable.search());
-    $searchField.val(currentSearch);
-
-    $searchField.on('input', (e: JQueryEventObject): void => {
-      dataTable.search($(e.currentTarget).val()).draw();
-    });
-
-    return dataTable;
-  }
-
-  private bindExtensionListActions = (): void => {
-    $('.removeExtension').not('.transformed').each((index: number, element: any) => {
-      const $me = $(element);
-      $me.data('href', $me.attr('href'));
-      $me.attr('href', '#');
-      $me.addClass('transformed');
-      $me.click((): void => {
-        Modal.confirm(
-          TYPO3.lang['extensionList.removalConfirmation.title'],
-          TYPO3.lang['extensionList.removalConfirmation.question'],
-          Severity.error,
-          [
-            {
-              text: TYPO3.lang['button.cancel'],
-              active: true,
-              btnClass: 'btn-default',
-              trigger: (): void => {
-                Modal.dismiss();
-              },
-            }, {
-              text: TYPO3.lang['button.remove'],
-              btnClass: 'btn-danger',
-              trigger: (): void => {
-                this.removeExtensionFromDisk($me);
-                Modal.dismiss();
-              },
-            },
-          ],
-        );
+    const columnQuerySelectors = columnIndices.map((index: number): string => `td:nth-child(${index + 1})`).join(',');
+    const rows = document.querySelectorAll('#typo3-extension-list tbody tr');
+    rows.forEach((row: HTMLTableRowElement): void => {
+      const columns = row.querySelectorAll(columnQuerySelectors);
+      const values: string[] = [];
+      columns.forEach((column: HTMLTableCellElement): void => {
+        values.push(column.textContent.trim().replace(/\s+/g, ' '));
       });
+      row.classList.toggle('hidden', input.value !== '' && !RegExp(input.value, 'i').test(values.join(':')));
     });
   }
 
-  private removeExtensionFromDisk($extension: JQuery): void {
-    $.ajax({
-      url: $extension.data('href'),
-      beforeSend: (): void => {
-        NProgress.start();
-      },
-      success: (): void => {
-        location.reload();
-      },
-      complete: (): void => {
-        NProgress.done();
-      },
+  private removeExtensionFromDisk(trigger: HTMLAnchorElement): void {
+    NProgress.start();
+    new AjaxRequest(trigger.href).get().then((): void => {
+      location.reload();
+    }).finally((): void => {
+      NProgress.done();
     });
   }
 
-  private updateExtension(data: any): void {
+  private async updateExtension(response: AjaxResponse): Promise<void> {
     let i = 0;
+    const data = await response.resolve();
     const $form = $('<form>');
     $.each(data.updateComments, (version: string, comment: string): void => {
       const $input = $('<input>').attr({type: 'radio', name: 'version'}).val(version);
@@ -315,20 +222,13 @@ class ExtensionManager {
           text: TYPO3.lang['button.updateExtension'],
           btnClass: 'btn-warning',
           trigger: (): void => {
-            $.ajax({
-              url: data.url,
-              data: {
-                tx_extensionmanager_tools_extensionmanagerextensionmanager: {
-                  version: $('input:radio[name=version]:checked', Modal.currentModal).val(),
-                },
-              },
-              dataType: 'json',
-              beforeSend: (): void => {
-                NProgress.start();
-              },
-              complete: (): void => {
-                location.reload();
-              },
+            NProgress.start();
+            new AjaxRequest(data.url).withQueryArguments({
+              tx_extensionmanager_tools_extensionmanagerextensionmanager: {
+                version: $('input:radio[name=version]:checked', Modal.currentModal).val(),
+              }
+            }).get().finally((): void => {
+              location.reload();
             });
             Modal.dismiss();
           },

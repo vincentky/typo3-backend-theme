@@ -11,42 +11,46 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {InlineModuleInterface} from './../InlineModuleInterface';
-import * as $ from 'jquery';
-import Router = require('../../Router');
 import Notification = require('TYPO3/CMS/Backend/Notification');
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
+import Router = require('../../Router');
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import {AbstractInlineModule} from '../AbstractInlineModule';
 
 /**
  * Module: TYPO3/CMS/Install/Module/DumpAutoload
  */
-class DumpAutoload implements InlineModuleInterface {
+class DumpAutoload extends AbstractInlineModule {
   public initialize($trigger: JQuery): void {
-    $.ajax({
-      url: Router.getUrl('dumpAutoload'),
-      cache: false,
-      beforeSend: (): void => {
-        $trigger.addClass('disabled').prop('disabled', true);
-      },
-      success: (data: any): void => {
-        if (data.success === true && Array.isArray(data.status)) {
-          if (data.status.length > 0) {
-            data.status.forEach((element: any): void => {
-              Notification.success(element.message);
-            });
+    this.setButtonState($trigger, false);
+
+    (new AjaxRequest(Router.getUrl('dumpAutoload')))
+      .get({cache: 'no-cache'})
+      .then(
+        async (response: AjaxResponse): Promise<any> => {
+          const data = await response.resolve();
+          if (data.success === true && Array.isArray(data.status)) {
+            if (data.status.length > 0) {
+              data.status.forEach((element: any): void => {
+                Notification.success(element.message);
+              });
+            }
+          } else {
+            Notification.error('Something went wrong', 'The request was not processed successfully. Please check the browser\'s console and TYPO3\'s log.');
           }
-        } else {
-          Notification.error('Something went wrong');
+        },
+        (): void => {
+          // In case the dump action fails (typically 500 from server), do not kill the entire
+          // install tool, instead show a notification that something went wrong.
+          Notification.error(
+            'Autoloader not dumped',
+            'Dumping autoload files failed for unknown reasons. Check the system for broken extensions and try again.'
+          );
         }
-      },
-      error: (): void => {
-        // In case the dump action fails (typically 500 from server), do not kill the entire
-        // install tool, instead show a notification that something went wrong.
-        Notification.error('Dumping autoload files went wrong on the server side. Check the system for broken extensions and try again');
-      },
-      complete: (): void => {
-        $trigger.removeClass('disabled').prop('disabled', false);
-      },
-    });
+      )
+      .finally((): void => {
+        this.setButtonState($trigger, true);
+      });
   }
 }
 

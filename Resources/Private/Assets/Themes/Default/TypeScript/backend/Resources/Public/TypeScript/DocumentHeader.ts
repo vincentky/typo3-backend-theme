@@ -12,6 +12,11 @@
  */
 
 import * as $ from 'jquery';
+<<<<<<< ours
+=======
+import DebounceEvent = require('TYPO3/CMS/Core/Event/DebounceEvent');
+import ThrottleEvent = require('TYPO3/CMS/Core/Event/ThrottleEvent');
+>>>>>>> theirs
 
 /**
  * Module: TYPO3/CMS/Backend/DocumentHeader
@@ -79,8 +84,13 @@ class DocumentHeader {
    */
   private start(): void {
     this.reposition();
+<<<<<<< ours
     $(window).on('resize', this.reposition);
     $('.t3js-module-docheader + .t3js-module-body').on('scroll', this.scroll);
+=======
+    new DebounceEvent('resize', this.reposition).bindTo(window);
+    new ThrottleEvent('scroll', this.scroll, 100).bindTo(document.querySelector('.t3js-module-docheader + .t3js-module-body'));
+>>>>>>> theirs
   }
 
   /**
@@ -89,7 +99,11 @@ class DocumentHeader {
    * @param {Event} e
    */
   private scroll = (e: Event): void => {
+<<<<<<< ours
     this.currentPosition = $(e.currentTarget).scrollTop();
+=======
+    this.currentPosition = $(e.target).scrollTop();
+>>>>>>> theirs
     if (this.currentPosition > this.lastPosition) {
       if (this.direction !== 'down') {
         this.direction = 'down';

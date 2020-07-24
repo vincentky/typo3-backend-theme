@@ -11,6 +11,9 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+import * as $ from 'jquery';
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
+import {MessageUtility} from '../../Utility/MessageUtility';
 import {AjaxDispatcher} from './../InlineRelation/AjaxDispatcher';
 import {InlineResponseInterface} from './../InlineRelation/InlineResponseInterface';
 import {MessageUtility} from '../../Utility/MessageUtility';
@@ -44,6 +47,7 @@ enum States {
   new = 'inlineIsNewRecord',
   visible = 'panel-visible',
   collapsed = 'panel-collapsed',
+  notLoaded = 't3js-not-loaded',
 }
 
 enum Separators {
@@ -306,6 +310,7 @@ class InlineControlContainer {
     e.stopImmediatePropagation();
 
     this.loadRecordDetails(target.parentElement.dataset.objectId);
+    }).delegateTo(this.container, `${Selectors.toggleSelector} .form-irre-header-cell:not(${Selectors.controlSectionSelector}`);
   }
 
   /**
@@ -327,6 +332,7 @@ class InlineControlContainer {
       (<HTMLDivElement>target.closest('[data-object-id]')).dataset.objectId,
       <SortDirections>target.dataset.direction,
     );
+    }).delegateTo(this.container, Selectors.controlSectionSelector + ' [data-action="sort"]');
   }
 
   /**
@@ -349,6 +355,7 @@ class InlineControlContainer {
 
       this.importRecord([objectId], target.dataset.recordUid);
     }
+    }).delegateTo(this.container, Selectors.createNewRecordButtonSelector);
   }
 
   /**
@@ -367,6 +374,7 @@ class InlineControlContainer {
     const recordUid = selectTarget.options[selectTarget.selectedIndex].getAttribute('value');
 
     this.importRecord([this.container.dataset.objectGroup, recordUid]);
+    }).delegateTo(this.container, Selectors.createNewRecordBySelectorSelector);
   }
 
   /**
@@ -393,6 +401,18 @@ class InlineControlContainer {
       }
 
       this.importRecord([e.data.objectGroup, e.data.uid]);
+        if (e.source) {
+          const message = {
+            actionName: 'typo3:foreignRelation:inserted',
+            objectGroup: e.data.objectId,
+            table: e.data.table,
+            uid: e.data.uid,
+          };
+          MessageUtility.send(message, e.source as Window);
+        }
+      });
+    } else {
+      console.warn(`Unhandled action "${e.data.actionName}"`);
     }
   }
 
@@ -486,6 +506,7 @@ class InlineControlContainer {
     Icons.getIcon(toggleIcon, Icons.sizes.small).done((markup: string): void => {
       target.replaceChild(document.createRange().createContextualFragment(markup), target.querySelector('.t3js-icon'));
     });
+    }).delegateTo(this.container, Selectors.enableDisableRecordButtonSelector);
   }
 
   /**
@@ -495,11 +516,17 @@ class InlineControlContainer {
     let target: HTMLElement;
     if ((target = InlineControlContainer.getDelegatedEventTarget(
       e.target,
+      e.stopImmediatePropagation();
+
+      InfoWindow.showItem(this.dataset.infoTable, this.dataset.infoUid);
       Selectors.deleteRecordButtonSelector)
     ) === null) {
       return;
     }
 
+  private registerDeleteButton(): void {
+    const me = this;
+    new RegularEvent('click', function(this: HTMLElement, e: Event) {
     e.preventDefault();
     e.stopImmediatePropagation();
 
@@ -526,12 +553,15 @@ class InlineControlContainer {
 
       Modal.dismiss();
     });
+    }).delegateTo(this.container, Selectors.deleteRecordButtonSelector);
   }
 
   /**
    * @param {Event} e
    */
   private registerSynchronizeLocalize(e: Event): void {
+    const me = this;
+    new RegularEvent('click', function(this: HTMLElement, e: Event) {
     let target;
     if ((target = InlineControlContainer.getDelegatedEventTarget(e.target, Selectors.synchronizeLocalizeRecordButtonSelector)) === null) {
       return;
@@ -560,12 +590,15 @@ class InlineControlContainer {
         this.memorizeAddRecord(item.uid, null, item.selectedValue);
       }
     });
+    }).delegateTo(this.container, Selectors.synchronizeLocalizeRecordButtonSelector);
   }
 
   /**
    * @param {Event} e
    */
   private registerUniqueSelectFieldChanged(e: Event): void {
+    const me = this;
+    new RegularEvent('change', function(this: HTMLElement, e: Event) {
     let target;
     if ((target = InlineControlContainer.getDelegatedEventTarget(e.target, Selectors.uniqueValueSelectors)) === null) {
       return;
@@ -583,18 +616,22 @@ class InlineControlContainer {
       }
       this.updateUnique(<HTMLSelectElement>target, formField, objectUid);
     }
+    }).delegateTo(this.container, Selectors.uniqueValueSelectors);
   }
 
   /**
    * @param {Event} e
    */
   private registerRevertUniquenessAction(e: Event): void {
+    const me = this;
+    new RegularEvent('click', function(this: HTMLElement, e: Event) {
     let target;
     if ((target = InlineControlContainer.getDelegatedEventTarget(e.target, Selectors.revertUniqueness)) === null) {
       return;
     }
 
     this.revertUnique(target.dataset.uid);
+    }).delegateTo(this.container, Selectors.revertUniqueness);
   }
 
   /**
@@ -602,6 +639,7 @@ class InlineControlContainer {
    */
   private loadRecordDetails(objectId: string): void {
     const recordFieldsContainer = document.querySelector('#' + objectId + '_fields');
+    const recordContainer = InlineControlContainer.getInlineRecordContainer(objectId);
     const isLoading = typeof this.xhrQueue[objectId] !== 'undefined';
     const isLoaded = recordFieldsContainer !== null && recordFieldsContainer.innerHTML.substr(0, 16) !== '<!--notloaded-->';
 
@@ -618,6 +656,7 @@ class InlineControlContainer {
           delete this.xhrQueue[objectId];
           delete this.progessQueue[objectId];
 
+          recordContainer.classList.remove(States.notLoaded);
           recordFieldsContainer.innerHTML = response.data;
           this.collapseExpandRecord(objectId);
 
@@ -844,6 +883,7 @@ class InlineControlContainer {
 
   /**
    * @param {string} objectId
+   * @param {string} objectIdHash
    */
   private getProgress(objectId: string): any {
     const headerIdentifier = '#' + objectId + '_header';
@@ -923,10 +963,12 @@ class InlineControlContainer {
     }
 
     records.forEach((recordUid: string, index: number): void => {
+      const recordContainer = InlineControlContainer.getInlineRecordContainer(objectId + Separators.structureSeparator + recordUid);
       const headerIdentifier = '#' + objectId + Separators.structureSeparator + recordUid + '_header';
       const headerElement = document.querySelector(headerIdentifier);
 
       const sortUp = headerElement.querySelector('[data-action="sort"][data-direction="' + SortDirections.UP + '"]');
+
       if (sortUp !== null) {
         let iconIdentifier = 'actions-move-up';
         if (index === 0) {

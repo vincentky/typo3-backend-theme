@@ -156,7 +156,7 @@ class PageActions {
     });
 
     $inputFieldWrap.find('[data-action="submit"]').on('click', (): void => {
-      const newPageTitle = $.trim($inputField.val());
+      const newPageTitle = $inputField.val().trim();
       if (newPageTitle !== '' && this.$pageTitle.text() !== newPageTitle) {
         this.saveChanges($inputField);
       } else {
@@ -212,12 +212,12 @@ class PageActions {
     parameters.data.pages[recordUid] = {title: $field.val()};
 
     require(['TYPO3/CMS/Backend/AjaxDataHandler'], (DataHandler: any): void => {
-      DataHandler.process(parameters).done((): void => {
+      DataHandler.process(parameters).then((): void => {
         $inputFieldWrap.find('[data-action=cancel]').trigger('click');
         this.$pageTitle.text($field.val());
         this.initializePageTitleRenaming();
         top.TYPO3.Backend.NavigationContainer.PageTree.refreshTree();
-      }).fail((): void => {
+      }).catch((): void => {
         $inputFieldWrap.find('[data-action=cancel]').trigger('click');
       });
     });
@@ -227,6 +227,9 @@ class PageActions {
    * Activate New Content Element Wizard
    */
   private initializeNewContentElementWizard(): void {
+    Array.from(document.querySelectorAll(IdentifierEnum.newButton)).forEach((element: HTMLElement): void => {
+      element.classList.remove('disabled');
+    });
     $(IdentifierEnum.newButton).click((e: JQueryEventObject): void => {
       e.preventDefault();
 

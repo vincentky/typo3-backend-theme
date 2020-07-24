@@ -11,6 +11,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+<<<<<<< ours
 import {SeverityEnum} from './Enum/Severity';
 import * as $ from 'jquery';
 import AjaxDataHandler = require('./AjaxDataHandler');
@@ -19,6 +20,18 @@ import Modal = require('./Modal');
 import ModuleMenu = require('./ModuleMenu');
 import Viewport = require('./Viewport');
 import Notification = require('TYPO3/CMS/Backend/Notification');
+=======
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import {SeverityEnum} from './Enum/Severity';
+import * as $ from 'jquery';
+import AjaxDataHandler = require('./AjaxDataHandler');
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
+import InfoWindow = require('./InfoWindow');
+import Modal = require('./Modal');
+import ModuleMenu = require('./ModuleMenu');
+import Notification = require('TYPO3/CMS/Backend/Notification');
+import Viewport = require('./Viewport');
+>>>>>>> theirs
 
 /**
  * @exports TYPO3/CMS/Backend/ContextMenuActions
@@ -151,9 +164,16 @@ class ContextMenuActions {
    * @param {number} uid
    */
   public static disableRecord(table: string, uid: number): void {
+<<<<<<< ours
     Viewport.ContentContainer.setUrl(
       top.TYPO3.settings.RecordCommit.moduleUrl
       + '&data[' + table + '][' + uid + '][hidden]=1'
+=======
+    const disableFieldName = $(this).data('disable-field') || 'hidden';
+    Viewport.ContentContainer.setUrl(
+      top.TYPO3.settings.RecordCommit.moduleUrl
+      + '&data[' + table + '][' + uid + '][' + disableFieldName + ']=1'
+>>>>>>> theirs
       + '&redirect=' + ContextMenuActions.getReturnUrl(),
     ).done((): void => {
       Viewport.NavigationContainer.PageTree.refreshTree();
@@ -165,9 +185,16 @@ class ContextMenuActions {
    * @param {number} uid
    */
   public static enableRecord(table: string, uid: number): void {
+<<<<<<< ours
     Viewport.ContentContainer.setUrl(
       top.TYPO3.settings.RecordCommit.moduleUrl
       + '&data[' + table + '][' + uid + '][hidden]=0'
+=======
+    const disableFieldName = $(this).data('disable-field') || 'hidden';
+    Viewport.ContentContainer.setUrl(
+      top.TYPO3.settings.RecordCommit.moduleUrl
+      + '&data[' + table + '][' + uid + '][' + disableFieldName + ']=0'
+>>>>>>> theirs
       + '&redirect=' + ContextMenuActions.getReturnUrl(),
     ).done((): void => {
       Viewport.NavigationContainer.PageTree.refreshTree();
@@ -227,8 +254,13 @@ class ContextMenuActions {
 
     $modal.on('button.clicked', (e: JQueryEventObject): void => {
       if (e.target.getAttribute('name') === 'delete') {
+<<<<<<< ours
         const xhr = AjaxDataHandler.process('cmd[' + table + '][' + uid + '][delete]=1');
         xhr.done((): void => {
+=======
+        const eventData = {component: 'contextmenu', trigger: $anchorElement.get(0), action: 'delete', table, uid};
+        AjaxDataHandler.process('cmd[' + table + '][' + uid + '][delete]=1', eventData).then((): void => {
+>>>>>>> theirs
           if (table === 'pages' && Viewport.NavigationContainer.PageTree) {
             if (uid === top.fsMod.recentIds.web) {
               let node = Viewport.NavigationContainer.PageTree.getFirstNode();
@@ -252,7 +284,11 @@ class ContextMenuActions {
       + '&CB[el][' + table + '%7C' + uid + ']=1'
       + '&CB[setCopyMode]=1';
 
+<<<<<<< ours
     $.ajax(url).always((): void => {
+=======
+    (new AjaxRequest(url)).get().finally((): void => {
+>>>>>>> theirs
       ContextMenuActions.triggerRefresh(Viewport.ContentContainer.get().location.href);
     });
   }
@@ -265,7 +301,11 @@ class ContextMenuActions {
     const url = TYPO3.settings.ajaxUrls.contextmenu_clipboard
       + '&CB[el][' + table + '%7C' + uid + ']=0';
 
+<<<<<<< ours
     $.ajax(url).always((): void => {
+=======
+    (new AjaxRequest(url)).get().finally((): void => {
+>>>>>>> theirs
       ContextMenuActions.triggerRefresh(Viewport.ContentContainer.get().location.href);
     });
   }
@@ -279,7 +319,11 @@ class ContextMenuActions {
       + '&CB[el][' + table + '%7C' + uid + ']=1'
       + '&CB[setCopyMode]=0';
 
+<<<<<<< ours
     $.ajax(url).always((): void => {
+=======
+    (new AjaxRequest(url)).get().finally((): void => {
+>>>>>>> theirs
       ContextMenuActions.triggerRefresh(Viewport.ContentContainer.get().location.href);
     });
   }
@@ -300,30 +344,49 @@ class ContextMenuActions {
    * @param {number} uid uid of the page
    */
   public static clearCache(table: string, uid: number): void {
+<<<<<<< ours
     $.ajax({
       url: TYPO3.settings.ajaxUrls.web_list_clearpagecache + '&id=' + uid,
       cache: false,
       dataType: 'json',
       success: (data: any): void => {
+=======
+    (new AjaxRequest(TYPO3.settings.ajaxUrls.web_list_clearpagecache)).withQueryArguments({id: uid}).get({cache: 'no-cache'}).then(
+      async (response: AjaxResponse): Promise<any> => {
+        const data = await response.resolve();
+>>>>>>> theirs
         if (data.success === true) {
           Notification.success(data.title, data.message, 1);
         } else {
           Notification.error(data.title, data.message, 1);
         }
       },
+<<<<<<< ours
       error: (): void => {
         Notification.error(
           'Clearing page caches went wrong on the server side.',
         );
       },
     });
+=======
+      (): void => {
+        Notification.error(
+          'Clearing page caches went wrong on the server side.',
+        );
+      }
+    );
+>>>>>>> theirs
   }
 
   /**
    * Paste db record after another
    *
    * @param {string} table any db table except sys_file
+<<<<<<< ours
    * @param {number} uid uid of the record after which record from the cliboard will be pasted
+=======
+   * @param {number} uid uid of the record after which record from the clipboard will be pasted
+>>>>>>> theirs
    */
   public static pasteAfter(table: string, uid: number): void {
     ContextMenuActions.pasteInto.bind($(this))(table, -uid);
@@ -333,7 +396,11 @@ class ContextMenuActions {
    * Paste page into another page
    *
    * @param {string} table any db table except sys_file
+<<<<<<< ours
    * @param {number} uid uid of the record after which record from the cliboard will be pasted
+=======
+   * @param {number} uid uid of the record after which record from the clipboard will be pasted
+>>>>>>> theirs
    */
   public static pasteInto(table: string, uid: number): void {
     const $anchorElement = $(this);

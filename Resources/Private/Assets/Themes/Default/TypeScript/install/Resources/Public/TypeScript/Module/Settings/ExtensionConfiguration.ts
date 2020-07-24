@@ -11,13 +11,16 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {AbstractInteractableModule} from '../AbstractInteractableModule';
-import * as $ from 'jquery';
 import 'bootstrap';
+import * as $ from 'jquery';
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import {ResponseError} from 'TYPO3/CMS/Core/Ajax/ResponseError';
 import '../../Renderable/Clearable';
-import Router = require('../../Router');
-import Notification = require('TYPO3/CMS/Backend/Notification');
+import {AbstractInteractableModule} from '../AbstractInteractableModule';
 import ModuleMenu = require('TYPO3/CMS/Backend/ModuleMenu');
+import Notification = require('TYPO3/CMS/Backend/Notification');
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
+import Router = require('../../Router');
 
 /**
  * Module: TYPO3/CMS/Install/Module/ExtensionConfiguration
@@ -73,24 +76,20 @@ class ExtensionConfiguration extends AbstractInteractableModule {
 
   private getContent(): void {
     const modalContent = this.getModalBody();
-    $.ajax({
-      url: Router.getUrl('extensionConfigurationGetContent'),
-      cache: false,
-      success: (data: any): void => {
-        if (data.success === true) {
-          if (Array.isArray(data.status)) {
-            data.status.forEach((element: any): void => {
-              Notification.success(element.title, element.message);
-            });
+    (new AjaxRequest(Router.getUrl('extensionConfigurationGetContent')))
+      .get({cache: 'no-cache'})
+      .then(
+        async (response: AjaxResponse): Promise<any> => {
+          const data = await response.resolve();
+          if (data.success === true) {
+            modalContent.html(data.html);
+            this.initializeWrap();
           }
-          modalContent.html(data.html);
-          this.initializeWrap();
+        },
+        (error: ResponseError): void => {
+          Router.handleAjaxError(error, modalContent);
         }
-      },
-      error: (xhr: XMLHttpRequest): void => {
-        Router.handleAjaxError(xhr, modalContent);
-      },
-    });
+      );
   }
 
   /**
@@ -106,35 +105,33 @@ class ExtensionConfiguration extends AbstractInteractableModule {
       extensionConfiguration[element.name] = element.value;
     });
 
-    $.ajax({
-      url: Router.getUrl(),
-      method: 'POST',
-      data: {
-        'install': {
-          'token': executeToken,
-          'action': 'extensionConfigurationWrite',
-          'extensionKey': $form.attr('data-extensionKey'),
-          'extensionConfiguration': extensionConfiguration,
+    (new AjaxRequest(Router.getUrl()))
+      .post({
+        install: {
+          token: executeToken,
+          action: 'extensionConfigurationWrite',
+          extensionKey: $form.attr('data-extensionKey'),
+          extensionConfiguration: extensionConfiguration,
         },
-      },
-      success: (data: any): void => {
-        if (data.success === true && Array.isArray(data.status)) {
-          data.status.forEach((element: any): void => {
-            Notification.showMessage(element.title, element.message, element.severity);
-          });
-          if ($('body').data('context') === 'backend') {
-            ModuleMenu.App.refreshMenu();
+      })
+      .then(
+        async (response: AjaxResponse): Promise<any> => {
+          const data = await response.resolve();
+          if (data.success === true && Array.isArray(data.status)) {
+            data.status.forEach((element: any): void => {
+              Notification.showMessage(element.title, element.message, element.severity);
+            });
+            if ($('body').data('context') === 'backend') {
+              ModuleMenu.App.refreshMenu();
+            }
+          } else {
+            Notification.error('Something went wrong', 'The request was not processed successfully. Please check the browser\'s console and TYPO3\'s log.');
           }
-        } else {
-          Notification.error('Something went wrong');
+        },
+        (error: ResponseError): void => {
+          Router.handleAjaxError(error, modalContent);
         }
-      },
-      error: (xhr: XMLHttpRequest): void => {
-        Router.handleAjaxError(xhr, modalContent);
-      },
-    }).always((): void => {
-      // empty method? why? I guess there is a reason, so let's keep it for the time being.
-    });
+      );
   }
 
   /**
@@ -160,7 +157,7 @@ class ExtensionConfiguration extends AbstractInteractableModule {
             'id': id + '_offset_x',
             'class': 'form-control t3js-emconf-offsetfield',
             'data-target': '#' + id,
-            'value': $.trim(valArr[0]),
+            'value': valArr[0]?.trim(),
           }),
         ),
       );
@@ -171,7 +168,7 @@ class ExtensionConfiguration extends AbstractInteractableModule {
             'id': id + '_offset_y',
             'class': 'form-control t3js-emconf-offsetfield',
             'data-target': '#' + id,
-            'value': $.trim(valArr[1]),
+            'value': valArr[1]?.trim(),
           }),
         ),
       );
@@ -201,7 +198,7 @@ class ExtensionConfiguration extends AbstractInteractableModule {
             'id': id + '_wrap_start',
             'class': 'form-control t3js-emconf-wrapfield',
             'data-target': '#' + id,
-            'value': $.trim(valArr[0]),
+            'value': valArr[0]?.trim(),
           }),
         ),
         $('<div>', {'class': 'form-multigroup-item'}).append(
@@ -209,7 +206,7 @@ class ExtensionConfiguration extends AbstractInteractableModule {
             'id': id + '_wrap_end',
             'class': 'form-control t3js-emconf-wrapfield',
             'data-target': '#' + id,
-            'value': $.trim(valArr[1]),
+            'value': valArr[1]?.trim(),
           }),
         ),
       );

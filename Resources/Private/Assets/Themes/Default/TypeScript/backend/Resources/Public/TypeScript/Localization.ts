@@ -11,8 +11,10 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {SeverityEnum} from './Enum/Severity';
 import * as $ from 'jquery';
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import {SeverityEnum} from './Enum/Severity';
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
 import Icons = require('./Icons');
 import Wizard = require('./Wizard');
 
@@ -52,8 +54,8 @@ class Localization {
 
   private initialize(): void {
     const me = this;
-    Icons.getIcon('actions-localize', Icons.sizes.large).done((localizeIconMarkup: string): void => {
-      Icons.getIcon('actions-edit-copy', Icons.sizes.large).done((copyIconMarkup: string): void => {
+    Icons.getIcon('actions-localize', Icons.sizes.large).then((localizeIconMarkup: string): void => {
+      Icons.getIcon('actions-edit-copy', Icons.sizes.large).then((copyIconMarkup: string): void => {
         $(me.triggerButton).removeClass('disabled');
 
         $(document).on('click', me.triggerButton, (e: JQueryEventObject): void => {
@@ -95,6 +97,25 @@ class Localization {
             );
           }
 
+          if ($triggerButton.data('allowTranslate') === 0 && $triggerButton.data('allowCopy') === 0) {
+            actions.push(
+              '<div class="row">'
+              + '<div class="col-sm-12">'
+              + '<div class="alert alert-warning">'
+              + '<div class="media">'
+              + '<div class="media-left">'
+              + '<span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-exclamation fa-stack-1x"></i></span>'
+              + '</div>'
+              + '<div class="media-body">'
+              + '<p class="alert-message">' + TYPO3.lang['localize.educate.noTranslate'] + '</p>'
+              + '</div>'
+              + '</div>'
+              + '</div>'
+              + '</div>'
+              + '</div>',
+            );
+          }
+
           slideStep1 += '<div data-toggle="buttons">' + actions.join('<hr>') + '</div>';
           Wizard.addSlide(
             'localize-choose-action',
@@ -110,13 +131,14 @@ class Localization {
             '',
             SeverityEnum.info,
             ($slide: JQuery): void => {
-              Icons.getIcon('spinner-circle-dark', Icons.sizes.large).done((markup: string): void => {
+              Icons.getIcon('spinner-circle-dark', Icons.sizes.large).then((markup: string): void => {
                 $slide.html('<div class="text-center">' + markup + '</div>');
 
                 this.loadAvailableLanguages(
                   parseInt($triggerButton.data('pageId'), 10),
                   parseInt($triggerButton.data('languageId'), 10),
-                ).done((result: Array<LanguageRecord>): void => {
+                ).then(async (response: AjaxResponse): Promise<void> => {
+                  const result: Array<LanguageRecord> = await response.resolve();
                   if (result.length === 1) {
                     // We only have one result, auto select the record and continue
                     this.sourceLanguage = result[0].uid;
@@ -164,13 +186,14 @@ class Localization {
             TYPO3.lang['localize.view.summary'],
             '',
             SeverityEnum.info, ($slide: JQuery): void => {
-              Icons.getIcon('spinner-circle-dark', Icons.sizes.large).done((markup: string): void => {
+              Icons.getIcon('spinner-circle-dark', Icons.sizes.large).then((markup: string): void => {
                 $slide.html('<div class="text-center">' + markup + '</div>');
               });
               this.getSummary(
                 parseInt($triggerButton.data('pageId'), 10),
                 parseInt($triggerButton.data('languageId'), 10),
-              ).done((result: SummaryRecord): void => {
+              ).then(async (response: AjaxResponse): Promise<void> => {
+                const result: SummaryRecord = await response.resolve();
                 $slide.empty();
                 this.records = [];
 
@@ -271,11 +294,11 @@ class Localization {
               parseInt($triggerButton.data('pageId'), 10),
               parseInt($triggerButton.data('languageId'), 10),
               this.records,
-            ).done((): void => {
+            ).then((): void => {
               Wizard.dismiss();
               document.location.reload();
             });
-          }).done((): void => {
+          }).then((): void => {
             Wizard.show();
 
             Wizard.getComponent().on('click', '.t3js-localization-option', (optionEvt: JQueryEventObject): void => {
@@ -301,16 +324,13 @@ class Localization {
    *
    * @param {number} pageId
    * @param {number} languageId
-   * @returns {JQueryXHR}
+   * @returns {Promise<AjaxResponse>}
    */
-  private loadAvailableLanguages(pageId: number, languageId: number): JQueryXHR {
-    return $.ajax({
-      url: TYPO3.settings.ajaxUrls.page_languages,
-      data: {
-        pageId: pageId,
-        languageId: languageId,
-      },
-    });
+  private loadAvailableLanguages(pageId: number, languageId: number): Promise<AjaxResponse> {
+    return new AjaxRequest(TYPO3.settings.ajaxUrls.page_languages).withQueryArguments({
+      pageId: pageId,
+      languageId: languageId,
+    }).get();
   }
 
   /**
@@ -318,17 +338,14 @@ class Localization {
    *
    * @param {number} pageId
    * @param {number} languageId
-   * @returns {JQueryXHR}
+   * @returns {Promise<AjaxResponse>}
    */
-  private getSummary(pageId: number, languageId: number): JQueryXHR {
-    return $.ajax({
-      url: TYPO3.settings.ajaxUrls.records_localize_summary,
-      data: {
-        pageId: pageId,
-        destLanguageId: languageId,
-        languageId: this.sourceLanguage,
-      },
-    });
+  private getSummary(pageId: number, languageId: number): Promise<AjaxResponse> {
+    return new AjaxRequest(TYPO3.settings.ajaxUrls.records_localize_summary).withQueryArguments({
+      pageId: pageId,
+      destLanguageId: languageId,
+      languageId: this.sourceLanguage,
+    }).get();
   }
 
   /**
@@ -337,19 +354,16 @@ class Localization {
    * @param {number} pageId
    * @param {number} languageId
    * @param {Array<number>} uidList
-   * @returns {JQueryXHR}
+   * @returns {Promise<AjaxResponse>}
    */
-  private localizeRecords(pageId: number, languageId: number, uidList: Array<number>): JQueryXHR {
-    return $.ajax({
-      url: TYPO3.settings.ajaxUrls.records_localize,
-      data: {
-        pageId: pageId,
-        srcLanguageId: this.sourceLanguage,
-        destLanguageId: languageId,
-        action: this.localizationMode,
-        uidList: uidList,
-      },
-    });
+  private localizeRecords(pageId: number, languageId: number, uidList: Array<number>): Promise<AjaxResponse> {
+    return new AjaxRequest(TYPO3.settings.ajaxUrls.records_localize).withQueryArguments({
+      pageId: pageId,
+      srcLanguageId: this.sourceLanguage,
+      destLanguageId: languageId,
+      action: this.localizationMode,
+      uidList: uidList,
+    }).get();
   }
 }
 

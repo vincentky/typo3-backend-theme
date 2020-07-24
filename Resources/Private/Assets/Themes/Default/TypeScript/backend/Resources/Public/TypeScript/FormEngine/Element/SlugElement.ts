@@ -12,6 +12,8 @@
  */
 
 import * as $ from 'jquery';
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
 
 interface FieldOptions {
   pageId: number;
@@ -176,6 +178,7 @@ class SlugElement {
         signature: this.options.signature,
       },
       (response: Response): void => {
+      const visualProposal = '/' + data.proposal.replace(/^\//, '');
         if (response.hasConflicts) {
           this.$fullElement.find('.t3js-form-proposal-accepted').addClass('hidden');
           this.$fullElement.find('.t3js-form-proposal-different').removeClass('hidden').find('span').text(response.proposal);

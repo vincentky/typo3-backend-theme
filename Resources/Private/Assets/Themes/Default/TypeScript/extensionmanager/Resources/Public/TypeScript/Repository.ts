@@ -16,84 +16,49 @@ import * as NProgress from 'nprogress';
 import Modal = require('TYPO3/CMS/Backend/Modal');
 import Notification = require('TYPO3/CMS/Backend/Notification');
 import Severity = require('TYPO3/CMS/Backend/Severity');
-import 'datatables';
+import 'tablesort';
 import 'TYPO3/CMS/Backend/Input/Clearable';
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
+import RegularEvent = require('TYPO3/CMS/Core/Event/RegularEvent');
 
 class Repository {
   public downloadPath: string = '';
 
-  public initDom = (): void => {
+  public initDom(): void {
     NProgress.configure({parent: '.module-loading-indicator', showSpinner: false});
 
-    $('#terTable').DataTable({
-      lengthChange: false,
-      pageLength: 15,
-      stateSave: false,
-      info: false,
-      paging: false,
-      searching: false,
-      ordering: false,
-      drawCallback: this.bindDownload,
-    });
+    const terVersionTable = document.getElementById('terVersionTable');
+    const terSearchTable = document.getElementById('terSearchTable');
 
-    $('#terVersionTable').DataTable({
-      lengthChange: false,
-      pageLength: 15,
-      stateSave: false,
-      info: false,
-      paging: false,
-      searching: false,
-      drawCallback: this.bindDownload,
-      order: [
-        [2, 'asc'],
-      ],
-      columns: [
-        {orderable: false},
-        null,
-        {type: 'version'},
-        null,
-        null,
-        null,
-      ],
-    });
-
-    $('#terSearchTable').DataTable({
-      paging: false,
-      lengthChange: false,
-      stateSave: false,
-      searching: false,
-      language: {
-        search: 'Filter results:',
-      },
-      ordering: false,
-      drawCallback: this.bindDownload,
-    });
+    if (terVersionTable !== null) {
+      new Tablesort(terVersionTable);
+    }
+    if (terSearchTable !== null) {
+      new Tablesort(terSearchTable);
+    }
 
     this.bindDownload();
     this.bindSearchFieldResetter();
   }
 
-  private bindDownload = (): void => {
-    const installButtons = $('.downloadFromTer form.download button[type=submit]');
-    installButtons.off('click');
-    installButtons.on('click', (event: JQueryEventObject): void => {
-      event.preventDefault();
-      const $element: any = $(event.currentTarget);
-      const $form = $element.closest('form');
-      const url = $form.attr('data-href');
-      this.downloadPath = $form.find('input.downloadPath:checked').val();
-      $.ajax({
-        url: url,
-        dataType: 'json',
-        beforeSend: (): void => {
-          NProgress.start();
-        },
-        success: this.getDependencies,
-      });
-    });
+  private bindDownload(): void {
+    const me = this;
+    new RegularEvent('click', function (this: HTMLInputElement, e: Event): void {
+      e.preventDefault();
+
+      const form = this.closest('form');
+      const url = form.dataset.href;
+      me.downloadPath = (form.querySelector('input.downloadPath:checked') as HTMLInputElement).value;
+      NProgress.start();
+      new AjaxRequest(url).get().then(me.getDependencies);
+
+    }).delegateTo(document, '.downloadFromTer form.download button[type=submit]');
   }
 
-  private getDependencies = (data: any): boolean => {
+  private getDependencies = async(response: AjaxResponse): Promise<void> => {
+    const data = await response.resolve();
+
     NProgress.done();
     if (data.hasDependencies) {
       Modal.confirm(data.title, $(data.message), Severity.info, [
@@ -122,66 +87,61 @@ class Repository {
           + '&tx_extensionmanager_tools_extensionmanagerextensionmanager[downloadPath]=' + this.downloadPath);
       }
     }
-    return false;
   }
 
-  private getResolveDependenciesAndInstallResult = (url: string) => {
-    $.ajax({
-      url: url,
-      dataType: 'json',
-      beforeSend: (): void => {
-        NProgress.start();
-      },
-      success: (data: any): void => {
-        if (data.errorCount > 0) {
-          Modal.confirm(data.errorTitle, $(data.errorMessage), Severity.error, [
-            {
-              text: TYPO3.lang['button.cancel'],
-              active: true,
-              btnClass: 'btn-default',
-              trigger: (): void => {
-                Modal.dismiss();
-              },
-            }, {
-              text: TYPO3.lang['button.resolveDependenciesIgnore'],
-              btnClass: 'btn-danger disabled t3js-dependencies',
-              trigger: (e: JQueryEventObject): void => {
-                if (!$(e.currentTarget).hasClass('disabled')) {
-                  this.getResolveDependenciesAndInstallResult(data.skipDependencyUri);
-                  Modal.dismiss();
-                }
-              },
+  private getResolveDependenciesAndInstallResult(url: string): void {
+    NProgress.start();
+    new AjaxRequest(url).get().then(async (response: AjaxResponse): Promise<void> => {
+      // FIXME: As of now, the endpoint doesn't set proper headers, thus we have to parse the response text
+      // https://review.typo3.org/c/Packages/TYPO3.CMS/+/63438
+      const data = await response.raw().json();
+      if (data.errorCount > 0) {
+        Modal.confirm(data.errorTitle, $(data.errorMessage), Severity.error, [
+          {
+            text: TYPO3.lang['button.cancel'],
+            active: true,
+            btnClass: 'btn-default',
+            trigger: (): void => {
+              Modal.dismiss();
             },
-          ]);
-          Modal.currentModal.on('shown.bs.modal', (): void => {
-            const $actionButton = Modal.currentModal.find('.t3js-dependencies');
-            $('input[name="unlockDependencyIgnoreButton"]', Modal.currentModal).on('change', (e: JQueryEventObject): void => {
-              $actionButton.toggleClass('disabled', !$(e.currentTarget).prop('checked'));
-            });
+          }, {
+            text: TYPO3.lang['button.resolveDependenciesIgnore'],
+            btnClass: 'btn-danger disabled t3js-dependencies',
+            trigger: (e: JQueryEventObject): void => {
+              if (!$(e.currentTarget).hasClass('disabled')) {
+                this.getResolveDependenciesAndInstallResult(data.skipDependencyUri);
+                Modal.dismiss();
+              }
+            },
+          },
+        ]);
+        Modal.currentModal.on('shown.bs.modal', (): void => {
+          const $actionButton = Modal.currentModal.find('.t3js-dependencies');
+          $('input[name="unlockDependencyIgnoreButton"]', Modal.currentModal).on('change', (e: JQueryEventObject): void => {
+            $actionButton.toggleClass('disabled', !$(e.currentTarget).prop('checked'));
           });
-        } else {
-          let successMessage = TYPO3.lang['extensionList.dependenciesResolveDownloadSuccess.message'
-          + data.installationTypeLanguageKey].replace(/\{0\}/g, data.extension);
+        });
+      } else {
+        let successMessage = TYPO3.lang['extensionList.dependenciesResolveDownloadSuccess.message'
+        + data.installationTypeLanguageKey].replace(/\{0\}/g, data.extension);
 
-          successMessage += '\n' + TYPO3.lang['extensionList.dependenciesResolveDownloadSuccess.header'] + ': ';
-          $.each(data.result, (index: number, value: any): void => {
-            successMessage += '\n\n' + TYPO3.lang['extensionList.dependenciesResolveDownloadSuccess.item'] + ' ' + index + ': ';
-            $.each(value, (extkey: string): void => {
-              successMessage += '\n* ' + extkey;
-            });
+        successMessage += '\n' + TYPO3.lang['extensionList.dependenciesResolveDownloadSuccess.header'] + ': ';
+        $.each(data.result, (index: number, value: any): void => {
+          successMessage += '\n\n' + TYPO3.lang['extensionList.dependenciesResolveDownloadSuccess.item'] + ' ' + index + ': ';
+          $.each(value, (extkey: string): void => {
+            successMessage += '\n* ' + extkey;
           });
-          Notification.info(
-            TYPO3.lang['extensionList.dependenciesResolveFlashMessage.title' + data.installationTypeLanguageKey]
-              .replace(/\{0\}/g, data.extension),
-            successMessage,
-            15,
-          );
-          top.TYPO3.ModuleMenu.App.refreshMenu();
-        }
-      },
-      complete: (): void => {
-        NProgress.done();
-      },
+        });
+        Notification.info(
+          TYPO3.lang['extensionList.dependenciesResolveFlashMessage.title' + data.installationTypeLanguageKey]
+            .replace(/\{0\}/g, data.extension),
+          successMessage,
+          15,
+        );
+        top.TYPO3.ModuleMenu.App.refreshMenu();
+      }
+    }).finally((): void => {
+      NProgress.done()
     });
   }
 

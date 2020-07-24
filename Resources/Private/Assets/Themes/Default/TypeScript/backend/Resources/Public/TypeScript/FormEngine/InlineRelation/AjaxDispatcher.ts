@@ -13,7 +13,14 @@
 
 import {AjaxRequest} from './AjaxRequest';
 import * as $ from 'jquery';
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
 import Notification = require('../../Notification');
+
+interface Context {
+  config: Object;
+  hmac: string;
+}
 
 export class AjaxDispatcher {
   private readonly objectGroup: string = null;
@@ -38,6 +45,7 @@ export class AjaxDispatcher {
   }
 
   public send(request: AjaxRequest): JQueryXHR {
+    const sentRequest = request.post(this.createRequestBody(params)).then(async (response: AjaxResponse): Promise<any> => {
     const xhr = $.ajax(request.getEndpoint(), request.getOptions());
 
     xhr.done((): void => {
@@ -46,12 +54,33 @@ export class AjaxDispatcher {
       Notification.error('Error ' + xhr.status, xhr.statusText);
     });
 
+    return sentRequest;
+  }
+
+  private createRequestBody(input: Array<string>): { [key: string]: string } {
+    const body: { [key: string]: string } = {};
+    for (let i = 0; i < input.length; i++) {
+      body['ajax[' + i + ']'] = input[i];
+    }
+
+    body['ajax[context]'] = JSON.stringify(this.getContext());
+
     return xhr;
   }
 
   private processResponse(xhr: JQueryXHR): void {
-    const json = xhr.responseJSON;
+    let context: Context;
 
+    if (typeof TYPO3.settings.FormEngineInline.config[this.objectGroup] !== 'undefined'
+      && typeof TYPO3.settings.FormEngineInline.config[this.objectGroup].context !== 'undefined'
+    ) {
+      context = TYPO3.settings.FormEngineInline.config[this.objectGroup].context;
+    }
+
+    const json = xhr.responseJSON;
+  }
+
+  private processResponse(json: { [key: string]: any }): { [key: string]: any } {
     if (json.hasErrors) {
       $.each(json.messages, (position: number, message: { [key: string]: string }): void => {
         Notification.error(message.title, message.message);
@@ -90,5 +119,7 @@ export class AjaxDispatcher {
         eval(value);
       });
     }
+
+    return json;
   }
 }

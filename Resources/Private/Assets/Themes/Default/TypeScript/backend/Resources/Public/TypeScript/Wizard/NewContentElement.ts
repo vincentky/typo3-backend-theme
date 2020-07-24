@@ -13,6 +13,7 @@
 
 import {SeverityEnum} from '../Enum/Severity';
 import Modal = require('../Modal');
+import NewContentElementWizard from 'TYPO3/CMS/Backend/NewContentElementWizard';
 
 /**
  * Module: TYPO3/CMS/Backend/Wizard/NewContentElement
@@ -21,7 +22,7 @@ import Modal = require('../Modal');
  */
 class NewContentElement {
   public static wizard(url: string, title: string): void {
-    Modal.advanced({
+    const $modal = Modal.advanced({
       callback: (currentModal: JQuery) => {
         currentModal.find('.t3js-modal-body').addClass('t3-new-content-element-wizard-window');
       },
@@ -30,6 +31,18 @@ class NewContentElement {
       size: Modal.sizes.medium,
       title,
       type: Modal.types.ajax,
+    }).on('modal-loaded', (): void => {
+      // This rather works in local environments only
+      $modal.on('shown.bs.modal', (): void => {
+        const wizard = new NewContentElementWizard($modal);
+        wizard.focusSearchField();
+      });
+    }).on('shown.bs.modal', (): void => {
+      // This is the common case with any latency that the modal is rendered before the content is loaded
+      $modal.on('modal-loaded', (): void => {
+        const wizard = new NewContentElementWizard($modal);
+        wizard.focusSearchField();
+      });
     });
   }
 }

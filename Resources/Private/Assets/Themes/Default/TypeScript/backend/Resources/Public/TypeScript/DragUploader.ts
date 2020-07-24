@@ -18,6 +18,7 @@ import {SeverityEnum} from './Enum/Severity';
 import * as $ from 'jquery';
 import moment = require('moment');
 import NProgress = require('nprogress');
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
 import Modal = require('./Modal');
 import Notification = require('./Notification');
 import {MessageUtility} from './Utility/MessageUtility';
@@ -284,6 +285,7 @@ class DragUploaderPlugin {
           }
         },
       });
+      ajaxCalls.push(request);
     });
 
     $.when.apply($, ajaxCalls).done(() => {
@@ -327,6 +329,8 @@ class DragUploaderPlugin {
           cache: false,
           success: (data: any) => {
             $.each(data, (index: number, flashMessage: { title: string, message: string, severity: number }) => {
+          const data = await response.resolve();
+          for (let flashMessage of data) {
               Notification.showMessage(flashMessage.title, flashMessage.message, flashMessage.severity);
             });
           },
@@ -473,6 +477,10 @@ class DragUploaderPlugin {
 
 class FileQueueItem {
   private $row: JQuery;
+  private readonly $progress: JQuery;
+  private readonly $progressContainer: JQuery;
+  private readonly file: InternalFile;
+  private readonly override: Action;
   private $iconCol: JQuery;
   private $fileName: JQuery;
   private $progress: JQuery;
@@ -539,6 +547,10 @@ class FileQueueItem {
       formData.append('upload_1', this.file);
 
       const s = $.extend(true, {}, $.ajaxSettings, {
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = (): void => {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 200) {
         url: TYPO3.settings.ajaxUrls.file_process,
         contentType: false,
         processData: false,
@@ -713,6 +725,7 @@ class DragUploader {
    */
   public static addFileToIrre(irre_object: number, file: UploadedFile): void {
     const message = {
+      actionName: 'typo3:foreignRelation:insert',
       objectGroup: irre_object,
       table: 'sys_file',
       uid: file.uid,

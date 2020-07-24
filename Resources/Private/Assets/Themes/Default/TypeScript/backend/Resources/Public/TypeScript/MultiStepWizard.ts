@@ -102,16 +102,16 @@ class MultiStepWizard {
    * Add the final processing slide as the last step
    *
    * @param {Function} callback
-   * @returns {JQueryPromise<any>}
+   * @returns {Promise<string>}
    */
-  public addFinalProcessingSlide(callback?: Function): JQueryPromise<any> {
+  public addFinalProcessingSlide(callback?: Function): Promise<void> {
     if (!callback) {
       callback = (): void => {
         this.dismiss();
       };
     }
 
-    return Icons.getIcon('spinner-circle', Icons.sizes.default, null, null).done((markup: string) => {
+    return Icons.getIcon('spinner-circle', Icons.sizes.default, null, null).then((markup: string) => {
       let $processingSlide = $('<div />', {class: 'text-center'}).append(markup);
       this.addSlide(
         'final-processing-slide', top.TYPO3.lang['wizard.processing.title'],
@@ -227,6 +227,20 @@ class MultiStepWizard {
   }
 
   /**
+   * Trigger a step button (prev or next)
+   *
+   * @param {string} direction
+   * @returns {JQuery}
+   */
+  public triggerStepButton(direction: string): JQuery {
+    let $button = this.setup.$carousel.closest('.modal').find('button[name="' + direction + '"]');
+    if ($button.length > 0 && $button.prop('disabled') !== true) {
+      $button.trigger('click');
+    }
+    return $button;
+  }
+
+  /**
    * Blur the button for the cancel step
    *
    * @returns {JQuery}
@@ -244,17 +258,8 @@ class MultiStepWizard {
    */
   private initializeEvents(): void {
     let $modal = this.setup.$carousel.closest('.modal');
-    let $modalFooter = $modal.find('.modal-footer');
-    let $nextButton = $modalFooter.find('button[name="next"]');
-    let $prevButton = $modalFooter.find('button[name="prev"]');
-
-    $nextButton.on('click', (): void => {
-      this.setup.$carousel.carousel('next');
-    });
-
-    $prevButton.on('click', (): void => {
-      this.setup.$carousel.carousel('prev');
-    });
+    this.initializeSlideNextEvent($modal);
+    this.initializeSlidePrevEvent($modal);
 
     // Event fires when the slide transition is invoked
     this.setup.$carousel.on('slide.bs.carousel', (evt: any): void => {
@@ -287,6 +292,22 @@ class MultiStepWizard {
     });
   }
 
+  private initializeSlideNextEvent($modal: JQuery) {
+    let $modalFooter = $modal.find('.modal-footer');
+    let $nextButton = $modalFooter.find('button[name="next"]');
+    $nextButton.off().on('click', (): void => {
+      this.setup.$carousel.carousel('next');
+    });
+  }
+
+  private initializeSlidePrevEvent($modal: JQuery) {
+    let $modalFooter = $modal.find('.modal-footer');
+    let $prevButton = $modalFooter.find('button[name="prev"]');
+    $prevButton.off().on('click', (): void => {
+      this.setup.$carousel.carousel('prev');
+    });
+  }
+
   /**
    * All changes after applying the next-button
    *
@@ -294,6 +315,8 @@ class MultiStepWizard {
    * @private
    */
   private nextSlideChanges($modal: JQuery): void {
+    this.initializeSlideNextEvent($modal);
+
     let $modalTitle = $modal.find('.modal-title');
     let $modalFooter = $modal.find('.modal-footer');
     let $modalButtonGroup = $modal.find('.modal-btn-group');
@@ -347,6 +370,8 @@ class MultiStepWizard {
    * @private
    */
   private prevSlideChanges($modal: JQuery): void {
+    this.initializeSlidePrevEvent($modal);
+
     let $modalTitle = $modal.find('.modal-title');
     let $modalFooter = $modal.find('.modal-footer');
     let $modalButtonGroup = $modal.find('.modal-btn-group');

@@ -11,12 +11,16 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-import {SeverityEnum} from './Enum/Severity';
 import 'bootstrap';
 import * as $ from 'jquery';
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import {AbstractAction} from './ActionButton/AbstractAction';
+import {ModalResponseEvent} from 'TYPO3/CMS/Backend/ModalInterface';
+import {SeverityEnum} from './Enum/Severity';
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
+import SecurityUtility = require('TYPO3/CMS/Core/SecurityUtility');
 import Icons = require('./Icons');
 import Severity = require('./Severity');
-import SecurityUtility = require('TYPO3/CMS/Core/SecurityUtility');
 
 enum Identifiers {
   modal = '.t3js-modal',
@@ -57,6 +61,7 @@ interface Button {
   trigger: (e: JQueryEventObject) => {};
   dataAttributes: { [key: string]: string };
   icon: string;
+  action: AbstractAction;
 }
 
 interface Configuration {
@@ -118,6 +123,28 @@ class Modal {
   };
 
   private readonly securityUtility: SecurityUtility;
+
+  private static resolveEventNameTargetElement(evt: Event): HTMLElement | null {
+    const target = evt.target as HTMLElement;
+    const currentTarget = evt.currentTarget as HTMLElement;
+    if (target.dataset && target.dataset.eventName) {
+      return target;
+    } else if (currentTarget.dataset && currentTarget.dataset.eventName) {
+      return currentTarget;
+    }
+    return null;
+  }
+
+  private static createModalResponseEventFromElement(element: HTMLElement, result: boolean): ModalResponseEvent | null {
+    if (!element || !element.dataset.eventName) {
+      return null;
+    }
+    return new CustomEvent(
+      element.dataset.eventName, {
+        bubbles: true,
+        detail: { result, payload: element.dataset.eventPayload || null }
+      });
+  }
 
   constructor(securityUtility: SecurityUtility) {
     this.securityUtility = securityUtility;
@@ -291,8 +318,9 @@ class Modal {
    * @param {Array<Button>} buttons
    */
   public setButtons(buttons: Array<Button>): JQuery {
+    const modalFooter = this.currentModal.find(Identifiers.footer);
     if (buttons.length > 0) {
-      this.currentModal.find(Identifiers.footer).empty();
+      modalFooter.empty();
 
       for (let i = 0; i < buttons.length; i++) {
         const button = buttons[i];
@@ -307,7 +335,14 @@ class Modal {
         if (button.name !== '') {
           $button.attr('name', button.name);
         }
-        if (button.trigger) {
+        if (button.action) {
+          $button.on('click', (): void => {
+            modalFooter.find('button').not($button).addClass('disabled');
+            button.action.execute($button.get(0)).then((): void => {
+              this.currentModal.modal('hide');
+            });
+          });
+        } else if (button.trigger) {
           $button.on('click', button.trigger);
         }
         if (button.dataAttributes) {
@@ -320,16 +355,15 @@ class Modal {
         if (button.icon) {
           $button.prepend('<span class="t3js-modal-icon-placeholder" data-icon="' + button.icon + '"></span>');
         }
-        this.currentModal.find(Identifiers.footer).append($button);
+        modalFooter.append($button);
       }
-      this.currentModal.find(Identifiers.footer).show();
-      this.currentModal
-        .find(Identifiers.footer).find('button')
+      modalFooter.show();
+      modalFooter.find('button')
         .on('click', (e: JQueryEventObject): void => {
           $(e.currentTarget).trigger('button.clicked');
         });
     } else {
-      this.currentModal.find(Identifiers.footer).hide();
+      modalFooter.hide();
     }
 
     return this.currentModal;
@@ -366,6 +400,12 @@ class Modal {
             btnClass: 'btn-default',
             trigger: (): void => {
               this.currentModal.trigger('modal-dismiss');
+              const eventNameTarget = Modal.resolveEventNameTargetElement(evt);
+              const event = Modal.createModalResponseEventFromElement(eventNameTarget, false);
+              if (event !== null) {
+                // dispatch event at the element having `data-event-name` declared
+                eventNameTarget.dispatchEvent(event);
+              }
             },
           },
           {
@@ -373,7 +413,16 @@ class Modal {
             btnClass: 'btn-' + Severity.getCssClass(severity),
             trigger: (): void => {
               this.currentModal.trigger('modal-dismiss');
-              evt.target.ownerDocument.location.href = $element.data('href') || $element.attr('href');
+              const eventNameTarget = Modal.resolveEventNameTargetElement(evt);
+              const event = Modal.createModalResponseEventFromElement(eventNameTarget, true);
+              if (event !== null) {
+                // dispatch event at the element having `data-event-name` declared
+                eventNameTarget.dispatchEvent(event);
+              }
+              const href = $element.data('href') || $element.attr('href');
+              if (href && href !== '#') {
+                evt.target.ownerDocument.location.href = href;
+              }
             },
           },
         ],
@@ -404,21 +453,17 @@ class Modal {
     if (configuration.type === 'ajax') {
       const contentTarget = configuration.ajaxTarget ? configuration.ajaxTarget : Identifiers.body;
       const $loaderTarget = currentModal.find(contentTarget);
-      Icons.getIcon('spinner-circle', Icons.sizes.default, null, null, Icons.markupIdentifiers.inline).done((icon: string): void => {
+      Icons.getIcon('spinner-circle', Icons.sizes.default, null, null, Icons.markupIdentifiers.inline).then((icon: string): void => {
         $loaderTarget.html('<div class="modal-loading">' + icon + '</div>');
-        $.get(
-          <string>configuration.content,
-          (response: string): void => {
-            this.currentModal.find(contentTarget)
-              .empty()
-              .append(response);
-            if (configuration.ajaxCallback) {
-              configuration.ajaxCallback();
-            }
-            this.currentModal.trigger('modal-loaded');
-          },
-          'html',
-        );
+        new AjaxRequest(configuration.content as string).get().then(async (response: AjaxResponse): Promise<void> => {
+          this.currentModal.find(contentTarget)
+            .empty()
+            .append(await response.raw().text());
+          if (configuration.ajaxCallback) {
+            configuration.ajaxCallback();
+          }
+          this.currentModal.trigger('modal-loaded');
+        });
       });
     } else if (configuration.type === 'iframe') {
       currentModal.find(Identifiers.body).append(
@@ -448,7 +493,7 @@ class Modal {
       $me.find(Identifiers.footer).find('.t3js-active').first().focus();
       // Get Icons
       $me.find(Identifiers.iconPlaceholder).each((index: number, elem: Element): void => {
-        Icons.getIcon($(elem).data('icon'), Icons.sizes.small, null, null, Icons.markupIdentifiers.inline).done((icon: string): void => {
+        Icons.getIcon($(elem).data('icon'), Icons.sizes.small, null, null, Icons.markupIdentifiers.inline).then((icon: string): void => {
           this.currentModal.find(Identifiers.iconPlaceholder + '[data-icon=' + $(icon).data('identifier') + ']').replaceWith(icon);
         });
       });

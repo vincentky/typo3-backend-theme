@@ -11,6 +11,11 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+<<<<<<< ours
+=======
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
+>>>>>>> theirs
 import {SeverityEnum} from './Enum/Severity';
 import MessageInterface from './AjaxDataHandler/MessageInterface';
 import ResponseInterface from './AjaxDataHandler/ResponseInterface';
@@ -26,6 +31,17 @@ enum Identifiers {
   icon = '.t3js-icon',
 }
 
+<<<<<<< ours
+=======
+interface AfterProcessEventDict {
+  component: string;
+  action: string;
+  trigger?: Node;
+  table: string;
+  uid: number;
+}
+
+>>>>>>> theirs
 /**
  * Module: TYPO3/CMS/Backend/AjaxDataHandler
  * Javascript functions to work with AJAX and interacting with Datahandler
@@ -41,6 +57,22 @@ class AjaxDataHandler {
     }
   }
 
+<<<<<<< ours
+=======
+  /**
+   * AJAX call to record_process route (SimpleDataHandlerController->processAjaxRequest)
+   * returns a jQuery Promise to work with
+   *
+   * @param {string | object} params
+   * @returns {Promise<any>}
+   */
+  private static call(params: string | object): Promise<ResponseInterface> {
+    return (new AjaxRequest(TYPO3.settings.ajaxUrls.record_process)).withQueryArguments(params).get().then(async (response: AjaxResponse): Promise<ResponseInterface> => {
+      return await response.resolve();
+    });
+  }
+
+>>>>>>> theirs
   constructor() {
     $((): void => {
       this.initialize();
@@ -50,6 +82,7 @@ class AjaxDataHandler {
   /**
    * Generic function to call from the outside the script and validate directly showing errors
    *
+<<<<<<< ours
    * @param {Object} parameters
    * @returns {JQueryPromise<any>}
    */
@@ -61,6 +94,31 @@ class AjaxDataHandler {
     });
   }
 
+=======
+   * @param {string | object} parameters
+   * @param {AfterProcessEventDict} eventDict Dictionary used as event detail. This is private API yet.
+   * @returns {Promise<any>}
+   */
+  public process(parameters: string | object, eventDict?: AfterProcessEventDict): Promise<any> {
+    const promise = AjaxDataHandler.call(parameters);
+    return promise.then((result: ResponseInterface): ResponseInterface => {
+      if (result.hasErrors) {
+        this.handleErrors(result);
+      }
+
+      if (eventDict) {
+        const event = new CustomEvent(`datahandler:process:${eventDict.action}`,{
+          detail: {...eventDict, hasErrors: result.hasErrors}
+        });
+        document.dispatchEvent(event);
+      }
+
+      return result;
+    });
+  }
+
+  // TODO: Many extensions rely on this behavior but it's misplaced in AjaxDataHandler. Move into Recordlist.ts and deprecate in v11.
+>>>>>>> theirs
   private initialize(): void {
     // HIDE/UNHIDE: click events for all action icons to hide/unhide
     $(document).on('click', Identifiers.hide, (e: JQueryEventObject): void => {
@@ -74,7 +132,11 @@ class AjaxDataHandler {
       this._showSpinnerIcon($iconElement);
 
       // make the AJAX call to toggle the visibility
+<<<<<<< ours
       this._call(params).done((result: ResponseInterface): void => {
+=======
+      this.process(params).then((result: ResponseInterface): void => {
+>>>>>>> theirs
         // print messages on errors
         if (result.hasErrors) {
           this.handleErrors(result);
@@ -148,14 +210,22 @@ class AjaxDataHandler {
     });
 
     const $iconElement = $anchorElement.find(Identifiers.icon);
+<<<<<<< ours
     Icons.getIcon(iconName, Icons.sizes.small).done((icon: string): void => {
+=======
+    Icons.getIcon(iconName, Icons.sizes.small).then((icon: string): void => {
+>>>>>>> theirs
       $iconElement.replaceWith(icon);
     });
 
     // Set overlay for the record icon
     const $recordIcon = $rowElement.find('.col-icon ' + Identifiers.icon);
     if (nextState === 'hidden') {
+<<<<<<< ours
       Icons.getIcon('miscellaneous-placeholder', Icons.sizes.small, 'overlay-hidden').done((icon: string): void => {
+=======
+      Icons.getIcon('miscellaneous-placeholder', Icons.sizes.small, 'overlay-hidden').then((icon: string): void => {
+>>>>>>> theirs
         $recordIcon.append($(icon).find('.icon-overlay'));
       });
     } else {
@@ -183,10 +253,23 @@ class AjaxDataHandler {
     // add a spinner
     this._showSpinnerIcon($iconElement);
 
+<<<<<<< ours
     // make the AJAX call to toggle the visibility
     this._call(params).done((result: ResponseInterface): void => {
       // revert to the old class
       Icons.getIcon('actions-edit-delete', Icons.sizes.small).done((icon: string): void => {
+=======
+    const $table = $anchorElement.closest('table[data-table]');
+    const table = $table.data('table');
+    let $rowElements = $anchorElement.closest('tr[data-uid]');
+    const uid = $rowElements.data('uid');
+
+    // make the AJAX call to toggle the visibility
+    const eventData = {component: 'datahandler', trigger: $anchorElement.get(0), action: 'delete', table, uid};
+    this.process(params, eventData).then((result: ResponseInterface): void => {
+      // revert to the old class
+      Icons.getIcon('actions-edit-delete', Icons.sizes.small).then((icon: string): void => {
+>>>>>>> theirs
         $iconElement = $anchorElement.find(Identifiers.icon);
         $iconElement.replaceWith(icon);
       });
@@ -194,12 +277,17 @@ class AjaxDataHandler {
       if (result.hasErrors) {
         this.handleErrors(result);
       } else {
+<<<<<<< ours
         const $table = $anchorElement.closest('table[data-table]');
         const $panel = $anchorElement.closest('.panel');
         const $panelHeading = $panel.find('.panel-heading');
         const table = $table.data('table');
         let $rowElements = $anchorElement.closest('tr[data-uid]');
         const uid = $rowElements.data('uid');
+=======
+        const $panel = $anchorElement.closest('.panel');
+        const $panelHeading = $panel.find('.panel-heading');
+>>>>>>> theirs
         const $translatedRowElements = $table.find('[data-l10nparent=' + uid + ']').closest('tr[data-uid]');
         $rowElements = $rowElements.add($translatedRowElements);
 
@@ -235,6 +323,7 @@ class AjaxDataHandler {
   }
 
   /**
+<<<<<<< ours
    * AJAX call to record_process route (SimpleDataHandlerController->processAjaxRequest)
    * returns a jQuery Promise to work with
    *
@@ -246,13 +335,19 @@ class AjaxDataHandler {
   }
 
   /**
+=======
+>>>>>>> theirs
    * Replace the given icon with a spinner icon
    *
    * @param {Object} $iconElement
    * @private
    */
   private _showSpinnerIcon($iconElement: JQuery): void {
+<<<<<<< ours
     Icons.getIcon('spinner-circle-dark', Icons.sizes.small).done((icon: string): void => {
+=======
+    Icons.getIcon('spinner-circle-dark', Icons.sizes.small).then((icon: string): void => {
+>>>>>>> theirs
       $iconElement.replaceWith(icon);
     });
   }

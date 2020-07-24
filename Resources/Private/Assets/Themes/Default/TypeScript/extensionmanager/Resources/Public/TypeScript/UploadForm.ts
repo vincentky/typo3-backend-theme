@@ -12,7 +12,8 @@
  */
 
 import * as $ from 'jquery';
-import 'datatables';
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
 
 class UploadForm {
   public expandedUploadFormClass: string = 'transformed';
@@ -21,7 +22,7 @@ class UploadForm {
     // Show upload form
     $(document).on('click', '.t3js-upload', (event: JQueryEventObject): void => {
       const $me = $(event.currentTarget);
-      const $uploadForm = $('.uploadForm');
+      const $uploadForm = $('.extension-upload-form');
 
       event.preventDefault();
       if ($me.hasClass(this.expandedUploadFormClass)) {
@@ -31,12 +32,8 @@ class UploadForm {
         $me.addClass(this.expandedUploadFormClass);
         $uploadForm.stop().slideDown();
 
-        $.ajax({
-          url: $me.attr('href'),
-          dataType: 'html',
-          success: (data: any): void => {
-            $uploadForm.html(data);
-          },
+        new AjaxRequest($me.attr('href')).get().then(async (response: AjaxResponse): Promise<void> => {
+          $uploadForm.find('.t3js-upload-form-target').html(await response.resolve());
         });
       }
     });

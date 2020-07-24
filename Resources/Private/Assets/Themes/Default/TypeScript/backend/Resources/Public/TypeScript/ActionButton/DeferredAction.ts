@@ -15,7 +15,11 @@ import {AbstractAction} from './AbstractAction';
 import Icons = require('../Icons');
 
 /**
+<<<<<<< ours
  * Action used when an operation execution time is unkown.
+=======
+ * Action used when an operation execution time is unknown.
+>>>>>>> theirs
  */
 class DeferredAction extends AbstractAction {
   protected callback: () => Promise<any>;

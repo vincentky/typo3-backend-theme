@@ -11,12 +11,13 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
 import {SeverityEnum} from 'TYPO3/CMS/Backend/Enum/Severity';
-import 'twbs/bootstrap-slider';
 import * as $ from 'jquery';
 import Modal = require('TYPO3/CMS/Backend/Modal');
 import Utility = require('TYPO3/CMS/Backend/Utility');
 import Workspaces from './Workspaces';
+import ThrottleEvent = require('TYPO3/CMS/Core/Event/ThrottleEvent');
 
 enum Identifiers {
   topbar = '#typo3-topbar',
@@ -58,7 +59,6 @@ class Preview extends Workspaces {
       this.getElements();
       this.resizeViews();
       this.adjustPreviewModeSelectorWidth();
-      this.elements.$stageSlider.slider();
       this.registerEvents();
     });
   }
@@ -84,9 +84,9 @@ class Preview extends Workspaces {
    * Registers the events
    */
   private registerEvents(): void {
-    $(window).on('resize', (): void => {
+    new ThrottleEvent('resize', (): void => {
       this.resizeViews();
-    });
+    }, 50).bindTo(window);
     $(document)
       .on('click', Identifiers.discardAction, this.renderDiscardWindow)
       .on('click', Identifiers.sendToStageAction, this.renderSendPageToStageWindow)
@@ -95,7 +95,7 @@ class Preview extends Workspaces {
     this.elements.$workspaceTabs.on('show.bs.tab', (e: JQueryEventObject): void => {
       this.elements.$workspaceActions.toggle((<HTMLElement>e.currentTarget).dataset.actions);
     });
-    this.elements.$stageSlider.on('change', this.updateSlidePosition);
+    new ThrottleEvent('input', this.updateSlidePosition, 25).bindTo(document.querySelector(Identifiers.stageSlider));
     this.elements.$previewModeContainer.find('[data-preview-mode]').on('click', this.changePreviewMode);
   }
 
@@ -113,8 +113,8 @@ class Preview extends Workspaces {
    *
    * @param {Event} e
    */
-  private updateSlidePosition = (e: any): void => {
-    this.currentSlidePosition = e.value.newValue;
+  private updateSlidePosition = (e: Event): void => {
+    this.currentSlidePosition = parseInt((e.target as HTMLInputElement).value, 10);
     this.resizeViews();
   }
 
@@ -165,9 +165,9 @@ class Preview extends Workspaces {
         this.sendRemoteRequest([
           this.generateRemoteActionsPayload('discardStagesFromPage', [TYPO3.settings.Workspaces.id]),
           this.generateRemoteActionsPayload('updateStageChangeButtons', [TYPO3.settings.Workspaces.id]),
-        ]).done((response: Array<any>): void => {
+        ]).then(async (response: AjaxResponse): Promise<void> => {
           $modal.modal('hide');
-          this.renderStageButtons(response[1].result);
+          this.renderStageButtons((await response.resolve())[1].result);
           // Reloading live view and and workspace list view IFRAME
           this.elements.$workspaceView.attr('src', this.elements.$workspaceView.attr('src'));
           this.elements.$workspaceList.attr('src', this.elements.$workspaceList.attr('src'));
@@ -212,21 +212,22 @@ class Preview extends Workspaces {
 
     this.sendRemoteRequest(
       this.generateRemoteActionsPayload(actionName, [TYPO3.settings.Workspaces.id]),
-    ).done((response: any): void => {
-      const $modal = this.renderSendToStageWindow(response);
+    ).then(async (response: AjaxResponse): Promise<void> => {
+      const resolvedResponse = await response.resolve();
+      const $modal = this.renderSendToStageWindow(resolvedResponse);
       $modal.on('button.clicked', (modalEvent: JQueryEventObject): void => {
         if ((<HTMLAnchorElement>modalEvent.target).name === 'ok') {
           const serializedForm = Utility.convertFormToObject(modalEvent.currentTarget.querySelector('form'));
-          serializedForm.affects = response[0].result.affects;
+          serializedForm.affects = resolvedResponse[0].result.affects;
           serializedForm.stageId = me.dataset.stageId;
 
           this.sendRemoteRequest([
             this.generateRemoteActionsPayload('sentCollectionToStage', [serializedForm]),
             this.generateRemoteActionsPayload('updateStageChangeButtons', [TYPO3.settings.Workspaces.id]),
-          ]).done((updateResponse: any): void => {
+          ]).then(async (updateResponse: AjaxResponse): Promise<void> => {
             $modal.modal('hide');
 
-            this.renderStageButtons(updateResponse[1].result);
+            this.renderStageButtons((await updateResponse.resolve())[1].result);
           });
         }
       });

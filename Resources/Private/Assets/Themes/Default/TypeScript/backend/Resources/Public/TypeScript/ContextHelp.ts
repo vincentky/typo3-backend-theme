@@ -13,6 +13,11 @@
 
 import 'bootstrap';
 import * as $ from 'jquery';
+<<<<<<< ours
+=======
+import {AjaxResponse} from 'TYPO3/CMS/Core/Ajax/AjaxResponse';
+import AjaxRequest = require('TYPO3/CMS/Core/Ajax/AjaxRequest');
+>>>>>>> theirs
 import Popover = require('./Popover');
 
 interface HelpData {
@@ -30,7 +35,11 @@ class ContextHelp {
   private helpModuleUrl: string;
   private trigger: string = 'click';
   private placement: string = 'auto';
+<<<<<<< ours
   private selector: string = '.t3-help-link';
+=======
+  private selector: string = '.help-link';
+>>>>>>> theirs
 
   /**
    * @return {Window}
@@ -93,7 +102,11 @@ class ContextHelp {
       if (!$popover.find('.popover-title').is(':visible')) {
         $popover.addClass('no-title');
       }
+<<<<<<< ours
     }).on('click', '.tipIsLinked', (e: any): void => {
+=======
+    }).on('click', '.help-has-link', (e: any): void => {
+>>>>>>> theirs
       $('.popover').each((index: number, popover: Element): void => {
         const $popover = $(popover);
         if ($popover.has(e.target).length) {
@@ -125,7 +138,12 @@ class ContextHelp {
       const cshWindow = window.open(
         this.helpModuleUrl +
         '&table=' + $trigger.data('table') +
+<<<<<<< ours
         '&field=' + $trigger.data('field'),
+=======
+        '&field=' + $trigger.data('field') +
+        '&action=detail',
+>>>>>>> theirs
         'ContextHelpWindow',
         'height=400,width=600,status=0,menubar=0,scrollbars=1',
       );
@@ -148,13 +166,23 @@ class ContextHelp {
     // If a table is defined, use ajax call to get the tooltip's content
     if (table) {
       // Load content
+<<<<<<< ours
       $.getJSON(this.ajaxUrl, {
+=======
+      new AjaxRequest(this.ajaxUrl).withQueryArguments({
+>>>>>>> theirs
         params: {
           action: 'getContextHelp',
           table: table,
           field: field,
+<<<<<<< ours
         },
       }).done((data: HelpData): void => {
+=======
+        }
+      }).get().then(async (response: AjaxResponse): Promise<any> => {
+        const data: HelpData = await response.resolve();
+>>>>>>> theirs
         const title = data.title || '';
         const content = data.content || '<p></p>';
         Popover.setOptions($trigger, {
