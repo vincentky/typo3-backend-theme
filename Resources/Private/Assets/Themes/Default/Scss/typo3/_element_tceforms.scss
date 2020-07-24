@@ -198,6 +198,7 @@ table.typo3-TCEforms-select-checkbox {
 div.typo3-TCEforms-suggest-choises a {
     cursor: pointer;
 }
+
 //
 // TCEforms Flexforms
 //
@@ -205,7 +206,7 @@ div.t3-form-field-container:first-child .t3-form-field-label-flex {
     border-top: 0;
 }
 
-.form-irre-object {
+.form-irre-object,
 .t3-flex-section {
     transition: opacity 0.5s;
     opacity: 1;
@@ -258,6 +259,7 @@ div.t3-form-field-container:first-child .t3-form-field-label-flex {
         filter: alpha(opacity=50);
     }
 }
+
 // z-index must be higher as .t3-form-field-disable z-index
 // this is required for the eval=null field checkbox
 .t3-form-field-eval-null-checkbox {

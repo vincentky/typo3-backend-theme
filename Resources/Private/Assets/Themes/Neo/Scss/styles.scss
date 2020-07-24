@@ -15,7 +15,8 @@
 @import 'navigation-resizable';
 @import 'features/icons';
 
-button, a {
+button,
+a {
     outline: 0;
 }
 
@@ -27,13 +28,11 @@ button, a {
     padding: 10px 15px;
 }
 
-
 label {
     font-weight: normal;
 }
 
 .topbar-button {
-
     &.topbar-button-navigationcomponent {
         border-bottom: 1px solid $scaffold-toolbar-border-bottom-color;
         margin-top: 1px;

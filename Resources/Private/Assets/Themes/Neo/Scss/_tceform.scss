@@ -7,9 +7,9 @@ $form-section-headline-border-color: #e4e4e4 !default;
     padding: $form-group-padding $module-body-padding-horizontal;
 }
 
-
 .panel-space {
     @include section-card();
+
     padding: 24px;
 
     .panel-heading {
@@ -17,9 +17,10 @@ $form-section-headline-border-color: #e4e4e4 !default;
     }
 }
 
-.module-body{
-    > .table-fit{
+.module-body {
+    > .table-fit {
         @include section-card();
+
         padding: 24px;
     }
 }

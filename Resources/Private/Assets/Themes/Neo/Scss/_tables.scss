@@ -8,6 +8,7 @@ $table-button-group-border-color: #ccc !default;
     th {
         .btn-default {
             @include button-variant($table-button-color, $brand-primary, $brand-primary);
+
             padding: 2px 3px;
 
             img {
@@ -15,7 +16,8 @@ $table-button-group-border-color: #ccc !default;
             }
         }
     }
-    .table{
+
+    .table {
         background: none;
     }
 }
