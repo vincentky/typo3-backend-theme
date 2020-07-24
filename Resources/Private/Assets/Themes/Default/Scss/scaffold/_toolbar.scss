@@ -33,6 +33,11 @@ $toolbar-item-open-bg-color: $dark-bg !default;
         background-color: $scaffold-topbar-bg;
     }
 
+    &:after {
+        clear: both;
+        display: table;
+        content: '';
+    }
 }
 
 .toolbar-list {
@@ -57,6 +62,7 @@ $toolbar-item-open-bg-color: $dark-bg !default;
     padding: 4px;
     position: relative;
     display: block;
+    float: left;
     width: 100%;
 
     @media (min-width: 600px) {
@@ -78,6 +84,10 @@ $toolbar-item-open-bg-color: $dark-bg !default;
 .toolbar-item {
     .dropdown-menu {
         width: 350px;
+
+        .text-muted {
+            color: lighten($text-muted, 10%);
+        }
 
         a:hover,
         a:focus {

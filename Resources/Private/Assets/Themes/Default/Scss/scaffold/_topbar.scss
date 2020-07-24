@@ -45,6 +45,9 @@ $topbar-header-site-color: inherit !default;
 // Buttons
 //
 .topbar-button {
+    position: absolute;
+    top: 0;
+    display: inline-block;
     border: 0;
     background-color: $topbar-button-bg;
     height: $navbar-height;
@@ -64,6 +67,9 @@ $topbar-header-site-color: inherit !default;
     }
 
     &.topbar-button-modulemenu {
+        left: 0;
+
+        @media (min-width: $scaffold-breakpoint) {
         background-color: $topbar-button-active-bg;
         color: $toolbar-item-open-bg-color;
     }
@@ -160,6 +166,10 @@ $topbar-header-site-color: inherit !default;
 //
 .topbar-header {
     display: flex;
+
+    @media (max-width: $scaffold-breakpoint-max) {
+        padding-right: ($topbar-button-width * 2) !important;
+    }
 }
 
 .topbar-header-site {

@@ -7,6 +7,7 @@
 // Load Variables
 //
 @import "bootstrap/variables";
+@import "bootstrap/mixins/vendor-prefixes";
 @import "variables/main";
 
 //
@@ -103,7 +104,7 @@ body.typo3-adminPanel-noscroll {
 #{$adminPanel-prefix} {
     z-index: $adminPanel-zindex;
 
-    * {
+    *:not([class*="sf-"]) {
         background: none;
         border: 0;
         box-shadow: none;
@@ -120,10 +121,10 @@ body.typo3-adminPanel-noscroll {
         padding: 0;
     }
 
-    *,
-    *:active,
-    *:focus,
-    *:hover {
+    *:not([class*="sf-"]),
+    *:not([class*="sf-"]):active,
+    *:not([class*="sf-"]):focus,
+    *:not([class*="sf-"]):hover {
         outline: 0;
     }
 }
@@ -133,6 +134,14 @@ body.typo3-adminPanel-noscroll {
 //
 #{$adminPanel-prefix} {
     @import "component/icon";
+    @import "typo3/element_tree";
+}
+
+#{$adminPanel-prefix} {
+    .treeline-icon {
+        margin-top: -8px;
+        margin-bottom: -8px;
+    }
 }
 
 //
@@ -1078,6 +1087,16 @@ body.typo3-adminPanel-noscroll {
         > *:last-child {
             margin-bottom: 0;
         }
+    }
+}
+
+//
+// Events
+//
+#{$adminPanel-prefix} {
+    .sf-dump-search-input-previous svg,
+    .sf-dump-search-input-next svg {
+        height: 16px;
     }
 }
 

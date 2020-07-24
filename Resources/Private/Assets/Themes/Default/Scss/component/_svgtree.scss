@@ -337,6 +337,7 @@ $svg-toolbar-padding: 4px 10px 0 !default;
     }
 
     &__drag-node {
+        display: inline-block;
         cursor: move;
         padding: 5px;
         border: none;

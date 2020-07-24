@@ -63,6 +63,10 @@ body {
     background-color: $scaffold-topbar-bg;
     color: $scaffold-topbar-color;
     height: $scaffold-topbar-height;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
 }
 
 //
@@ -108,7 +112,12 @@ body {
     }
 
     @media (min-width: $scaffold-breakpoint) {
+        overflow: visible;
+        background-color: transparent;
         height: $scaffold-topbar-height;
+        top: 0;
+        left: auto;
+        bottom: auto;
         display: block;
     }
 }
@@ -133,6 +142,10 @@ body {
     bottom: 0;
 
     @media (max-width: $scaffold-breakpoint-max) {
+        left: 0 !important;
+    }
+
+    &.scaffold-no-modules {
         left: 0 !important;
     }
 }

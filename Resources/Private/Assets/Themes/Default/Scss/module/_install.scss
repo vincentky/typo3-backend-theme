@@ -1,0 +1,262 @@
+@mixin panel-risk-levels($high-color, $medium-color) {
+    &.risk-high > .panel-heading {
+        background: $high-color;
+        color: $gray-lighter;
+    }
+
+    &.risk-medium > .panel-heading {
+        background: $medium-color;
+        color: $gray-darker;
+    }
+
+    &.risk-low > .panel-heading {
+        background: white;
+        color: $gray-darker;
+    }
+}
+
+.install-tool-init {
+    // Styles for enable install tool and login view
+    .logo-pageheader {
+        img {
+            padding-bottom: 3px;
+            vertical-align: bottom;
+        }
+    }
+}
+
+.install-tool-installer {
+    // Styles for installer
+    .typo3-message > h4 {
+        margin-bottom: 0;
+    }
+
+    .typo3-message p {
+        margin-top: 9px;
+    }
+
+    .alert-notice {
+        @include alert-variant($btn-default-bg, $btn-default-border, $btn-default-color);
+    }
+}
+
+.install-tool-modal {
+    .panel-group-flat,
+    .panel-group-rst {
+        .panel-body {
+            padding-right: 0;
+        }
+    }
+
+    .panel-flat,
+    .panel-rst,
+    .panel-version {
+        border: 0;
+        border-left: 2px solid $gray-light;
+        border-radius: 0;
+        margin: 0;
+
+        .panel-collapse {
+            position: relative;
+            overflow: auto;
+        }
+
+        &.panel-default > .panel-heading {
+            background: $gray-lighter;
+        }
+
+        &.panel-breaking,
+        &.panel-danger {
+            @include panel-variant($brand-danger, #fff, $brand-danger, $brand-danger);
+            @include panel-risk-levels($brand-danger, lighten($brand-danger, 40));
+
+            .panel-progress .panel-progress-bar {
+                background-color: $brand-danger;
+            }
+
+            .label {
+                @include label-variant($label-danger-bg);
+            }
+        }
+
+        &.panel-deprecation,
+        &.panel-warning {
+            @include panel-variant($brand-warning, #fff, $brand-warning, $brand-warning);
+            @include panel-risk-levels($brand-warning, lighten($brand-warning, 30));
+
+            .panel-progress .panel-progress-bar {
+                background-color: $brand-warning;
+            }
+
+            .label {
+                @include label-variant($label-warning-bg);
+            }
+        }
+
+        &.panel-feature,
+        &.panel-success {
+            @include panel-variant($brand-success, #fff, $brand-success, $brand-success);
+            @include panel-risk-levels($brand-success, lighten($brand-success, 40));
+
+            .panel-progress .panel-progress-bar {
+                background-color: $brand-success;
+            }
+
+            .label {
+                @include label-variant($label-success-bg);
+            }
+        }
+
+        &.panel-important,
+        &.panel-info {
+            @include panel-variant($brand-info, #fff, $brand-info, $brand-info);
+            @include panel-risk-levels($brand-info, lighten($brand-info, 30));
+
+            .panel-progress .panel-progress-bar {
+                background-color: $brand-info;
+            }
+
+            .label {
+                @include label-variant($label-info-bg);
+            }
+        }
+
+        .panel-heading {
+            position: relative;
+
+            a.link-action {
+                cursor: pointer;
+            }
+
+            strong {
+                line-height: 1.5em;
+            }
+        }
+
+        .rst-tags {
+            position: absolute;
+            top: 0.75em;
+            right: 1em;
+
+            .label {
+                margin: 0 0.25em;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+
+        .rst-links {
+            position: absolute;
+            bottom: 0.5em;
+            right: 1.2em;
+            padding-left: (($line-height-computed - 1) / 2);
+        }
+
+        pre {
+            margin: 0;
+            border-radius: 0;
+            border: 0;
+            border-top: 1px solid $gray-light;
+            white-space: pre-wrap;
+            word-break: normal;
+            word-wrap: normal;
+        }
+
+        .rst-links + pre {
+            padding-bottom: (($line-height-computed - 1) * 3);
+
+            @media (min-width: $screen-sm-min) {
+                padding-bottom: (($line-height-computed - 1) * 2);
+            }
+        }
+    }
+
+    .item {
+        margin: 1em;
+        border: 1px solid $panel-default-heading-bg;
+    }
+
+    .item .item-heading {
+        padding: 1em;
+        background-color: $panel-default-heading-bg;
+    }
+
+    .item .item-body {
+        padding: 1em;
+    }
+
+    .list-group-item {
+        a {
+            display: block;
+        }
+
+        &.active {
+            a {
+                color: #fff;
+            }
+        }
+    }
+
+    // Collapsibles clickable on full length
+    a[data-toggle="collapse"] {
+        display: block;
+    }
+
+    // Grey line on hr tags in modals
+    hr {
+        border-top: 1px solid $panel-default-heading-bg;
+    }
+
+    // Styles for specific modals: language pack handling
+    .t3-languagePacks-inactive {
+        color: #aaa;
+    }
+
+    // Styles for specific modals: image processing
+    .t3-install-displaytwinimageimages {
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    .t3-install-displaytwinimagetextarea {
+        pre {
+            border-top: 0;
+        }
+    }
+
+    .bg-transparent-emulation {
+        padding: 10px;
+        text-align: center;
+        background: url("#{$path-sysext}/install/Resources/Public/Images/bg_transparent_emulation.png");
+
+        img {
+            max-width: 300px;
+        }
+    }
+
+    // Styles for specific modals: php info
+    #phpinfo table {
+        width: 100%;
+        table-layout: fixed;
+        word-wrap: break-word;
+        background: $table-bg;
+    }
+
+    // Styles for specific modals: Issue number in expand upgrade documentation item
+    .upgrade_analysis_item_to_filter pre a {
+        text-decoration: underline;
+    }
+
+    // Styles for specific modals: Upgrade wizard explanation line breaks
+    .upgradeWizards-wizards-output {
+        .row-explanation {
+            white-space: pre-wrap;
+        }
+    }
+}

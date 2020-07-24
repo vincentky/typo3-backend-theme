@@ -47,6 +47,7 @@ $btn-border-radius-base: 0;
 $body-bg: #ebeef1;
 $text-color: #626262;
 $link-color: #212424;
+$link-disabled-color: $gray-light;
 $link-hover-color: #000;
 
 // Typography
@@ -99,6 +100,7 @@ $table-cell-padding: 5px 10px;
 $table-condensed-cell-padding: 6px;
 $table-bg: transparent;
 $table-bg-accent: #f0f0f0;
+$table-bg-accent: darken($table-bg, 1%);
 $table-bg-hover: #e1e1e1;
 $table-bg-active: $table-bg-hover;
 $table-border-color: #e1e1e1;
@@ -167,6 +169,7 @@ $nav-tabs-active-link-bg: transparent;
 $nav-tabs-active-link-hover-bg: transparent;
 $nav-tabs-active-link-hover-color: #000;
 $nav-tabs-active-link-hover-border-color: transparent;
+$nav-tabs-active-link-hover-bg: darken(#fafafa, 5%);
 $nav-tabs-justified-link-border-color: #ccc;
 $nav-tabs-justified-active-link-border-color: $nav-tabs-border-color;
 $nav-tabs-bg: transparent;

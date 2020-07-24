@@ -21,12 +21,22 @@
 @import "component/svgtree";
 @import "component/elementbrowser";
 @import "component/modal";
+@import "component/note";
 @import "component/card";
 
 //
 // Modules
 //
+@import "module/access";
+@import "module/backenduser";
+@import "module/extensionmanager";
+@import "module/help";
+@import "module/install";
+@import "module/page";
+@import "module/recycler";
+@import "module/tstemplate";
 @import "module/viewpage";
+@import "module/workspaces";
 
 //
 // Components from bootstrap plugins
@@ -42,6 +52,21 @@
 // Image Manipulation Wizard base styles
 //
 @import "cropper/cropper";
+
+//
+// JQuery UI Resizable
+//
+@import "libs/jquery-ui-resizable";
+
+//
+// Sortable.js
+//
+@import "libs/sortable";
+
+//
+// tablesort.js
+//
+@import "libs/tablesort";
 
 //
 // NProgress

@@ -210,6 +210,7 @@ select {
         }
 
         &[size="1"],
+        &:not([multiple][size]),
         &:not([size]) {
             appearance: none;
 
@@ -276,6 +277,12 @@ select {
     }
 }
 
+.form-inline {
+    .form-control-clearable {
+        display: inline-block;
+    }
+}
+
 .input-group {
     .form-control-clearable {
         display: table-cell;
@@ -336,7 +343,12 @@ select {
 //
 .form-section {
     @include section-card();
+    background-color: #fafafa;
+    padding: 15px 12px 3px;
+
+    & + .form-section {
     padding: $form-section-padding;
+    }
 }
 
 .tab-pane {
@@ -378,6 +390,11 @@ select {
 
     > .form-wizards-items-bottom {
         display: table-row;
+
+        .tablelist-item-nolink {
+            padding: 6px;
+            display: inline-block;
+        }
     }
 
     > .form-wizards-items-bottom:first-child {
