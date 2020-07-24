@@ -24,8 +24,8 @@ const themes = fs.readdirSync(config.paths.src.themes);
 const capitalize = s => (typeof s !== 'string' ? '' : s.charAt(0).toUpperCase() + s.slice(1));
 
 const themePath = (theme, type) =>
-    `${config.paths.src.themes}/${theme}/${capitalize(type)}/**/*${type in config.FILES_EXTENSIONS &&
-        '.' + config.FILES_EXTENSIONS[type]}`;
+    `${config.paths.src.themes}/${theme}/${capitalize(type)}/**/*${type in config.FILES_EXTENSIONS ?
+        '.' + config.FILES_EXTENSIONS[type] : ''}`;
 
 const tsProjects = themes.reduce((acc, theme) => {
     acc[theme] = ts.createProject('./tsconfig.json', {

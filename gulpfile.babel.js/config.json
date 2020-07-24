@@ -31,7 +31,7 @@
 		"TypeScript": "ts"
 	},
 	"includePaths": [
-		"Resources/Private/Assets/Scss",
+		"Resources/Private/Assets/Themes/Default/Scss",
 		"node_modules",
 		"node_modules/bootstrap-sass/assets/stylesheets",
 		"node_modules/font-awesome/scss",
